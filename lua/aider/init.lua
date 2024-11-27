@@ -119,6 +119,11 @@ end
 function M.setup(opts)
 	opts = opts or {}
 
+	-- Set AIDER_EDITOR if we're in tmux
+	if vim.env.TMUX then
+		vim.env.AIDER_EDITOR = 'tmux popup -E nvim'
+	end
+
 	-- Setup fzf-lua integration if it's available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
