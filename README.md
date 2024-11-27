@@ -56,15 +56,30 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk` - Ask a question about code (works in visual mode)
 
-## Default Keymaps
+## Suggested Keymaps
 
-The plugin comes with the following default keymaps when using lazy.nvim:
+Here are some suggested keymaps you can add to your lazy.nvim configuration:
 
-- `<leader>a<space>` - Toggle Aider terminal window
-- `<leader>al` - Load current file into Aider
-- `<leader>ad` - Ask Aider about code (works in both normal and visual mode)
-
-You can customize these keymaps in your lazy.nvim configuration.
+```lua
+keys = {
+    {
+        "<leader>a<space>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+    },
+    {
+        "<leader>al",
+        "<cmd>AiderLoad<CR>",
+        desc = "Add file to aider",
+    },
+    {
+        "<leader>ad",
+        "<cmd>AiderAsk<CR>",
+        desc = "Ask with selection",
+        mode = { "v", "n" },
+    },
+}
+```
 
 ## FZF-lua Integration
 
