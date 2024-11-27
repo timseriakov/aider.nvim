@@ -80,13 +80,19 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-    -- Configuration options will be added in future releases
+    -- Override the default editor command (defaults to 'tmux popup -E nvim' in tmux)
+    editor_command = 'your-custom-editor-command',
+    
+    -- Change the FZF action key (defaults to 'ctrl-l')
+    fzf_action_key = 'ctrl-x'
 })
 ```
 
 ### Editor Command Behavior
 
-When running in a tmux session, the plugin automatically sets `AIDER_EDITOR` to use a tmux popup with Neovim. This provides a better experience than the default `/editor` command, which can have issues when running nested Neovim sessions in terminal mode.
+When running in a tmux session, the plugin automatically sets `AIDER_EDITOR` to use a tmux popup with Neovim by default. This provides a better experience than the default `/editor` command, which can have issues when running nested Neovim sessions in terminal mode. You can override this behavior by setting `editor_command` in the setup options.
+
+The default FZF action key is `ctrl-l`, but this can be customized using the `fzf_action_key` option during setup.
 
 ## Usage Examples
 
