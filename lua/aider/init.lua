@@ -119,15 +119,19 @@ end
 function M.setup(opts)
 	opts = opts or {}
 
-	-- Set AIDER_EDITOR if we're in tmux
-	if vim.env.TMUX then
-		vim.env.AIDER_EDITOR = 'tmux popup -E nvim'
+	-- Set default options
+	opts.editor_command = opts.editor_command or (vim.env.TMUX and 'tmux popup -E nvim' or nil)
+	opts.fzf_action_key = opts.fzf_action_key or "ctrl-l"
+
+	-- Set AIDER_EDITOR if specified
+	if opts.editor_command then
+		vim.env.AIDER_EDITOR = opts.editor_command
 	end
 
 	-- Setup fzf-lua integration if it's available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
-		fzf_config.defaults.files.actions["ctrl-l"] = M.load_in_aider
+		fzf_config.defaults.files.actions[opts.fzf_action_key] = M.load_in_aider
 	end
 
 	-- Create commands for aider functionality
