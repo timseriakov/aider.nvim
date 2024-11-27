@@ -66,7 +66,7 @@ vim.keymap.set('v', '<leader>aa', '<cmd>AiderAsk<CR>', { desc = 'Ask Aider about
 When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files into Aider:
 
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
-- Multiple files: Use `Tab` to select multiple files, then press `Ctrl-l` to load all selected files
+- Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
 
 ## Configuration
