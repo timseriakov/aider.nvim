@@ -21,8 +21,7 @@ function M.load_in_aider(selected, opts)
 		return
 	end
 
-	-- TODO close session if args don't match previous
-	local aider_args = opts and opts.aider_args or ""
+	local aider_args = M.config.aider_args or ""
 	local command = "aider " .. aider_args .. " " .. paths
 	vim.api.nvim_command("vnew")
 	M.job_id = vim.fn.termopen(command, {
@@ -122,6 +121,10 @@ function M.setup(opts)
 	-- Set default options
 	opts.editor_command = opts.editor_command or (vim.env.TMUX and 'tmux popup -E nvim' or nil)
 	opts.fzf_action_key = opts.fzf_action_key or "ctrl-l"
+	opts.aider_args = opts.aider_args or ""
+
+	-- Store config
+	M.config = opts
 
 	-- Set AIDER_EDITOR if specified
 	if opts.editor_command then

@@ -99,7 +99,10 @@ require('aider').setup({
     editor_command = 'your-custom-editor-command',
     
     -- Change the FZF action key (defaults to 'ctrl-l')
-    fzf_action_key = 'ctrl-x'
+    fzf_action_key = 'ctrl-x',
+
+    -- Set default arguments for aider CLI
+    aider_args = '--model gpt-4 --dark-mode --no-auto-commits'
 })
 ```
 
