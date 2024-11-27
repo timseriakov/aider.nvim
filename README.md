@@ -22,25 +22,31 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-    "mattkubej/nvim-aider",
+    "aweis89/aider.nvim",
     dependencies = {
-        "ibhagwan/fzf-lua", -- optional
+        "ibhagwan/fzf-lua",
     },
-    config = function()
+    init = function()
         require("aider").setup()
-    end
-}
-```
-
-Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
-
-```lua
-use {
-    'mattkubej/nvim-aider',
-    requires = { 'ibhagwan/fzf-lua' }, -- optional
-    config = function()
-        require('aider').setup()
-    end
+    end,
+    keys = {
+        {
+            "<leader>a<space>",
+            "<cmd>AiderToggle<CR>",
+            desc = "Toggle Aider",
+        },
+        {
+            "<leader>al",
+            "<cmd>AiderLoad<CR>",
+            desc = "Add file to aider",
+        },
+        {
+            "<leader>ad",
+            "<cmd>AiderAsk<CR>",
+            desc = "Ask with selection",
+            mode = { "v", "n" },
+        },
+    },
 }
 ```
 
@@ -52,14 +58,13 @@ use {
 
 ## Default Keymaps
 
-The plugin doesn't set any default keymaps. Here's an example of how you might want to set them up:
+The plugin comes with the following default keymaps when using lazy.nvim:
 
-```lua
-vim.keymap.set('n', '<leader>at', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Load current file in Aider' })
-vim.keymap.set('n', '<leader>aa', '<cmd>AiderAsk<CR>', { desc = 'Ask Aider about code' })
-vim.keymap.set('v', '<leader>aa', '<cmd>AiderAsk<CR>', { desc = 'Ask Aider about selection' })
-```
+- `<leader>a<space>` - Toggle Aider terminal window
+- `<leader>al` - Load current file into Aider
+- `<leader>ad` - Ask Aider about code (works in both normal and visual mode)
+
+You can customize these keymaps in your lazy.nvim configuration.
 
 ## FZF-lua Integration
 
