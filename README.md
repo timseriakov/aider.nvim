@@ -84,6 +84,10 @@ require('aider').setup({
 })
 ```
 
+### Editor Command Behavior
+
+When running in a tmux session, the plugin automatically sets `AIDER_EDITOR` to use a tmux popup with Neovim. This provides a better experience than the default `/editor` command, which can have issues when running nested Neovim sessions in terminal mode.
+
 ## Usage Examples
 
 1. Toggle Aider window:
