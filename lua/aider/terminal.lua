@@ -32,7 +32,43 @@ function M.load_in_aider(selected, opts)
         dark_mode,
         paths)
 
-    vim.api.nvim_command("vnew")
+    local window = config.values.window
+    local width = window.width > 1 and window.width or math.floor(vim.o.columns * window.width)
+    local height = window.height > 1 and window.height or math.floor(vim.o.lines * window.height)
+
+    if window.layout == "float" then
+        local win_opts = {
+            relative = window.relative,
+            width = width,
+            height = height,
+            row = window.row or math.floor((vim.o.lines - height) / 2),
+            col = window.col or math.floor((vim.o.columns - width) / 2),
+            border = window.border,
+            title = window.title,
+            title_pos = window.title_pos,
+            style = "minimal",
+        }
+        vim.api.nvim_command("new")
+        local bufnr = vim.api.nvim_get_current_buf()
+        local winnr = vim.api.nvim_open_win(bufnr, true, win_opts)
+        for k, v in pairs(window.opts) do
+            vim.api.nvim_win_set_option(winnr, k, v)
+        end
+    elseif window.layout == "vertical" then
+        local cmd = "vnew"
+        if width ~= 0 then
+            cmd = width .. "v"
+        end
+        vim.api.nvim_command(cmd)
+    elseif window.layout == "horizontal" then
+        local cmd = "new"
+        if height ~= 0 then
+            cmd = height .. "new"
+        end
+        vim.api.nvim_command(cmd)
+    else -- current
+        vim.api.nvim_command("enew")
+    end
     M.job_id = vim.fn.termopen(command, {
         on_exit = function()
             vim.cmd("bd!")

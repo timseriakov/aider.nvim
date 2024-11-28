@@ -2,6 +2,17 @@
 ---@field editor_command string|nil Command to use for editor
 ---@field fzf_action_key string Key to trigger aider load in fzf
 ---@field aider_args string Additional arguments for aider CLI
+---@field window table Window display configuration
+---@field window.layout string Window layout type ('float'|'vertical'|'horizontal'|'current')
+---@field window.width number Window width (absolute if >1, percentage if <=1)
+---@field window.height number Window height (absolute if >1, percentage if <=1)
+---@field window.relative string Position relative to ('editor'|'win'|'cursor')
+---@field window.row number Row position for float windows
+---@field window.col number Column position for float windows
+---@field window.border string|table Border style
+---@field window.title string Window title
+---@field window.title_pos string Title position
+---@field window.opts table Additional window options
 
 local M = {}
 
@@ -11,6 +22,22 @@ M.defaults = {
 	editor_command = vim.env.TMUX and "tmux popup -E nvim" or nil,
 	fzf_action_key = "ctrl-l",
 	aider_args = "",
+	window = {
+		layout = "vertical",
+		width = 0.4,
+		height = 0.8,
+		relative = "editor",
+		row = nil,
+		col = nil,
+		border = "rounded",
+		title = "Aider",
+		title_pos = "center",
+		opts = {
+			wrap = true,
+			number = false,
+			relativenumber = false,
+		},
+	},
 }
 
 ---Current configuration
