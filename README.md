@@ -88,6 +88,7 @@ When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
+- FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
 
 ## Configuration
 
@@ -97,7 +98,7 @@ The plugin can be configured during setup:
 require('aider').setup({
     -- Override the default editor command (defaults to 'tmux popup -E nvim' in tmux)
     editor_command = 'your-custom-editor-command',
-    
+
     -- Change the FZF action key (defaults to 'ctrl-l')
     fzf_action_key = 'ctrl-x',
 
@@ -124,16 +125,19 @@ The default FZF action key is `ctrl-l`, but this can be customized using the `fz
 ## Usage Examples
 
 1. Toggle Aider window:
+
 ```vim
 :AiderToggle
 ```
 
 2. Load current file into Aider:
+
 ```vim
 :AiderLoad
 ```
 
 3. Load specific files:
+
 ```vim
 :AiderLoad path/to/file1.lua path/to/file2.lua
 ```
