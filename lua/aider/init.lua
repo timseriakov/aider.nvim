@@ -21,9 +21,10 @@ function M.load_in_aider(selected, opts)
 		return
 	end
 
-	local aider_args = M.config.aider_args or ""
+	local env_args = vim.env.AIDER_ARGS or ""
+	local config_args = M.config.aider_args or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local command = "aider " .. aider_args .. dark_mode .. " " .. paths
+	local command = "aider " .. env_args .. " " .. config_args .. dark_mode .. " " .. paths
 	vim.api.nvim_command("vnew")
 	M.job_id = vim.fn.termopen(command, {
 		on_exit = function()
