@@ -29,13 +29,6 @@ end
 
 return telescope.register_extension({
 	setup = function()
-		-- Add the aider action to all pickers that deal with files
-		local attach_mapping = function(prompt_bufnr, map)
-			map("i", config.values.telescope_action_key, aider_action)
-			map("n", config.values.telescope_action_key, aider_action)
-			return true
-		end
-
 		telescope.setup({
 			defaults = {
 				mappings = {
