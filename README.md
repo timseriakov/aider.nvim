@@ -28,6 +28,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
         "ibhagwan/fzf-lua",
     },
     config = true,
+    -- e.x. mappings
     keys = {
         {
             "<leader>a<space>",
@@ -90,7 +91,7 @@ Plugin 'aweis89/aider.nvim'
 
 " After Plugin commands, add the setup:
 lua require('aider').setup()
-" Note: Vundle doesn't support direct tag specification, 
+" Note: Vundle doesn't support direct tag specification,
 " use git checkout v0.0.1 in the plugin directory after installation
 ```
 
@@ -99,31 +100,6 @@ lua require('aider').setup()
 - `:AiderToggle` - Toggle the Aider terminal window
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk` - Ask a question about code (works in visual mode)
-
-## Suggested Keymaps
-
-Here are some suggested keymaps you can add to your lazy.nvim configuration:
-
-```lua
-keys = {
-    {
-        "<leader>a<space>",
-        "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider",
-    },
-    {
-        "<leader>al",
-        "<cmd>AiderLoad<CR>",
-        desc = "Add file to aider",
-    },
-    {
-        "<leader>ad",
-        "<cmd>AiderAsk<CR>",
-        desc = "Ask with selection",
-        mode = { "v", "n" },
-    },
-}
-```
 
 ## FZF-lua Integration
 
