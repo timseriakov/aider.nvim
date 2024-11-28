@@ -119,7 +119,7 @@ function M.setup(opts)
 	opts = opts or {}
 
 	-- Set default options
-	opts.editor_command = opts.editor_command or (vim.env.TMUX and 'tmux popup -E nvim' or nil)
+	opts.editor_command = opts.editor_command or (vim.env.TMUX and "tmux popup -E nvim" or nil)
 	opts.fzf_action_key = opts.fzf_action_key or "ctrl-l"
 	opts.aider_args = opts.aider_args or ""
 
