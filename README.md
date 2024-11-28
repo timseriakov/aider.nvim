@@ -18,7 +18,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## Installation
 
-Using [lazy.nvim](https://github.com/folke/lazy.nvim):
+### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
@@ -49,6 +49,51 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
         },
     },
 }
+```
+
+### Using [vim-plug](https://github.com/junegunn/vim-plug)
+
+```vim
+Plug 'ibhagwan/fzf-lua'
+Plug 'aweis89/aider.nvim', { 'tag': 'v0.0.1' }
+
+" After plug#end(), add the setup:
+lua require('aider').setup()
+```
+
+### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+use {
+    'aweis89/aider.nvim',
+    tag = 'v0.0.1',
+    requires = { 'ibhagwan/fzf-lua' },
+    config = function()
+        require('aider').setup()
+    end
+}
+```
+
+### Using [dein.vim](https://github.com/Shougo/dein.vim)
+
+```vim
+call dein#add('ibhagwan/fzf-lua')
+call dein#add('aweis89/aider.nvim', {'rev': 'v0.0.1'})
+
+" After loading plugins, add the setup:
+lua require('aider').setup()
+```
+
+### Using [Vundle.vim](https://github.com/VundleVim/Vundle.vim)
+
+```vim
+Plugin 'ibhagwan/fzf-lua'
+Plugin 'aweis89/aider.nvim'
+
+" After Plugin commands, add the setup:
+lua require('aider').setup()
+" Note: Vundle doesn't support direct tag specification, 
+" use git checkout v0.0.1 in the plugin directory after installation
 ```
 
 ## Commands
