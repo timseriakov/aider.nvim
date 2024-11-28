@@ -125,7 +125,15 @@ require('aider').setup({
     fzf_action_key = 'ctrl-x',
 
     -- Set default arguments for aider CLI (can also use AIDER_ARGS env var)
-    aider_args = '--model gpt-4 --no-auto-commits'
+    aider_args = '--model gpt-4 --no-auto-commits',
+
+    -- Configure window display (these are the defaults)
+    window = {
+        layout = "float",     -- 'float', 'vertical', 'horizontal', or 'current'
+        width = 0.9,         -- width of the window (in columns or percentage)
+        height = 0.9,        -- height of the window (in lines or percentage)
+        border = "rounded",   -- 'none', 'single', 'double', 'rounded', etc.
+    }
 })
 ```
 
