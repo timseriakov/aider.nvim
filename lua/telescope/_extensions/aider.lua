@@ -33,19 +33,13 @@ return telescope.register_extension({
 			defaults = {
 				mappings = {
 					i = {
-						[config.values.telescope_action_key] = aider_action
+						[config.values.telescope_action_key] = aider_action,
 					},
 					n = {
-						[config.values.telescope_action_key] = aider_action
-					}
-				}
-			}
+						[config.values.telescope_action_key] = aider_action,
+					},
+				},
+			},
 		})
 	end,
-	exports = {
-		-- This is optional if you want a dedicated picker
-		aider = function(opts)
-			require("telescope.builtin").find_files(opts)
-		end
-	}
 })

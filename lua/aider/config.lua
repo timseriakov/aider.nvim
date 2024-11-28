@@ -57,7 +57,8 @@ function M.setup(opts)
 	-- Setup fzf-lua integration if available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
-		fzf_config.defaults.files.actions[M.values.fzf_action_key] = require("aider.terminal").load_in_aider
+		load_in_aider = require("aider.terminal").load_in_aider
+		fzf_config.defaults.files.actions[M.values.fzf_action_key] = load_in_aider
 	end
 
 	-- Setup telescope integration if available
