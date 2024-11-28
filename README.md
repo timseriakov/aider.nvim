@@ -23,6 +23,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 ```lua
 {
     "aweis89/aider.nvim",
+    version = "v0.0.1",
     dependencies = {
         "ibhagwan/fzf-lua",
     },
