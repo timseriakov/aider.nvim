@@ -21,6 +21,7 @@ local M = {}
 M.defaults = {
 	editor_command = vim.env.TMUX and "tmux popup -E nvim" or nil,
 	fzf_action_key = "ctrl-l",
+	telescope_action_key = "<C-l>",
 	aider_args = "",
 	window = {
 		layout = "vertical",
@@ -57,6 +58,12 @@ function M.setup(opts)
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
 		fzf_config.defaults.files.actions[M.values.fzf_action_key] = require("aider.terminal").load_in_aider
+	end
+
+	-- Setup telescope integration if available
+	local telescope_ok, telescope = pcall(require, "telescope")
+	if telescope_ok then
+		telescope.load_extension("aider")
 	end
 end
 
