@@ -1,4 +1,4 @@
-# nvim-aider
+# aider.nvim
 
 A Neovim plugin for seamless integration with [Aider](https://github.com/paul-gauthier/aider), an AI pair programming tool.
 
