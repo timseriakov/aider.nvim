@@ -14,7 +14,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 - Neovim 0.5+
 - [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) (optional, for enhanced file selection)
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
 
 ## Installation
 
@@ -25,8 +25,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
     "aweis89/aider.nvim",
     version = "v0.0.1",
     dependencies = {
-        "ibhagwan/fzf-lua",
-        "nvim-telescope/telescope.nvim",
+        "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
     },
     init = function()
       require("aider").setup()
