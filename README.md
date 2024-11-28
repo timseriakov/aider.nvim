@@ -132,6 +132,9 @@ require('aider').setup({
     -- Change the FZF action key (defaults to 'ctrl-l')
     fzf_action_key = 'ctrl-x',
 
+    -- Change the Telescope action key (defaults to '<C-l>')
+    telescope_action_key = '<C-l>',
+
     -- Set default arguments for aider CLI (can also use AIDER_ARGS env var)
     aider_args = '--model gpt-4 --no-auto-commits',
 
