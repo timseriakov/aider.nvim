@@ -101,10 +101,19 @@ require('aider').setup({
     -- Change the FZF action key (defaults to 'ctrl-l')
     fzf_action_key = 'ctrl-x',
 
-    -- Set default arguments for aider CLI
-    aider_args = '--model gpt-4 --dark-mode --no-auto-commits'
+    -- Set default arguments for aider CLI (can also use AIDER_ARGS env var)
+    aider_args = '--model gpt-4 --no-auto-commits'
 })
 ```
+
+### Dark Mode
+
+The plugin automatically sets the `--dark-mode` flag when Neovim's `background` option is set to "dark". This ensures aider's UI matches your Neovim theme.
+
+### Environment Variables
+
+- `AIDER_ARGS`: Set default command line arguments for aider. These are applied before any arguments specified in the plugin configuration.
+- `AIDER_EDITOR`: Set by the plugin when using tmux (see Editor Command below).
 
 ### Editor Command Behavior
 
