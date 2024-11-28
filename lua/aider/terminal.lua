@@ -88,8 +88,39 @@ function M.toggle()
                 vim.api.nvim_win_close(win, false)
             end
         else
-            vim.cmd("vnew")
-            vim.api.nvim_win_set_buf(0, M.buf)
+            local window = config.values.window
+            if window.layout == "float" then
+                local width = window.width > 1 and window.width or math.floor(vim.o.columns * window.width)
+                local height = window.height > 1 and window.height or math.floor(vim.o.lines * window.height)
+                local win_opts = {
+                    relative = window.relative,
+                    width = width,
+                    height = height,
+                    row = window.row or math.floor((vim.o.lines - height) / 2),
+                    col = window.col or math.floor((vim.o.columns - width) / 2),
+                    border = window.border,
+                    title = window.title,
+                    title_pos = window.title_pos,
+                    style = "minimal",
+                }
+                local winnr = vim.api.nvim_open_win(M.buf, true, win_opts)
+                for k, v in pairs(window.opts) do
+                    vim.api.nvim_win_set_option(winnr, k, v)
+                end
+            elseif window.layout == "vertical" then
+                local width = window.width > 1 and window.width or math.floor(vim.o.columns * window.width)
+                local cmd = width == 0 and "vnew" or width .. "vnew"
+                vim.api.nvim_command(cmd)
+                vim.api.nvim_win_set_buf(0, M.buf)
+            elseif window.layout == "horizontal" then
+                local height = window.height > 1 and window.height or math.floor(vim.o.lines * window.height)
+                local cmd = height == 0 and "new" or height .. "new"
+                vim.api.nvim_command(cmd)
+                vim.api.nvim_win_set_buf(0, M.buf)
+            else -- current
+                vim.api.nvim_command("enew")
+                vim.api.nvim_win_set_buf(0, M.buf)
+            end
             vim.api.nvim_input("A")
         end
     else
