@@ -7,7 +7,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Toggle Aider terminal window
 - Load files into Aider session
 - Ask questions about code with visual selection support
-- Integration with fzf-lua for file selection
+- Integration with fzf-lua and Telescope for file selection
 - Maintains persistent Aider sessions
 
 ## Prerequisites
@@ -26,6 +26,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
     version = "v0.0.1",
     dependencies = {
         "ibhagwan/fzf-lua",
+        "nvim-telescope/telescope.nvim",
     },
     init = function()
       require("aider").setup()
@@ -111,6 +112,14 @@ When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
 - FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
+
+## Telescope Integration
+
+When Telescope is installed, you can use `<C-l>` in any file picker to load files into Aider:
+
+- Single file: Navigate to a file and press `<C-l>` to load it into Aider.
+- Multiple files: Use multi-select to choose files, then press `<C-l>` to load all selected files.
+- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
 
 ## Configuration
 
