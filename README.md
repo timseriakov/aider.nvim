@@ -27,9 +27,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
     dependencies = {
         "ibhagwan/fzf-lua",
     },
-    init = function()
-        require("aider").setup()
-    end,
+    config = true,
     keys = {
         {
             "<leader>a<space>",
