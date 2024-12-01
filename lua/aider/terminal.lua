@@ -4,6 +4,8 @@ local config = require("aider.config")
 local M = {
 	buf = nil,
 	job_id = nil,
+	prev_buf = nil,
+	is_visible = false,
 }
 
 ---Create or reuse a window based on config
@@ -80,7 +82,9 @@ function M.load_in_aider(selected, opts)
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
 	local command = string.format("aider %s %s%s %s", env_args, config.values.aider_args, dark_mode, paths)
 
+	M.prev_buf = vim.api.nvim_get_current_buf()
 	create_window()
+	M.is_visible = true
 	M.job_id = vim.fn.termopen(command, {
 		on_exit = function()
 			vim.cmd("bd!")
@@ -92,19 +96,29 @@ end
 
 ---Toggle the aider terminal window
 function M.toggle()
-	if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
-		local wins = vim.fn.win_findbuf(M.buf)
-
-		if #wins > 0 then
-			for _, win in ipairs(wins) do
-				vim.api.nvim_win_close(win, false)
-			end
-		else
-			create_window(M.buf)
-			vim.api.nvim_input("A")
-		end
-	else
+	if not M.buf or not vim.api.nvim_buf_is_valid(M.buf) then
+		-- First time opening, create new aider session
+		M.prev_buf = vim.api.nvim_get_current_buf()
 		M.load_in_aider({})
+		M.is_visible = true
+		return
+	end
+
+	if M.is_visible then
+		-- Hide aider by switching to previous buffer
+		if M.prev_buf and vim.api.nvim_buf_is_valid(M.prev_buf) then
+			vim.api.nvim_set_current_buf(M.prev_buf)
+		else
+			-- If previous buffer is invalid, create a new buffer
+			vim.cmd("enew")
+			M.prev_buf = vim.api.nvim_get_current_buf()
+		end
+		M.is_visible = false
+	else
+		-- Show aider by switching to its buffer
+		vim.api.nvim_set_current_buf(M.buf)
+		vim.api.nvim_input("A")
+		M.is_visible = true
 	end
 end
 
