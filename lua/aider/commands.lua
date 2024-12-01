@@ -23,27 +23,34 @@ function M.setup()
 		complete = "file",
 	})
 
-	vim.api.nvim_create_user_command("AiderAsk", function()
+	vim.api.nvim_create_user_command("AiderAsk", function(opts)
 		local mode = vim.fn.mode()
 		local is_visual = mode == "v" or mode == "V"
+		
+		local function process_prompt(input)
+			if not input then
+				return
+			end
 
-		vim.schedule(function()
-			vim.ui.input({ prompt = "Prompt: " }, function(input)
-				if not input then
-					return
-				end
+			local selected_text = ""
+			if is_visual then
+				local selected = selection.get_visual_selection()
+				selected_text = table.concat(selected, "\n")
+			end
 
-				local selected_text = ""
-				if is_visual then
-					local selected = selection.get_visual_selection()
-					selected_text = table.concat(selected, "\n")
-				end
+			terminal.ask(input, selected_text)
+		end
 
-				terminal.ask(input, selected_text)
+		if #opts.args > 0 then
+			process_prompt(opts.args)
+		else
+			vim.schedule(function()
+				vim.ui.input({ prompt = "Prompt: " }, process_prompt)
 			end)
-		end)
+		end
 	end, {
 		range = true,
+		nargs = "*",
 		desc = "Ask with visual selection",
 	})
 end
