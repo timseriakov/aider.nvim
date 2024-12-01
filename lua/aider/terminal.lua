@@ -8,13 +8,6 @@ local M = {
 	is_visible = false,
 }
 
----Kill the aider process if it's running
-local function kill_aider()
-    if M.job_id and vim.fn.jobwait({M.job_id}, 0)[1] == -1 then
-        vim.fn.jobstop(M.job_id)
-    end
-end
-
 ---Create or reuse a window based on config
 ---@param bufnr number|nil Buffer to display in the window
 ---@return number Window handle
@@ -158,9 +151,11 @@ end
 
 -- Set up autocmd to kill aider process on exit
 vim.api.nvim_create_autocmd("VimLeavePre", {
-    callback = function()
-        kill_aider()
-    end,
+	callback = function()
+		if M.job_id then
+			vim.fn.jobstop(M.job_id)
+		end
+	end,
 })
 
 return M
