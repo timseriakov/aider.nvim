@@ -6,7 +6,7 @@ local M = {}
 ---Create user commands for aider functionality
 function M.setup()
 	vim.api.nvim_create_user_command("AiderToggle", function()
-		terminal.toggle()
+		terminal.toggle_aider_window()
 	end, {
 		desc = "Toggle Aider window",
 	})
@@ -16,7 +16,7 @@ function M.setup()
 		if #files == 0 then
 			files = { vim.api.nvim_buf_get_name(0) }
 		end
-		terminal.load_in_aider(files)
+		terminal.laod_files_in_aider(files)
 	end, {
 		nargs = "*",
 		desc = "Load files into Aider",
@@ -30,7 +30,7 @@ function M.setup()
 				vim.notify("Empty input provided", vim.log.levels.WARN)
 				return
 			end
-			terminal.aider_send(opts.args)
+			terminal.send_command_to_aider(opts.args)
 			return
 		end
 
@@ -46,7 +46,7 @@ function M.setup()
 		local input = opts.args and opts.args ~= "" and string.format("%s\n%s", opts.args, selected_text)
 			or selected_text
 
-		terminal.aider_send(input)
+		terminal.send_command_to_aider(input)
 	end
 
 	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
@@ -72,7 +72,7 @@ function M.setup()
 			selected_text = table.concat(selected, "\n")
 		end
 
-		terminal.ask(input, selected_text)
+		terminal.ask_aider(input, selected_text)
 		vim.notify("Question sent to Aider", vim.log.levels.INFO)
 	end
 

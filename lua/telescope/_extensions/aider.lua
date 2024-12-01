@@ -24,7 +24,7 @@ local function aider_action(prompt_bufnr)
 	end
 
 	actions.close(prompt_bufnr)
-	terminal.load_in_aider(selections)
+	terminal.laod_files_in_aider(selections)
 end
 
 return telescope.register_extension({
