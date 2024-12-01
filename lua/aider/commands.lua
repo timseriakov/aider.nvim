@@ -23,56 +23,87 @@ function M.setup()
 		complete = "file",
 	})
 
-	vim.api.nvim_create_user_command("AiderSend", function(opts)
-		local input
+	local function handle_aider_send(opts)
 		if opts.range == 0 then
 			-- No selection, just use the arguments
-			input = opts.args
-		else
-			-- Get the selected text
-			local selected_text = ""
-			local selected = selection.get_visual_selection()
-			selected_text = table.concat(selected, "\n")
-			-- Combine selection with any additional arguments
-			input = selected_text
-			if opts.args and opts.args ~= "" then
-				input = opts.args .. "\n" .. input
+			if not opts.args or opts.args:trim() == "" then
+				vim.notify("Empty input provided", vim.log.levels.WARN)
+				return
 			end
+			terminal.aider_send(opts.args)
+			vim.notify("Command sent to Aider", vim.log.levels.INFO)
+			return
 		end
 
+		-- Get the selected text
+		local selected = selection.get_visual_selection()
+		if not selected then
+			vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
+			return
+		end
+
+		local selected_text = table.concat(selected, "\n")
+		-- Combine selection with any additional arguments
+		local input = opts.args and opts.args ~= "" 
+			and string.format("%s\n%s", opts.args, selected_text)
+			or selected_text
+
 		terminal.aider_send(input)
-	end, {
+		vim.notify("Command sent to Aider", vim.log.levels.INFO)
+	end
+
+	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
 		nargs = "*",
 		range = true, -- This enables the command to work with selections
 		desc = "Send command to Aider",
+		bang = true,
+		complete = function(arglead, cmdline, cursorpos)
+			-- Return completion candidates
+			return {}
+		end,
 	})
 
-	vim.api.nvim_create_user_command("AiderAsk", function(opts)
-		local function process_prompt(input)
-			if not input then
+	local function process_prompt(input, opts)
+		if not input or input:trim() == "" then
+			vim.notify("Empty input provided", vim.log.levels.WARN)
+			return
+		end
+
+		local selected_text = ""
+		if opts.range ~= 0 then
+			local selected = selection.get_visual_selection()
+			if not selected then
+				vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
 				return
 			end
-
-			local selected_text = ""
-			if opts.range ~= 0 then
-				local selected = selection.get_visual_selection()
-				selected_text = table.concat(selected, "\n")
-			end
-
-			terminal.ask(input, selected_text)
+			selected_text = table.concat(selected, "\n")
 		end
 
+		terminal.ask(input, selected_text)
+		vim.notify("Question sent to Aider", vim.log.levels.INFO)
+	end
+
+	local function handle_aider_ask(opts)
 		if #opts.args > 0 then
-			process_prompt(opts.args)
+			process_prompt(opts.args, opts)
 		else
 			vim.schedule(function()
-				vim.ui.input({ prompt = "Prompt: " }, process_prompt)
+				vim.ui.input({ prompt = "Prompt: " }, function(input)
+					process_prompt(input, opts)
+				end)
 			end)
 		end
-	end, {
+	end
+
+	vim.api.nvim_create_user_command("AiderAsk", handle_aider_ask, {
 		range = true,
 		nargs = "*",
 		desc = "Ask with visual selection",
+		bang = true,
+		complete = function(arglead, cmdline, cursorpos)
+			-- Return completion candidates
+			return {}
+		end,
 	})
 end
 
