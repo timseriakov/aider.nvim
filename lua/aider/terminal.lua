@@ -134,11 +134,17 @@ function M.ask(prompt, selection)
 	local filetype = vim.bo.filetype
 	local command
 	if selection then
-		command = string.format("{%s\n/ask %s%s\n%s}", filetype, prompt, selection, filetype)
+		command = string.format("{%s\n/ask %s\n%s\n%s}", filetype, prompt, selection, filetype)
 	else
 		command = string.format("{%s\n/ask %s\n%s}", filetype, prompt, filetype)
 	end
 
+	M.aider_send(command)
+end
+
+--- Send command to aider
+---@param command string
+function M.aider_send(command)
 	M.load_in_aider({})
 	vim.fn.chansend(M.job_id, command .. "\n")
 end
