@@ -149,11 +149,11 @@ function M.aider_send(command)
 	vim.fn.chansend(M.job_id, command .. "\n")
 end
 
--- Set up autocmd to kill aider process on exit
+-- Quit terminal buffer on Vim exit
 vim.api.nvim_create_autocmd("VimLeavePre", {
 	callback = function()
-		if M.job_id then
-			vim.fn.jobstop(M.job_id)
+		if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
+			vim.api.nvim_buf_delete(M.buf, { force = true })
 		end
 	end,
 })
