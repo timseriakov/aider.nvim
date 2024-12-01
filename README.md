@@ -97,7 +97,22 @@ lua require('aider').setup()
 
 - `:AiderToggle` - Toggle the Aider terminal window
 - `:AiderLoad [files...]` - Load files into Aider session
-- `:AiderAsk` - Ask a question about code (works in visual mode)
+- `:AiderAsk [prompt]` - Ask a question about code (works in visual mode). The prompt can be provided as arguments or via input prompt if omitted.
+
+Example mappings with custom prompts:
+```lua
+-- Ask to explain the selected code
+vim.keymap.set('v', '<leader>ae', ':AiderAsk Explain this code<CR>', { desc = 'Explain code' })
+
+-- Ask to optimize the selected code
+vim.keymap.set('v', '<leader>ao', ':AiderAsk Optimize this code for performance<CR>', { desc = 'Optimize code' })
+
+-- Ask to add tests for the selected code
+vim.keymap.set('v', '<leader>at', ':AiderAsk Write tests for this code<CR>', { desc = 'Add tests' })
+
+-- Ask to document the selected code
+vim.keymap.set('v', '<leader>ad', ':AiderAsk Add documentation for this code<CR>', { desc = 'Document code' })
+```
 
 ## FZF-lua Integration
 
