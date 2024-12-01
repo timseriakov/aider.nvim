@@ -31,7 +31,6 @@ function M.setup()
 				return
 			end
 			terminal.aider_send(opts.args)
-			vim.notify("Command sent to Aider", vim.log.levels.INFO)
 			return
 		end
 
@@ -44,12 +43,10 @@ function M.setup()
 
 		local selected_text = table.concat(selected, "\n")
 		-- Combine selection with any additional arguments
-		local input = opts.args and opts.args ~= "" 
-			and string.format("%s\n%s", opts.args, selected_text)
+		local input = opts.args and opts.args ~= "" and string.format("%s\n%s", opts.args, selected_text)
 			or selected_text
 
 		terminal.aider_send(input)
-		vim.notify("Command sent to Aider", vim.log.levels.INFO)
 	end
 
 	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
@@ -57,10 +54,6 @@ function M.setup()
 		range = true, -- This enables the command to work with selections
 		desc = "Send command to Aider",
 		bang = true,
-		complete = function(arglead, cmdline, cursorpos)
-			-- Return completion candidates
-			return {}
-		end,
 	})
 
 	local function process_prompt(input, opts)
@@ -100,10 +93,6 @@ function M.setup()
 		nargs = "*",
 		desc = "Ask with visual selection",
 		bang = true,
-		complete = function(arglead, cmdline, cursorpos)
-			-- Return completion candidates
-			return {}
-		end,
 	})
 end
 

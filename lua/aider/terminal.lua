@@ -56,6 +56,7 @@ local function create_window(bufnr)
 		if bufnr then
 			vim.api.nvim_win_set_buf(0, bufnr)
 		end
+		vim.api.nvim_set_option_value("number", false, { buf = bufnr })
 		return vim.api.nvim_get_current_win()
 	end
 end
@@ -131,29 +132,32 @@ function M.ask(prompt, selection)
 		return
 	end
 
-	local filetype = vim.bo.filetype
 	local command
 	if selection then
-		command = string.format("{%s\n/ask %s\n%s\n%s}", filetype, prompt, selection, filetype)
-	else
-		command = string.format("{%s\n/ask %s\n%s}", filetype, prompt, filetype)
+		prompt = string.format("%s\n%s}", prompt, selection)
 	end
 
+	command = "/ask " .. prompt
 	M.aider_send(command)
 end
 
 --- Send command to aider
 ---@param command string
 function M.aider_send(command)
+	local ft = vim.bo.filetype
+	command = string.format("{%s\n%s\n%s}", ft, command, ft)
 	M.load_in_aider({})
 	vim.fn.chansend(M.job_id, command .. "\n")
 end
 
 -- Quit terminal buffer on Vim exit
-vim.api.nvim_create_autocmd("VimLeavePre", {
+vim.api.nvim_create_autocmd("QuitPre", {
 	callback = function()
 		if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
 			vim.api.nvim_buf_delete(M.buf, { force = true })
+			vim.schedule(function()
+				vim.cmd("quit")
+			end)
 		end
 	end,
 })
