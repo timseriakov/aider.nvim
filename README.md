@@ -23,7 +23,6 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 ```lua
 {
     "aweis89/aider.nvim",
-    version = "v0.0.1",
     dependencies = {
         "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
     },
@@ -56,7 +55,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```vim
 Plug 'ibhagwan/fzf-lua'
-Plug 'aweis89/aider.nvim', { 'tag': 'v0.0.1' }
+Plug 'aweis89/aider.nvim'
 
 " After plug#end(), add the setup:
 lua require('aider').setup()
@@ -67,7 +66,6 @@ lua require('aider').setup()
 ```lua
 use {
     'aweis89/aider.nvim',
-    tag = 'v0.0.1',
     requires = { 'ibhagwan/fzf-lua' },
     config = function()
         require('aider').setup()
@@ -79,7 +77,7 @@ use {
 
 ```vim
 call dein#add('ibhagwan/fzf-lua')
-call dein#add('aweis89/aider.nvim', {'rev': 'v0.0.1'})
+call dein#add('aweis89/aider.nvim')
 
 " After loading plugins, add the setup:
 lua require('aider').setup()
@@ -93,8 +91,6 @@ Plugin 'aweis89/aider.nvim'
 
 " After Plugin commands, add the setup:
 lua require('aider').setup()
-" Note: Vundle doesn't support direct tag specification,
-" use git checkout v0.0.1 in the plugin directory after installation
 ```
 
 ## Commands
