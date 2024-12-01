@@ -97,21 +97,22 @@ lua require('aider').setup()
 
 - `:AiderToggle` - Toggle the Aider terminal window
 - `:AiderLoad [files...]` - Load files into Aider session
-- `:AiderAsk [prompt]` - Ask a question about code (works in visual mode). The prompt can be provided as arguments or via input prompt if omitted.
+- `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
+- `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
 
 Example mappings with custom prompts:
 ```lua
--- Ask to explain the selected code
-vim.keymap.set('v', '<leader>ae', ':AiderAsk Explain this code<CR>', { desc = 'Explain code' })
+-- Ask to explain the selected code using /ask
+vim.keymap.set('v', '<leader>ae', ':AiderSend /ask Explain this code<CR>', { desc = 'Explain code' })
 
--- Ask to optimize the selected code
-vim.keymap.set('v', '<leader>ao', ':AiderAsk Optimize this code for performance<CR>', { desc = 'Optimize code' })
+-- Send optimization request directly
+vim.keymap.set('v', '<leader>ao', ':AiderSend Please optimize this code for performance<CR>', { desc = 'Optimize code' })
 
--- Ask to add tests for the selected code
-vim.keymap.set('v', '<leader>at', ':AiderAsk Write tests for this code<CR>', { desc = 'Add tests' })
+-- Send test writing request directly
+vim.keymap.set('v', '<leader>at', ':AiderSend Please write tests for this code<CR>', { desc = 'Add tests' })
 
--- Ask to document the selected code
-vim.keymap.set('v', '<leader>ad', ':AiderAsk Add documentation for this code<CR>', { desc = 'Document code' })
+-- Send documentation request directly
+vim.keymap.set('v', '<leader>ad', ':AiderSend Please add documentation for this code<CR>', { desc = 'Document code' })
 ```
 
 ## FZF-lua Integration
