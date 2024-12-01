@@ -23,17 +23,38 @@ function M.setup()
 		complete = "file",
 	})
 
+	vim.api.nvim_create_user_command("AiderSend", function(opts)
+		local input
+		if opts.range == 0 then
+			-- No selection, just use the arguments
+			input = opts.args
+		else
+			-- Get the selected text
+			local selected_text = ""
+			local selected = selection.get_visual_selection()
+			selected_text = table.concat(selected, "\n")
+			-- Combine selection with any additional arguments
+			input = selected_text
+			if opts.args and opts.args ~= "" then
+				input = opts.args .. "\n" .. input
+			end
+		end
+
+		terminal.aider_send(input)
+	end, {
+		nargs = "*",
+		range = true, -- This enables the command to work with selections
+		desc = "Send command to Aider",
+	})
+
 	vim.api.nvim_create_user_command("AiderAsk", function(opts)
-		local mode = vim.fn.mode()
-		local is_visual = mode == "v" or mode == "V"
-		
 		local function process_prompt(input)
 			if not input then
 				return
 			end
 
 			local selected_text = ""
-			if is_visual then
+			if opts.range ~= 0 then
 				local selected = selection.get_visual_selection()
 				selected_text = table.concat(selected, "\n")
 			end
