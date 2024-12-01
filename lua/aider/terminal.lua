@@ -8,10 +8,9 @@ local M = {
 	is_visible = false,
 }
 
----Create or reuse a window based on config
 ---@param bufnr number|nil Buffer to display in the window
 ---@return number Window handle
-local function create_window(bufnr)
+local function create_or_reuse_window(bufnr)
 	local window = config.values.window
 	local width = window.width > 1 and window.width or math.floor(vim.o.columns * window.width)
 	local height = window.height > 1 and window.height or math.floor(vim.o.lines * window.height)
@@ -64,7 +63,7 @@ end
 ---Load files into aider session
 ---@param selected table Selected files or paths
 ---@param opts table|nil Additional options
-function M.load_in_aider(selected, opts)
+function M.laod_files_in_aider(selected, opts)
 	local cleaned_paths = {}
 	for _, entry in ipairs(selected) do
 		local file_info = path.entry_to_file(entry, opts)
@@ -73,8 +72,9 @@ function M.load_in_aider(selected, opts)
 	local paths = table.concat(cleaned_paths, " ")
 
 	if M.buf and vim.api.nvim_buf_is_valid(M.buf) then
-		local paths_to_add = "/add " .. paths
-		vim.fn.chansend(M.job_id, paths_to_add .. "\n")
+		local add_paths = "/add " .. paths
+		vim.fn.chansend(M.job_id, add_paths .. "\n")
+		M.show_aider()
 		vim.api.nvim_input("A")
 		return
 	end
@@ -84,7 +84,7 @@ function M.load_in_aider(selected, opts)
 	local command = string.format("aider %s %s%s %s", env_args, config.values.aider_args, dark_mode, paths)
 
 	M.prev_buf = vim.api.nvim_get_current_buf()
-	create_window()
+	create_or_reuse_window()
 	M.is_visible = true
 	M.job_id = vim.fn.termopen(command, {
 		on_exit = function()
@@ -95,12 +95,18 @@ function M.load_in_aider(selected, opts)
 	vim.api.nvim_input("A")
 end
 
+function M.show_aider()
+	vim.api.nvim_set_current_buf(M.buf)
+	vim.api.nvim_input("A")
+	M.is_visible = true
+end
+
 ---Toggle the aider terminal window
-function M.toggle()
+function M.toggle_aider_window()
 	if not M.buf or not vim.api.nvim_buf_is_valid(M.buf) then
 		-- First time opening, create new aider session
 		M.prev_buf = vim.api.nvim_get_current_buf()
-		M.load_in_aider({})
+		M.laod_files_in_aider({})
 		M.is_visible = true
 		return
 	end
@@ -117,16 +123,14 @@ function M.toggle()
 		M.is_visible = false
 	else
 		-- Show aider by switching to its buffer
-		vim.api.nvim_set_current_buf(M.buf)
-		vim.api.nvim_input("A")
-		M.is_visible = true
+		M.show_aider()
 	end
 end
 
 ---Send a question to aider
 ---@param prompt string The question to ask
 ---@param selection string|nil Optional code selection
-function M.ask(prompt, selection)
+function M.ask_aider(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
 		return
@@ -138,15 +142,15 @@ function M.ask(prompt, selection)
 	end
 
 	command = "/ask " .. prompt
-	M.aider_send(command)
+	M.send_command_to_aider(command)
 end
 
 --- Send command to aider
 ---@param command string
-function M.aider_send(command)
+function M.send_command_to_aider(command)
 	local ft = vim.bo.filetype
 	command = string.format("{%s\n%s\n%s}", ft, command, ft)
-	M.load_in_aider({})
+	M.laod_files_in_aider({})
 	vim.fn.chansend(M.job_id, command .. "\n")
 end
 
