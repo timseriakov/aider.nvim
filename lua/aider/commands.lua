@@ -57,7 +57,7 @@ function M.setup()
 	})
 
 	local function process_prompt(input, opts)
-		if not input or input:trim() == "" then
+		if not input or input == "" then
 			vim.notify("Empty input provided", vim.log.levels.WARN)
 			return
 		end
