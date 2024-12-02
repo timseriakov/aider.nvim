@@ -284,6 +284,21 @@ The default FZF action key is `ctrl-l`, but this can be customized using the `fz
    - Enter your prompt
    - Aider will respond in the terminal window
 
+## Tips
+
+### Auto-enter Insert Mode in Terminal
+
+Add this to your configuration to automatically enter insert mode when the Aider terminal opens:
+
+```lua
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.cmd("startinsert")
+  end,
+})
+```
+
 ## License
 
 MIT
