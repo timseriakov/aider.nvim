@@ -324,7 +324,7 @@ The default FZF action key is `ctrl-l`, but this can be customized using the `fz
 
 ## Tips
 
-### Auto-enter Insert Mode in Terminal
+### Terminal mappings
 
 For terminal mappings to take effect in floats, you need to use `TermOpen` autocommand, e.x.:
 
