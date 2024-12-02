@@ -163,6 +163,31 @@ command! -range AiderTest execute "normal! '<,'>AiderSend Please write tests for
 command! -range AiderDoc execute "normal! '<,'>AiderSend Please add documentation for this code"
 ```
 
+Or using Lua in your init.lua:
+
+```lua
+-- Create user commands for common Aider interactions
+vim.api.nvim_create_user_command('AiderExplain', 
+  [[execute "normal! '<,'>AiderSend /ask Explain this code"]], 
+  { range = true }
+)
+
+vim.api.nvim_create_user_command('AiderOptimize',
+  [[execute "normal! '<,'>AiderSend Please optimize this code for performance"]],
+  { range = true }
+)
+
+vim.api.nvim_create_user_command('AiderTest',
+  [[execute "normal! '<,'>AiderSend Please write tests for this code"]],
+  { range = true }
+)
+
+vim.api.nvim_create_user_command('AiderDoc',
+  [[execute "normal! '<,'>AiderSend Please add documentation for this code"]],
+  { range = true }
+)
+```
+
 These can be used in visual mode like:
 
 - `:AiderExplain` - Get an explanation of the selected code
