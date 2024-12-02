@@ -191,8 +191,8 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-    -- Override the default editor command (defaults to 'tmux popup -E nvim' in tmux)
-    editor_command = 'your-custom-editor-command',
+    -- Override the default editor command to use tmux popups
+    editor_command = 'tmux popup -E nvim',
 
     -- Change the FZF action key (defaults to 'ctrl-l')
     fzf_action_key = 'ctrl-x',
