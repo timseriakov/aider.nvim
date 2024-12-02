@@ -23,36 +23,36 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```lua
 return {
- { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
- {
-  "aweis89/aider.nvim",
-  dependencies = {
-   "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
-   "willothy/flatten.nvim", -- required for /editor command functionality
+  { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
+  {
+    "aweis89/aider.nvim",
+    dependencies = {
+      "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
+      "willothy/flatten.nvim", -- required for /editor command functionality
+    },
+    init = function()
+      require("aider").setup()
+    end,
+    -- e.x. mappings
+    keys = {
+      {
+        "<leader>a<space>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+      },
+      {
+        "<leader>al",
+        "<cmd>AiderLoad<CR>",
+        desc = "Add file to aider",
+      },
+      {
+        "<leader>ad",
+        "<cmd>AiderAsk<CR>",
+        desc = "Ask with selection",
+        mode = { "v", "n" },
+      },
+    },
   },
-  init = function()
-   require("aider").setup()
-  end,
-  -- e.x. mappings
-  keys = {
-   {
-    "<leader>a<space>",
-    "<cmd>AiderToggle<CR>",
-    desc = "Toggle Aider",
-   },
-   {
-    "<leader>al",
-    "<cmd>AiderLoad<CR>",
-    desc = "Add file to aider",
-   },
-   {
-    "<leader>ad",
-    "<cmd>AiderAsk<CR>",
-    desc = "Ask with selection",
-    mode = { "v", "n" },
-   },
-  },
- },
 }
 ```
 
