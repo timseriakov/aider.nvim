@@ -57,6 +57,12 @@ function M.toggle_aider_window(size, direction)
 		return
 	end
 
+	if M.term:is_open() then
+		if direction ~= M.term.direction then
+			M.term:close()
+		end
+	end
+
 	M.term:toggle(size, direction)
 end
 
