@@ -152,21 +152,21 @@ EOF
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
 
-Example mappings with custom prompts:
+Example commands for common prompts:
 
-```lua
--- Ask to explain the selected code using /ask
-vim.keymap.set('v', '<leader>ae', ':AiderSend /ask Explain this code<CR>', { desc = 'Explain code' })
-
--- Send optimization request directly
-vim.keymap.set('v', '<leader>ao', ':AiderSend Please optimize this code for performance<CR>', { desc = 'Optimize code' })
-
--- Send test writing request directly
-vim.keymap.set('v', '<leader>at', ':AiderSend Please write tests for this code<CR>', { desc = 'Add tests' })
-
--- Send documentation request directly
-vim.keymap.set('v', '<leader>ad', ':AiderSend Please add documentation for this code<CR>', { desc = 'Document code' })
+```vim
+" In your vimrc/init.vim:
+command! -range AiderExplain <line1>,<line2>AiderSend /ask Explain this code
+command! -range AiderOptimize <line1>,<line2>AiderSend Please optimize this code for performance
+command! -range AiderTest <line1>,<line2>AiderSend Please write tests for this code
+command! -range AiderDoc <line1>,<line2>AiderSend Please add documentation for this code
 ```
+
+These can be used in visual mode like:
+- `:AiderExplain` - Get an explanation of the selected code
+- `:AiderOptimize` - Request performance optimization
+- `:AiderTest` - Generate tests for the selection
+- `:AiderDoc` - Add documentation to the selected code
 
 ## FZF-lua Integration
 
