@@ -53,9 +53,7 @@ return {
       "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
       "willothy/flatten.nvim",
     },
-    init = function()
-      require("aider").setup()
-    end,
+    config = true,
     keys = {
       {
         "<leader>a<space>",
