@@ -6,11 +6,17 @@ local M = {}
 ---Create user commands for aider functionality
 function M.setup()
 	vim.api.nvim_create_user_command("AiderToggle", function(opts)
-		terminal.toggle_aider_window()
+		if not opts.args or opts.args == "" then
+			terminal.toggle_aider_window(nil, nil)
+			return
+		end
+		terminal.toggle_aider_window(nil, opts.args)
 	end, {
 		desc = "Toggle Aider window",
-		nargs = "*",
-		complete = "file",
+		nargs = "?",
+		complete = function()
+			return { "vertical", "horizontal", "tab", "float" }
+		end,
 	})
 
 	vim.api.nvim_create_user_command("AiderLoad", function(opts)
@@ -28,7 +34,7 @@ function M.setup()
 	local function handle_aider_send(opts)
 		if opts.range == 0 then
 			-- No selection, just use the arguments
-			if not opts.args or opts.args:trim() == "" then
+			if not opts.args or opts.args == "" then
 				vim.notify("Empty input provided", vim.log.levels.WARN)
 				return
 			end
@@ -68,7 +74,6 @@ function M.setup()
 			return
 		end
 
-		vim.notify("input: " .. input .. " selected: " .. selected, vim.log.levels.INFO)
 		terminal.ask_aider(input, selected)
 	end
 
