@@ -19,9 +19,11 @@ M.defaults = {
         direction = "vertical",
         size = function(term)
             if term.direction == "horizontal" then
-                return math.floor(vim.o.lines * 0.4)
+                -- For horizontal splits, use window height
+                return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
             elseif term.direction == "vertical" then
-                return math.floor(vim.o.columns * 0.4)
+                -- For vertical splits, use window width
+                return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
             end
         end,
     }
