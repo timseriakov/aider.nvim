@@ -44,8 +44,14 @@ function M.laod_files_in_aider(selected, opts)
     local direction = config.values.toggleterm.direction
     local opts = {
         direction = direction,
-        size = direction == "float" and nil or config.values.toggleterm.size,
     }
+    if direction ~= "float" then
+        if direction == "horizontal" then
+            opts.size = math.floor(vim.o.lines * config.values.toggleterm.size)
+        else
+            opts.size = math.floor(vim.o.columns * config.values.toggleterm.size)
+        end
+    end
     if direction == "float" then
         opts.float_opts = config.values.toggleterm.float_opts
     end
@@ -62,8 +68,14 @@ function M.toggle_aider_window()
     local direction = config.values.toggleterm.direction
     local opts = {
         direction = direction,
-        size = direction == "float" and nil or config.values.toggleterm.size,
     }
+    if direction ~= "float" then
+        if direction == "horizontal" then
+            opts.size = math.floor(vim.o.lines * config.values.toggleterm.size)
+        else
+            opts.size = math.floor(vim.o.columns * config.values.toggleterm.size)
+        end
+    end
     if direction == "float" then
         opts.float_opts = config.values.toggleterm.float_opts
     end
