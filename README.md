@@ -345,6 +345,8 @@ vim.api.nvim_create_autocmd("TermOpen", {
     -- remove line numbers
     vim.wo.number = false
     vim.wo.relativenumber = false
+    -- auto start terminal in insert mode
+    vim.cmd("startinsert")
   end,
 })
 ```
