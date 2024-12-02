@@ -23,35 +23,36 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```lua
 return {
-    { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
-    {
-        "aweis89/aider.nvim",
-        dependencies = {
-            "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
-            "willothy/flatten.nvim", -- required for /editor command functionality
-        },
-        init = function()
-          require("aider").setup()
-        end,
-        -- e.x. mappings
-        keys = {
-            {
-                "<leader>a<space>",
-                "<cmd>AiderToggle<CR>",
-                desc = "Toggle Aider",
-            },
-            {
-                "<leader>al",
-                "<cmd>AiderLoad<CR>",
-                desc = "Add file to aider",
-            },
-            {
-                "<leader>ad",
-                "<cmd>AiderAsk<CR>",
-                desc = "Ask with selection",
-                mode = { "v", "n" },
-            },
-        },
+ { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
+ {
+  "aweis89/aider.nvim",
+  dependencies = {
+   "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
+   "willothy/flatten.nvim", -- required for /editor command functionality
+  },
+  init = function()
+   require("aider").setup()
+  end,
+  -- e.x. mappings
+  keys = {
+   {
+    "<leader>a<space>",
+    "<cmd>AiderToggle<CR>",
+    desc = "Toggle Aider",
+   },
+   {
+    "<leader>al",
+    "<cmd>AiderLoad<CR>",
+    desc = "Add file to aider",
+   },
+   {
+    "<leader>ad",
+    "<cmd>AiderAsk<CR>",
+    desc = "Ask with selection",
+    mode = { "v", "n" },
+   },
+  },
+ },
 }
 ```
 
@@ -87,13 +88,13 @@ use {
         'ibhagwan/fzf-lua',
         -- or
         'nvim-telescope/telescope.nvim',
-        
+
         'willothy/flatten.nvim'
     },
     config = function()
         require('flatten').setup()
         require('aider').setup()
-        
+
         vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
         vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
         vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
@@ -163,6 +164,7 @@ command! -range AiderDoc <line1>,<line2>AiderSend Please add documentation for t
 ```
 
 These can be used in visual mode like:
+
 - `:AiderExplain` - Get an explanation of the selected code
 - `:AiderOptimize` - Request performance optimization
 - `:AiderTest` - Generate tests for the selection
