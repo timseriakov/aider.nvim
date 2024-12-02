@@ -9,23 +9,13 @@ local M = {
 
 -- Create Aider terminal instance
 local function create_aider_terminal(cmd)
-    local term_config = {
+    return Terminal:new({
         cmd = cmd,
         hidden = true,
-        direction = config.values.toggleterm.direction,
         on_exit = function()
             M.term = nil
         end,
-    }
-
-    -- Handle size based on direction
-    if term_config.direction == "float" then
-        term_config.float_opts = config.values.toggleterm.float_opts
-    else
-        term_config.size = config.values.toggleterm.size
-    end
-
-    return Terminal:new(term_config)
+    })
 end
 
 ---Load files into aider session
@@ -51,7 +41,15 @@ function M.laod_files_in_aider(selected, opts)
 
     M.prev_buf = vim.api.nvim_get_current_buf()
     M.term = create_aider_terminal(command)
-    M.term:open()
+    local direction = config.values.toggleterm.direction
+    local opts = {
+        direction = direction,
+        size = direction == "float" and nil or config.values.toggleterm.size,
+    }
+    if direction == "float" then
+        opts.float_opts = config.values.toggleterm.float_opts
+    end
+    M.term:open(opts)
 end
 
 function M.toggle_aider_window()
@@ -61,7 +59,15 @@ function M.toggle_aider_window()
         return
     end
 
-    M.term:toggle()
+    local direction = config.values.toggleterm.direction
+    local opts = {
+        direction = direction,
+        size = direction == "float" and nil or config.values.toggleterm.size,
+    }
+    if direction == "float" then
+        opts.float_opts = config.values.toggleterm.float_opts
+    end
+    M.term:toggle(opts)
 end
 
 function M.send_command_to_aider(command)
