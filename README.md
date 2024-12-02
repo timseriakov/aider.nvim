@@ -17,6 +17,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Neovim 0.5+
 - [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
 - [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (required for `/editor` command functionality)
+- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) (required for terminal management)
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
 
 ## Installation
@@ -25,22 +26,56 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```lua
 return {
-  { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
+  { "willothy/flatten.nvim", config = true },
+  {
+    "akinsho/toggleterm.nvim",
+    opts = {
+      shade_terminals = false,
+      direction = "float", -- default direction when none specified in AiderToggle
+      float_opts = {
+        border = "curved",
+        title_pos = "center",
+      },
+      close_on_exit = true,
+      size = function(term)
+        if term.direction == "horizontal" then
+          return vim.o.lines * 0.4  -- 40% height
+        elseif term.direction == "vertical" then
+          return vim.o.columns * 0.4  -- 40% width
+        end
+      end,
+    },
+  },
   {
     "aweis89/aider.nvim",
     dependencies = {
+      "akinsho/toggleterm.nvim",
       "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
-      "willothy/flatten.nvim", -- required for /editor command functionality
+      "willothy/flatten.nvim",
     },
     init = function()
       require("aider").setup()
     end,
-    -- e.x. mappings
     keys = {
       {
         "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider",
+        desc = "Toggle Aider (default)",
+      },
+      {
+        "<leader>av",
+        "<cmd>AiderToggle vertical<CR>",
+        desc = "Toggle Aider vertical split",
+      },
+      {
+        "<leader>ah",
+        "<cmd>AiderToggle horizontal<CR>",
+        desc = "Toggle Aider horizontal split",
+      },
+      {
+        "<leader>af",
+        "<cmd>AiderToggle float<CR>",
+        desc = "Toggle Aider floating window",
       },
       {
         "<leader>al",
@@ -150,7 +185,11 @@ EOF
 
 ## Commands
 
-- `:AiderToggle` - Toggle the Aider terminal window
+- `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
+  - `vertical` - Open in vertical split
+  - `horizontal` - Open in horizontal split
+  - `float` - Open in floating window (default)
+  The terminal remembers its last direction and will switch layouts even when already open.
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
