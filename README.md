@@ -23,12 +23,12 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```lua
 {
-    { "willothy/flatten.nvim", config = true },
+    { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
     {
         "aweis89/aider.nvim",
         dependencies = {
             "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
-            "willothy/flatten.nvim",
+            "willothy/flatten.nvim", -- required for /editor command functionality
         },
     init = function()
       require("aider").setup()
