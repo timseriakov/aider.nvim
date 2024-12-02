@@ -157,10 +157,10 @@ Example commands for common prompts:
 
 ```vim
 " In your vimrc/init.vim:
-command! -range AiderExplain <line1>,<line2>AiderSend /ask Explain this code
-command! -range AiderOptimize <line1>,<line2>AiderSend Please optimize this code for performance
-command! -range AiderTest <line1>,<line2>AiderSend Please write tests for this code
-command! -range AiderDoc <line1>,<line2>AiderSend Please add documentation for this code
+command! -range AiderExplain execute "normal! '<,'>AiderSend /ask Explain this code"
+command! -range AiderOptimize execute "normal! '<,'>AiderSend Please optimize this code for performance"
+command! -range AiderTest execute "normal! '<,'>AiderSend Please write tests for this code"
+command! -range AiderDoc execute "normal! '<,'>AiderSend Please add documentation for this code"
 ```
 
 These can be used in visual mode like:
