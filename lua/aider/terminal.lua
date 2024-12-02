@@ -76,7 +76,7 @@ function M.ask_aider(prompt, selection)
 
 	local command
 	if selection then
-		prompt = string.format("/ask\n%s\n%s", prompt, selection)
+		prompt = string.format("%s\n%s", prompt, selection)
 	end
 
 	command = "/ask " .. prompt
