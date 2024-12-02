@@ -14,6 +14,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 - Neovim 0.5+
 - [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
+- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (required for `/editor` command functionality)
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
 
 ## Installation
@@ -171,7 +172,12 @@ The plugin automatically sets the `--dark-mode` flag when Neovim's `background` 
 
 ### Editor Command Behavior
 
-When running in a tmux session, the plugin automatically sets `AIDER_EDITOR` to use a tmux popup with Neovim by default. This provides a better experience than the default `/editor` command, which can have issues when running nested Neovim sessions in terminal mode. You can override this behavior by setting `editor_command` in the setup options.
+The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer in a popup window. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
+
+You can customize the editor command in your setup if needed. For example, if you prefer using tmux:
+```lua
+editor_command = "tmux popup -E nvim"
+```
 
 The default FZF action key is `ctrl-l`, but this can be customized using the `fzf_action_key` option during setup.
 
