@@ -22,7 +22,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
-{
+return {
     { "willothy/flatten.nvim", config = true }, -- required for /editor command functionality
     {
         "aweis89/aider.nvim",
@@ -30,28 +30,28 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
             "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
             "willothy/flatten.nvim", -- required for /editor command functionality
         },
-    init = function()
-      require("aider").setup()
-    end,
-    -- e.x. mappings
-    keys = {
-        {
-            "<leader>a<space>",
-            "<cmd>AiderToggle<CR>",
-            desc = "Toggle Aider",
+        init = function()
+          require("aider").setup()
+        end,
+        -- e.x. mappings
+        keys = {
+            {
+                "<leader>a<space>",
+                "<cmd>AiderToggle<CR>",
+                desc = "Toggle Aider",
+            },
+            {
+                "<leader>al",
+                "<cmd>AiderLoad<CR>",
+                desc = "Add file to aider",
+            },
+            {
+                "<leader>ad",
+                "<cmd>AiderAsk<CR>",
+                desc = "Ask with selection",
+                mode = { "v", "n" },
+            },
         },
-        {
-            "<leader>al",
-            "<cmd>AiderLoad<CR>",
-            desc = "Add file to aider",
-        },
-        {
-            "<leader>ad",
-            "<cmd>AiderAsk<CR>",
-            desc = "Ask with selection",
-            mode = { "v", "n" },
-        },
-    },
 }
 ```
 
@@ -105,6 +105,7 @@ lua require('aider').setup()
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
 
 Example mappings with custom prompts:
+
 ```lua
 -- Ask to explain the selected code using /ask
 vim.keymap.set('v', '<leader>ae', ':AiderSend /ask Explain this code<CR>', { desc = 'Explain code' })
@@ -178,6 +179,7 @@ The plugin automatically sets the `--dark-mode` flag when Neovim's `background` 
 The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer in a popup window. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
 
 You can customize the editor command in your setup if needed. For example, if you prefer using tmux:
+
 ```lua
 editor_command = "tmux popup -E nvim"
 ```
