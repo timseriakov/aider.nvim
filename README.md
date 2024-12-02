@@ -58,11 +58,23 @@ return {
 ### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
+" Choose one of:
 Plug 'ibhagwan/fzf-lua'
+" or
+Plug 'nvim-telescope/telescope.nvim'
+
+Plug 'willothy/flatten.nvim'
 Plug 'aweis89/aider.nvim'
 
-" After plug#end(), add the setup:
-lua require('aider').setup()
+" After plug#end(), add the setup and mappings:
+lua << EOF
+require('flatten').setup()
+require('aider').setup()
+
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
+EOF
 ```
 
 ### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
@@ -70,9 +82,21 @@ lua require('aider').setup()
 ```lua
 use {
     'aweis89/aider.nvim',
-    requires = { 'ibhagwan/fzf-lua' },
+    requires = {
+        -- Choose one of:
+        'ibhagwan/fzf-lua',
+        -- or
+        'nvim-telescope/telescope.nvim',
+        
+        'willothy/flatten.nvim'
+    },
     config = function()
+        require('flatten').setup()
         require('aider').setup()
+        
+        vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+        vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
+        vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
     end
 }
 ```
@@ -80,21 +104,45 @@ use {
 ### Using [dein.vim](https://github.com/Shougo/dein.vim)
 
 ```vim
+" Choose one of:
 call dein#add('ibhagwan/fzf-lua')
+" or
+call dein#add('nvim-telescope/telescope.nvim')
+
+call dein#add('willothy/flatten.nvim')
 call dein#add('aweis89/aider.nvim')
 
-" After loading plugins, add the setup:
-lua require('aider').setup()
+" After loading plugins, add the setup and mappings:
+lua << EOF
+require('flatten').setup()
+require('aider').setup()
+
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
+EOF
 ```
 
 ### Using [Vundle.vim](https://github.com/VundleVim/Vundle.vim)
 
 ```vim
+" Choose one of:
 Plugin 'ibhagwan/fzf-lua'
+" or
+Plugin 'nvim-telescope/telescope.nvim'
+
+Plugin 'willothy/flatten.nvim'
 Plugin 'aweis89/aider.nvim'
 
-" After Plugin commands, add the setup:
-lua require('aider').setup()
+" After Plugin commands, add the setup and mappings:
+lua << EOF
+require('flatten').setup()
+require('aider').setup()
+
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
+EOF
 ```
 
 ## Commands
