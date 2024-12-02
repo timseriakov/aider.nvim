@@ -4,7 +4,7 @@
 ---@field aider_args string Additional arguments for aider CLI
 ---@field toggleterm table Toggleterm configuration
 ---@field toggleterm.direction string Window layout type ('float'|'vertical'|'horizontal')
----@field toggleterm.size function Size function for terminal
+---@field toggleterm.size number Terminal size (0-1 for percentage, >1 for absolute size)
 
 local M = {}
 
