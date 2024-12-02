@@ -189,6 +189,7 @@ EOF
   - `vertical` - Open in vertical split
   - `horizontal` - Open in horizontal split
   - `float` - Open in floating window (default)
+  - `tab` - Open in new tab
   The terminal remembers its last direction and will switch layouts even when already open.
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
@@ -268,7 +269,7 @@ require('aider').setup({
 
     -- Configure window display (these are the defaults)
     window = {
-        layout = "float",     -- 'float', 'vertical', 'horizontal', or 'current'
+        layout = "float",     -- 'float', 'vertical', 'horizontal', 'tab', or 'current'
         width = 0.9,         -- width of the window (in columns or percentage)
         height = 0.9,        -- height of the window (in lines or percentage)
         border = "rounded",   -- 'none', 'single', 'double', 'rounded', etc.
