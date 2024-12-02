@@ -186,11 +186,11 @@ EOF
 ## Commands
 
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
-  - `vertical` - Open in vertical split
-  - `horizontal` - Open in horizontal split
-  - `float` - Open in floating window (default)
-  - `tab` - Open in new tab
-  The terminal remembers its last direction and will switch layouts even when already open.
+  - `vertical` - Switch to vertical split
+  - `horizontal` - Switch to horizontal split
+  - `float` - Switch to floating window (default)
+  - `tab` - Switch to new tab
+  When called without arguments, opens in the last specified direction. With a direction argument, switches the terminal to that layout even if already open.
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
