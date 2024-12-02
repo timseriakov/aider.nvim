@@ -17,15 +17,12 @@ M.defaults = {
     aider_args = "",
     toggleterm = {
         direction = "vertical",
-        size = function(term)
-            if term.direction == "horizontal" then
-                -- For horizontal splits, use window height
-                return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-            elseif term.direction == "vertical" then
-                -- For vertical splits, use window width
-                return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-            end
-        end,
+        size = 0.4, -- 40% of screen
+        float_opts = {
+            border = "curved",
+            width = math.floor(vim.o.columns * 0.4),
+            height = math.floor(vim.o.lines * 0.4),
+        },
     }
 }
 

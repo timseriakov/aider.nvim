@@ -9,15 +9,23 @@ local M = {
 
 -- Create Aider terminal instance
 local function create_aider_terminal(cmd)
-    return Terminal:new({
+    local term_config = {
         cmd = cmd,
         hidden = true,
         direction = config.values.toggleterm.direction,
-        size = config.values.toggleterm.size,
         on_exit = function()
             M.term = nil
         end,
-    })
+    }
+
+    -- Handle size based on direction
+    if term_config.direction == "float" then
+        term_config.float_opts = config.values.toggleterm.float_opts
+    else
+        term_config.size = config.values.toggleterm.size
+    end
+
+    return Terminal:new(term_config)
 end
 
 ---Load files into aider session
