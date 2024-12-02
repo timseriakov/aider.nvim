@@ -167,25 +167,20 @@ Or using Lua in your init.lua:
 
 ```lua
 -- Create user commands for common Aider interactions
-vim.api.nvim_create_user_command('AiderExplain', 
-  [[execute "normal! '<,'>AiderSend /ask Explain this code"]], 
-  { range = true }
-)
+local aider_commands = {
+  AiderExplain = "/ask Explain this code",
+  AiderOptimize = "Please optimize this code for performance",
+  AiderTest = "Please write tests for this code",
+  AiderDoc = "Please add documentation for this code"
+}
 
-vim.api.nvim_create_user_command('AiderOptimize',
-  [[execute "normal! '<,'>AiderSend Please optimize this code for performance"]],
-  { range = true }
-)
-
-vim.api.nvim_create_user_command('AiderTest',
-  [[execute "normal! '<,'>AiderSend Please write tests for this code"]],
-  { range = true }
-)
-
-vim.api.nvim_create_user_command('AiderDoc',
-  [[execute "normal! '<,'>AiderSend Please add documentation for this code"]],
-  { range = true }
-)
+-- Register all commands
+for cmd_name, prompt in pairs(aider_commands) do
+  vim.api.nvim_create_user_command(cmd_name,
+    string.format([[execute "normal! '<,'>AiderSend %s"]], prompt),
+    { range = true }
+  )
+end
 ```
 
 These can be used in visual mode like:
