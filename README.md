@@ -326,14 +326,25 @@ The default FZF action key is `ctrl-l`, but this can be customized using the `fz
 
 ### Auto-enter Insert Mode in Terminal
 
-Add this to your configuration to automatically enter insert mode when the Aider terminal opens:
+For terminal mappings to take effect in floats, you need to use `TermOpen` autocommand, e.x.:
 
 ```lua
 vim.api.nvim_create_autocmd("TermOpen", {
-  pattern = "*",
   callback = function()
-    vim.cmd("startinsert")
-    vim.opt.number = false
+    local function tmap(key, val)
+      vim.api.nvim_buf_set_keymap(0, "t", key, val, { noremap = true, silent = true })
+    end
+    -- exit insert mode
+    tmap("<Esc>", "<C-\\><C-n>")
+    tmap("jj", "<C-\\><C-n>")
+    -- enter command mode
+    tmap(":", "<C-\\><C-n>:")
+    -- scrolling up/down
+    tmap("<C-u>", "<C-\\><C-n><C-u>")
+    tmap("<C-d>", "<C-\\><C-n><C-d>")
+    -- remove line numbers
+    vim.wo.number = false
+    vim.wo.relativenumber = false
   end,
 })
 ```
