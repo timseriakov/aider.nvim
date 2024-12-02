@@ -5,10 +5,12 @@ local M = {}
 
 ---Create user commands for aider functionality
 function M.setup()
-	vim.api.nvim_create_user_command("AiderToggle", function()
-		terminal.toggle_aider_window()
+	vim.api.nvim_create_user_command("AiderToggle", function(opts)
+		terminal.toggle_aider_window(opts.args)
 	end, {
 		desc = "Toggle Aider window",
+		nargs = "*",
+		complete = "file",
 	})
 
 	vim.api.nvim_create_user_command("AiderLoad", function(opts)
