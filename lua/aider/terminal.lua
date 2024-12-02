@@ -75,7 +75,6 @@ function M.laod_files_in_aider(selected, opts)
 		local add_paths = "/add " .. paths
 		vim.fn.chansend(M.job_id, add_paths .. "\n")
 		M.show_aider()
-		vim.api.nvim_input("A")
 		return
 	end
 
@@ -92,12 +91,10 @@ function M.laod_files_in_aider(selected, opts)
 		end,
 	})
 	M.buf = vim.api.nvim_get_current_buf()
-	vim.api.nvim_input("A")
 end
 
 function M.show_aider()
 	vim.api.nvim_set_current_buf(M.buf)
-	vim.api.nvim_input("A")
 	M.is_visible = true
 end
 
