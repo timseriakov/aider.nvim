@@ -19,7 +19,7 @@ M.defaults = {
         direction = "vertical",
         size = function(term)
             if term.direction == "horizontal" then
-                return 15
+                return math.floor(vim.o.lines * 0.4)
             elseif term.direction == "vertical" then
                 return math.floor(vim.o.columns * 0.4)
             end
