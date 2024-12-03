@@ -338,24 +338,32 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-    -- Override the default editor command to use tmux popups
-    editor_command = 'tmux popup -E nvim',
+    -- Command to use for editor (defaults to nvim with special wq handling)
+    editor_command = nil,
 
     -- Change the FZF action key (defaults to 'ctrl-l')
-    fzf_action_key = 'ctrl-x',
+    fzf_action_key = 'ctrl-l',
 
     -- Change the Telescope action key (defaults to '<C-l>')
     telescope_action_key = '<C-l>',
 
-    -- Set default arguments for aider CLI (can also use AIDER_ARGS env var)
-    aider_args = '--model gpt-4 --no-auto-commits',
+    -- Set default arguments for aider CLI
+    aider_args = "",
 
-    -- Configure window display (these are the defaults)
-    window = {
-        layout = "float",     -- 'float', 'vertical', 'horizontal', 'tab', or 'current'
-        width = 0.9,         -- width of the window (in columns or percentage)
-        height = 0.9,        -- height of the window (in lines or percentage)
-        border = "rounded",   -- 'none', 'single', 'double', 'rounded', etc.
+    -- Configure toggleterm settings
+    toggleterm = {
+        -- Window layout type: 'float', 'vertical', 'horizontal'
+        direction = "vertical",
+        
+        -- Terminal size (0-1 for percentage, >1 for absolute size)
+        size = 0.4, -- 40% of screen
+
+        -- Float window options
+        float_opts = {
+            border = "curved",
+            width = 40,  -- Percentage of screen width
+            height = 40, -- Percentage of screen height
+        },
     }
 })
 ```
