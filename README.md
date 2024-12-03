@@ -94,20 +94,40 @@ return {
 ### Using [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
+Plug 'willothy/flatten.nvim'
+Plug 'akinsho/toggleterm.nvim'
 " Choose one of:
 Plug 'ibhagwan/fzf-lua'
 " or
 Plug 'nvim-telescope/telescope.nvim'
-
-Plug 'willothy/flatten.nvim'
 Plug 'aweis89/aider.nvim'
 
-" After plug#end(), add the setup and mappings:
+" After plug#end(), add the setup:
 lua << EOF
 require('flatten').setup()
+require('toggleterm').setup({
+  shade_terminals = false,
+  direction = "float",
+  float_opts = {
+    border = "curved",
+    title_pos = "center",
+  },
+  close_on_exit = true,
+  size = function(term)
+    if term.direction == "horizontal" then
+      return vim.o.lines * 0.4
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.4
+    end
+  end,
+})
 require('aider').setup()
 
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+" Key mappings
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
+vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
+vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
+vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
 vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
 vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
 EOF
@@ -116,44 +136,89 @@ EOF
 ### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
+use { "willothy/flatten.nvim", config = true }
 use {
-    'aweis89/aider.nvim',
-    requires = {
-        -- Choose one of:
-        'ibhagwan/fzf-lua',
-        -- or
-        'nvim-telescope/telescope.nvim',
-
-        'willothy/flatten.nvim'
-    },
-    config = function()
-        require('flatten').setup()
-        require('aider').setup()
-
-        vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
-        vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
-        vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
-    end
+  "akinsho/toggleterm.nvim",
+  config = function()
+    require("toggleterm").setup({
+      shade_terminals = false,
+      direction = "float",
+      float_opts = {
+        border = "curved",
+        title_pos = "center",
+      },
+      close_on_exit = true,
+      size = function(term)
+        if term.direction == "horizontal" then
+          return vim.o.lines * 0.4
+        elseif term.direction == "vertical" then
+          return vim.o.columns * 0.4
+        end
+      end,
+    })
+  end
+}
+use {
+  "aweis89/aider.nvim",
+  requires = {
+    "akinsho/toggleterm.nvim",
+    -- Choose one of:
+    "ibhagwan/fzf-lua",
+    -- or
+    "nvim-telescope/telescope.nvim",
+    "willothy/flatten.nvim",
+  },
+  config = function()
+    require("aider").setup()
+  end,
+  keys = {
+    { "<leader>a<space>", "<cmd>AiderToggle<CR>", desc = "Toggle Aider (default)" },
+    { "<leader>av", "<cmd>AiderToggle vertical<CR>", desc = "Toggle Aider vertical split" },
+    { "<leader>ah", "<cmd>AiderToggle horizontal<CR>", desc = "Toggle Aider horizontal split" },
+    { "<leader>af", "<cmd>AiderToggle float<CR>", desc = "Toggle Aider floating window" },
+    { "<leader>al", "<cmd>AiderLoad<CR>", desc = "Add file to aider" },
+    { "<leader>ad", "<cmd>AiderAsk<CR>", desc = "Ask with selection", mode = { "v", "n" } },
+  },
 }
 ```
 
 ### Using [dein.vim](https://github.com/Shougo/dein.vim)
 
 ```vim
+call dein#add('willothy/flatten.nvim')
+call dein#add('akinsho/toggleterm.nvim')
 " Choose one of:
 call dein#add('ibhagwan/fzf-lua')
 " or
 call dein#add('nvim-telescope/telescope.nvim')
-
-call dein#add('willothy/flatten.nvim')
 call dein#add('aweis89/aider.nvim')
 
-" After loading plugins, add the setup and mappings:
+" After loading plugins, add the setup:
 lua << EOF
 require('flatten').setup()
+require('toggleterm').setup({
+  shade_terminals = false,
+  direction = "float",
+  float_opts = {
+    border = "curved",
+    title_pos = "center",
+  },
+  close_on_exit = true,
+  size = function(term)
+    if term.direction == "horizontal" then
+      return vim.o.lines * 0.4
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.4
+    end
+  end,
+})
 require('aider').setup()
 
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+" Key mappings
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
+vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
+vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
+vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
 vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
 vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
 EOF
@@ -162,20 +227,40 @@ EOF
 ### Using [Vundle.vim](https://github.com/VundleVim/Vundle.vim)
 
 ```vim
+Plugin 'willothy/flatten.nvim'
+Plugin 'akinsho/toggleterm.nvim'
 " Choose one of:
 Plugin 'ibhagwan/fzf-lua'
 " or
 Plugin 'nvim-telescope/telescope.nvim'
-
-Plugin 'willothy/flatten.nvim'
 Plugin 'aweis89/aider.nvim'
 
-" After Plugin commands, add the setup and mappings:
+" After Plugin commands, add the setup:
 lua << EOF
 require('flatten').setup()
+require('toggleterm').setup({
+  shade_terminals = false,
+  direction = "float",
+  float_opts = {
+    border = "curved",
+    title_pos = "center",
+  },
+  close_on_exit = true,
+  size = function(term)
+    if term.direction == "horizontal" then
+      return vim.o.lines * 0.4
+    elseif term.direction == "vertical" then
+      return vim.o.columns * 0.4
+    end
+  end,
+})
 require('aider').setup()
 
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider' })
+" Key mappings
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
+vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
+vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
+vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
 vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
 vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
 EOF
