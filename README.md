@@ -273,7 +273,8 @@ EOF
   - `horizontal` - Switch to horizontal split
   - `float` - Switch to floating window (default)
   - `tab` - Switch to new tab
-  When called without arguments, opens in the last specified direction. With a direction argument, switches the terminal to that layout even if already open.
+  - When called without a direction argument, it opens in the to the last specified direction (or the toggleterm specified default). With a direction argument, will switch the terminal to that layout (even if already open).
+
 - `:AiderLoad [files...]` - Load files into Aider session
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
@@ -372,14 +373,9 @@ require('aider').setup({
 
 The plugin automatically sets the `--dark-mode` flag when Neovim's `background` option is set to "dark". This ensures aider's UI matches your Neovim theme.
 
-### Environment Variables
-
-- `AIDER_ARGS`: Set default command line arguments for aider. These are applied before any arguments specified in the plugin configuration.
-- `AIDER_EDITOR`: Set by the plugin when using tmux (see Editor Command below).
-
 ### Editor Command Behavior
 
-The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer in a popup window. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
+The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer to format your prompt. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
 
 You can customize the editor command in your setup if needed. For example, if you prefer using tmux:
 
