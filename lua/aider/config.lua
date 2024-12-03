@@ -1,34 +1,41 @@
+---@class ToggletermConfig
+---@field direction string Window layout type ('float'|'vertical'|'horizontal')
+---@field size function Size function for terminal
+
 ---@class AiderConfig
 ---@field editor_command string|nil Command to use for editor
 ---@field fzf_action_key string Key to trigger aider load in fzf
 ---@field aider_args string Additional arguments for aider CLI
----@field toggleterm table Toggleterm configuration
----@field toggleterm.direction string Window layout type ('float'|'vertical'|'horizontal')
----@field toggleterm.size number Terminal size (0-1 for percentage, >1 for absolute size)
+---@field toggleterm ToggletermConfig Toggleterm configuration
 
 local M = {}
 
 ---Default configuration values
 ---@type AiderConfig
 M.defaults = {
-    editor_command = nil,
-    fzf_action_key = "ctrl-l",
-    telescope_action_key = "<C-l>",
-    aider_args = "",
-    toggleterm = {
-        direction = "vertical",
-        size = 0.4, -- 40% of screen
-        float_opts = {
-            border = "curved",
-            width = math.floor(vim.o.columns * 0.4),
-            height = math.floor(vim.o.lines * 0.4),
-        },
-    }
+	editor_command = nil,
+	fzf_action_key = "ctrl-l",
+	telescope_action_key = "<C-l>",
+	aider_args = "",
+	toggleterm = {
+		direction = "vertical",
+		size = function(term)
+			if term.direction == "horizontal" then
+				return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+			elseif term.direction == "vertical" then
+				return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+			end
+		end,
+	},
 }
 
 ---Current configuration
 ---@type AiderConfig
-M.values = {}
+M.values = {
+	-- fzf_action_key = M.defaults.fzf_action_key,
+	-- aider_args = M.defaults.aider_args,
+	-- toggleterm = M.defaults.toggleterm,
+}
 
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
@@ -44,7 +51,10 @@ function M.setup(opts)
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
 		local load_in_aider = require("aider.terminal").laod_files_in_aider
-		fzf_config.defaults.files.actions[M.values.fzf_action_key] = load_in_aider
+
+		---@type { [string]: function|table }
+		local actions = fzf_config.defaults.files.actions
+		actions[M.values.fzf_action_key] = load_in_aider
 	end
 
 	-- Setup telescope integration if available
