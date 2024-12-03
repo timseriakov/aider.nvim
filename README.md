@@ -365,14 +365,9 @@ require('aider').setup({
 
 The plugin automatically sets the `--dark-mode` flag when Neovim's `background` option is set to "dark". This ensures aider's UI matches your Neovim theme.
 
-### Environment Variables
-
-- `AIDER_ARGS`: Set default command line arguments for aider. These are applied before any arguments specified in the plugin configuration.
-- `AIDER_EDITOR`: Set by the plugin when using tmux (see Editor Command below).
-
 ### Editor Command Behavior
 
-The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer in a popup window. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
+The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer to format your prompt. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
 
 You can customize the editor command in your setup if needed. For example, if you prefer using tmux:
 
