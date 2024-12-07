@@ -95,6 +95,28 @@ function M.setup()
 		desc = "Ask with visual selection",
 		bang = true,
 	})
+
+	-- Create an autocommand group
+	vim.api.nvim_create_augroup("FileWatcher", { clear = true })
+	-- Create autocommand to check file changes
+	vim.api.nvim_create_autocmd({ "CursorHold", "CursorHold" }, {
+		group = "FileWatcher",
+		pattern = "*",
+		callback = function(data)
+			vim.cmd("checktime")
+			vim.notify("File updated: " .. data.file, vim.log.levels.INFO)
+		end,
+	})
+
+	vim.api.nvim_create_user_command("AiderSpawn", function()
+		terminal.spawn()
+		vim.notify("Aider running in background")
+	end, {
+		range = true,
+		nargs = "*",
+		desc = "Ask with visual selection",
+		bang = true,
+	})
 end
 
 return M

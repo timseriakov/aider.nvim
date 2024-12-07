@@ -61,6 +61,11 @@ return {
         desc = "Toggle Aider (default)",
       },
       {
+        "<leader>as",
+        "<cmd>AiderSpawn<CR>",
+        desc = "Spawn Aider Background",
+      },
+      {
         "<leader>av",
         "<cmd>AiderToggle vertical<CR>",
         desc = "Toggle Aider vertical split",
@@ -269,6 +274,7 @@ EOF
 ## Commands
 
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
+
   - `vertical` - Switch to vertical split
   - `horizontal` - Switch to horizontal split
   - `float` - Switch to floating window (default)
@@ -355,7 +361,7 @@ require('aider').setup({
     toggleterm = {
         -- Window layout type: 'float', 'vertical', 'horizontal'
         direction = "vertical",
-        
+
         -- Terminal size (0-1 for percentage, >1 for absolute size)
         size = 0.4, -- 40% of screen
 

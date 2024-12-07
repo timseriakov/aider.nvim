@@ -24,27 +24,47 @@ end
 ---@param selected table Selected files or paths
 ---@param opts table|nil Additional options
 function M.laod_files_in_aider(selected, opts)
-	local cleaned_paths = {}
-	for _, entry in ipairs(selected) do
-		local file_info = path.entry_to_file(entry, opts)
-		table.insert(cleaned_paths, file_info.path)
-	end
-	local paths = table.concat(cleaned_paths, " ")
+	local paths = ""
+	if selected then
+		local cleaned_paths = {}
+		for _, entry in ipairs(selected) do
+			local file_info = path.entry_to_file(entry, opts)
+			table.insert(cleaned_paths, file_info.path)
+		end
+		paths = table.concat(cleaned_paths, " ")
 
-	if M.term and M.term:is_open() then
-		local add_paths = "/add " .. paths
-		M.term:send(add_paths)
-		return
+		if M.term and M.term:is_open() then
+			local add_paths = "/add " .. paths
+			M.term:send(add_paths)
+			return
+		end
 	end
 
-	local env_args = vim.env.AIDER_ARGS or ""
-	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local command = string.format("aider %s %s%s %s", env_args, config.values.aider_args, dark_mode, paths)
+	local command = M.aider_command(paths)
 
 	M.prev_buf = vim.api.nvim_get_current_buf()
 	M.term = create_aider_terminal(command)
 
 	M.term:open(M.size, M.direction)
+end
+
+function M.aider_command(paths)
+	local env_args = vim.env.AIDER_ARGS or ""
+	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
+	local command = string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode)
+	if paths then
+		command = command .. paths
+	end
+	return command
+end
+
+function M.spawn(paths)
+	if not M.term then
+		local cmd = M.aider_command(paths)
+		M.term = create_aider_terminal(cmd)
+	end
+	M.toggle_aider_window()
+	M.toggle_aider_window()
 end
 
 --- Toggle Aider window
@@ -53,8 +73,12 @@ end
 function M.toggle_aider_window(size, direction)
 	if not M.term then
 		M.prev_buf = vim.api.nvim_get_current_buf()
-		M.size = size
-		M.direction = direction
+		if size then
+			M.size = size
+		end
+		if direction then
+			M.direction = direction
+		end
 		M.laod_files_in_aider({})
 		return
 	end
