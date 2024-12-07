@@ -44,7 +44,7 @@ function M.laod_files_in_aider(selected, opts)
 	M.prev_buf = vim.api.nvim_get_current_buf()
 	M.term = create_aider_terminal(command)
 
-	M.term:open(nil, nil)
+	M.term:open(M.size, M.direction)
 end
 
 --- Toggle Aider window
@@ -53,6 +53,8 @@ end
 function M.toggle_aider_window(size, direction)
 	if not M.term then
 		M.prev_buf = vim.api.nvim_get_current_buf()
+		M.size = size
+		M.direction = direction
 		M.laod_files_in_aider({})
 		return
 	end
