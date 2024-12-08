@@ -49,13 +49,12 @@ function M.laod_files_in_aider(selected, opts)
 	M.term:open(M.size, M.direction)
 end
 
----Generates the command to launch the Aider AI coding assistant
----@param paths string|nil Optional paths to files to be loaded into the Aider session
----@return string The complete Aider command with environment arguments, configuration, and optional file paths
+-- add docs to this func ai!
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:AiderUpdateHook<CR>\\""'
+  -- stylua: ignore
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:AiderUpdateHook<CR>\""'
 	local command =
 		string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode, "--test-cmd " .. hook_command)
 	if paths then
