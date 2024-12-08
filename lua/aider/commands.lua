@@ -97,7 +97,7 @@ function M.setup()
 	})
 
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
-		-- make this execute in the current buffer vim.cmd("checktime") ai!
+		vim.cmd("checktime")
 		vim.notify("Aider updated file")
 	end, {
 		desc = "Ran after aider makes file update",
