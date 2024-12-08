@@ -60,7 +60,7 @@ function M.aider_command(paths)
   -- stylua: ignore
 	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua AiderUpdateHook()<CR>\""'
 	local command = string.format(
-		"aider %s %s %s ",
+		"aider %s %s %s %s",
 		env_args,
 		config.values.aider_args,
 		dark_mode,
@@ -126,10 +126,7 @@ function M.toggle_aider_window(size, direction)
 	M.term:toggle(size, direction)
 end
 
---- Send a command to the active Aider terminal session
---- If no terminal is currently open, it will first create a new terminal
----
---- @param command string The command to send to the Aider terminal
+-- add docs to this command  ai!
 function M.send_command_to_aider(command)
 	if not M.term then
 		M.laod_files_in_aider({})
