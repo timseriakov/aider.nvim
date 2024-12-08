@@ -151,7 +151,7 @@ end
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local hook_command = 'nvim --server $NVIM --remote-expr "_G.AiderUpdateHook()"'
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-expr "_G.AiderUpdateHook()""'
 
 	local command = string.format(
 		"aider --no-pretty %s %s %s %s ",
@@ -184,13 +184,6 @@ _G.AiderUpdateHook = function()
 			end)
 		end
 	end
-
-	-- if opts.update_hook_cmd then
-	-- 	local current_buf = vim.api.nvim_get_current_buf()
-	-- 	vim.api.nvim_buf_call(current_buf, function()
-	-- 		vim.cmd(opts.update_hook_cmd)
-	-- 	end)
-	-- end
 end
 
 --- Spawn an Aider terminal session with optional file paths
