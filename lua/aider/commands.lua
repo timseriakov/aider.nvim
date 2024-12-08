@@ -96,16 +96,12 @@ function M.setup()
 		bang = true,
 	})
 
-	-- Create an autocommand group
-	vim.api.nvim_create_augroup("FileWatcher", { clear = true })
-	-- Create autocommand to check file changes
-	vim.api.nvim_create_autocmd({ "CursorHold", "CursorHold" }, {
-		group = "FileWatcher",
-		pattern = "*",
-		callback = function(data)
-			vim.cmd("checktime")
-			vim.notify("File updated: " .. data.file, vim.log.levels.INFO)
-		end,
+	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
+		-- make this execute in the current buffer vim.cmd("checktime") ai!
+		vim.notify("Aider updated file")
+	end, {
+		desc = "Ran after aider makes file update",
+		bang = true,
 	})
 
 	vim.api.nvim_create_user_command("AiderSpawn", function()
