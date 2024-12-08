@@ -65,6 +65,7 @@ function M.aider_command(paths)
 	return command
 end
 
+-- generate docs for this func ai!
 function M.spawn(paths)
 	if not M.term then
 		local cmd = M.aider_command(paths)
