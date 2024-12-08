@@ -88,34 +88,11 @@ function M.setup(opts)
 		end
 	end
 
+	-- add docs to this ai!
 	vim.api.nvim_create_user_command("AiderAsk", handle_aider_ask, {
 		range = true,
 		nargs = "*",
 		desc = "Ask with visual selection",
-		bang = true,
-	})
-
-	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
-		for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-			if
-				vim.api.nvim_buf_is_loaded(bufnr)
-				and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == ""
-			then
-				vim.api.nvim_buf_call(bufnr, function()
-					vim.cmd("checktime")
-				end)
-			end
-		end
-
-		if opts.update_hook_cmd then
-			local current_buf = vim.api.nvim_get_current_buf()
-			vim.api.nvim_buf_call(current_buf, function()
-				vim.cmd(opts.update_hook_cmd)
-			end)
-		end
-		vim.notify("File updated by AI!", vim.log.levels.INFO)
-	end, {
-		desc = "Ran after aider makes file update",
 		bang = true,
 	})
 
