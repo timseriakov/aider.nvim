@@ -357,6 +357,9 @@ require('aider').setup({
     -- Set default arguments for aider CLI
     aider_args = "",
 
+    -- Optional command to run after Aider updates a file
+    update_hook_cmd = nil,
+
     -- Configure toggleterm settings
     toggleterm = {
         -- Window layout type: 'float', 'vertical', 'horizontal'
@@ -374,6 +377,18 @@ require('aider').setup({
     }
 })
 ```
+
+### Update Hook
+
+You can specify a custom command to run after Aider updates a file. This is useful for running additional actions like linting, formatting, or running tests. For example:
+
+```lua
+require('aider').setup({
+    update_hook_cmd = "Diffview HEAD^"  -- Show diff of changes after update
+})
+```
+
+In this example, every time Aider updates a file, it will automatically open a Diffview comparing the changes with the previous HEAD commit.
 
 ### Dark Mode
 
