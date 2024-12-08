@@ -24,8 +24,10 @@ local M = {
 --- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
 	local last_content_length = 0 -- Track the length of previously shown content
-	-- Function to append new text to the notification
-	-- add annotatons for the return value ai!
+	--- Append new text to the notification
+	---
+	--- @param data table A list of lines to process
+	--- @return table A table of newly added, non-empty lines
 	local function add_text(data)
 		-- If we're getting the full history each time, we need to slice only the new content
 		local new_content = {}
