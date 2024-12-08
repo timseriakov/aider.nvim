@@ -106,7 +106,9 @@ end
 local function create_aider_terminal(cmd)
 	local notification = create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
-	-- add docs for this to the readme ai!
+	--- Controls whether terminal output is displayed as persistent notifications
+	--- When set to true, terminal output will be captured and shown in notifications
+	--- When set to false, terminal output will not trigger notifications
 	local use_notifications = config.values.use_notifications
 
 	return Terminal:new({
