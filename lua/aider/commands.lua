@@ -107,7 +107,6 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	-- run AiderSpwan on startup if opts.spawn_on_startup is set. make it run lazy in the background with vim.schedule so it doesn't slow it down ai!
 	vim.api.nvim_create_user_command("AiderSpawn", function()
 		terminal.spawn()
 		vim.notify("Aider running in background")
@@ -117,6 +116,13 @@ function M.setup(opts)
 		desc = "Ask with visual selection",
 		bang = true,
 	})
+
+	-- Lazy startup if configured
+	if opts and opts.spawn_on_startup then
+		vim.schedule(function()
+			vim.cmd("AiderSpawn")
+		end)
+	end
 end
 
 return M
