@@ -25,6 +25,7 @@ local M = {
 local function create_persistent_notification(title, id)
 	local last_content_length = 0 -- Track the length of previously shown content
 	-- Function to append new text to the notification
+	-- add annotatons for the return value ai!
 	local function add_text(data)
 		-- If we're getting the full history each time, we need to slice only the new content
 		local new_content = {}
@@ -46,6 +47,7 @@ local function create_persistent_notification(title, id)
 				replace = id,
 			})
 		end
+		return new_content
 	end
 
 	local function clear()
@@ -118,15 +120,7 @@ local function create_aider_terminal(cmd)
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = true,
-		on_stdout = function(term, job, data, name)
-			if term:is_focused() then
-				return
-			end
-			for _, line in ipairs(data) do
-				if line:match("%(Y%)es/%(N%)o") then
-					term:focus()
-				end
-			end
+		on_stdout = function(term, _, data, _)
 			if use_notifications then
 				for _, line in ipairs(data) do
 					local clean_line = clean_output(line)
@@ -134,7 +128,10 @@ local function create_aider_terminal(cmd)
 						table.insert(buffer, clean_line)
 					end
 				end
-				notification.add_text(buffer)
+				local new_content = notification.add_text(buffer)
+				if new_content:match("%(Y%)es/%(N%)o") then
+					term:focus()
+				end
 			end
 		end,
 		on_exit = function()
