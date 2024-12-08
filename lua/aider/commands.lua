@@ -31,6 +31,7 @@ function M.setup(opts)
 		complete = "file",
 	})
 
+	-- remove comments in this func ai!
 	local function handle_aider_send(opts)
 		if opts.range == 0 then
 			-- No selection, just use the arguments
@@ -130,11 +131,13 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	-- Lazy startup if configured
+	-- Create the autocmd right after defining the command
 	if opts and opts.spawn_on_startup then
-		vim.schedule(function()
-			vim.cmd("AiderSpawn")
-		end)
+		vim.api.nvim_create_autocmd("VimEnter", {
+			callback = function()
+				vim.cmd("AiderSpawn")
+			end,
+		})
 	end
 end
 
