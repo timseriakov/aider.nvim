@@ -6,8 +6,9 @@ local M = {
 	term = nil,
 }
 
--- add docs to this func ai!
--- Create Aider terminal instance
+--- Create a new terminal instance for Aider
+--- @param cmd string The command to run in the terminal
+--- @return table A new Terminal instance configured for Aider
 local function create_aider_terminal(cmd)
 	return Terminal:new({
 		cmd = cmd,
