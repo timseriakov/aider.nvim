@@ -10,7 +10,7 @@ function M.setup(opts)
 	end
 
 	require("aider.config").setup(opts)
-	require("aider.commands").setup()
+	require("aider.commands").setup(opts)
 end
 
 return M
