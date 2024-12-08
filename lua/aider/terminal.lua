@@ -126,7 +126,10 @@ function M.toggle_aider_window(size, direction)
 	M.term:toggle(size, direction)
 end
 
--- add docs to this command ai!
+--- Send a command to the active Aider terminal session
+--- If no terminal is currently open, it will first create a new terminal
+---
+--- @param command string The command to send to the Aider terminal
 function M.send_command_to_aider(command)
 	if not M.term then
 		M.laod_files_in_aider({})
