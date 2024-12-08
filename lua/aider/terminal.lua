@@ -63,6 +63,38 @@ local function create_persistent_notification(title, id)
 	}
 end
 
+local function clean_output(line)
+	-- Remove cursor style codes (like [6 q)
+	line = line:gsub("%[%d+ q", "")
+
+	-- Remove ANSI escape sequences
+	line = line:gsub("\27%[%d*;?%d*[A-Za-z]", "")
+	line = line:gsub("\27%[%?%d+[hl]", "")
+	line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
+	line = line:gsub("\27%[%d*[A-Za-z]", "")
+	line = line:gsub("\27%(%[%d*;%d*[A-Za-z]", "")
+
+	-- Remove other control characters
+	line = line:gsub("[\r\n]", "")
+	line = line:gsub("[\b]", "")
+	line = line:gsub("[\a]", "")
+	line = line:gsub("[\t]", "    ")
+	line = line:gsub("[%c]", "")
+
+	-- Remove leading '>' character if it's alone on a line
+	line = line:gsub("^%s*>%s*$", "")
+
+	-- Remove or clean up file headers that are alone on a line
+	line = line:gsub("^%s*lua/[%w/_]+%.lua%s*$", "")
+
+	-- Remove empty lines after cleaning
+	if line:match("^%s*$") then
+		return ""
+	end
+
+	return line
+end
+
 --- Create a persistent terminal for Aider interactions
 ---
 --- This function sets up a terminal using toggleterm with custom output handling
@@ -75,38 +107,6 @@ local function create_aider_terminal(cmd)
 	local notification = create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
 
-	local function clean_output(line)
-		-- Remove cursor style codes (like [6 q)
-		line = line:gsub("%[%d+ q", "")
-
-		-- Remove ANSI escape sequences
-		line = line:gsub("\27%[%d*;?%d*[A-Za-z]", "")
-		line = line:gsub("\27%[%?%d+[hl]", "")
-		line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
-		line = line:gsub("\27%[%d*[A-Za-z]", "")
-		line = line:gsub("\27%(%[%d*;%d*[A-Za-z]", "")
-
-		-- Remove other control characters
-		line = line:gsub("[\r\n]", "")
-		line = line:gsub("[\b]", "")
-		line = line:gsub("[\a]", "")
-		line = line:gsub("[\t]", "    ")
-		line = line:gsub("[%c]", "")
-
-		-- Remove leading '>' character if it's alone on a line
-		line = line:gsub("^%s*>%s*$", "")
-
-		-- Remove or clean up file headers that are alone on a line
-		line = line:gsub("^%s*lua/[%w/_]+%.lua%s*$", "")
-
-		-- Remove empty lines after cleaning
-		if line:match("^%s*$") then
-			return ""
-		end
-
-		return line
-	end
-
 	return Terminal:new({
 		cmd = cmd,
 		hidden = true,
@@ -115,6 +115,9 @@ local function create_aider_terminal(cmd)
 		close_on_exit = true,
 		auto_scroll = true,
 		on_stdout = function(term, job, data, name)
+			if term:is_focused() then
+				return
+			end
 			for _, line in ipairs(data) do
 				local clean_line = clean_output(line)
 				if clean_line ~= "" then
