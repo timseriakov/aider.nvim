@@ -17,6 +17,7 @@ local M = {}
 ---Default configuration values
 ---@type AiderConfig
 M.defaults = {
+	watch_files = true,
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",

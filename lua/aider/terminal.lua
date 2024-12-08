@@ -196,6 +196,9 @@ function M.aider_command(paths)
 		dark_mode,
 		"--auto-test --test-cmd " .. "'" .. hook_command .. "'"
 	)
+	if config.values.watch_files then
+		command = command .. "--watch-files "
+	end
 	if paths then
 		command = command .. paths
 	end
