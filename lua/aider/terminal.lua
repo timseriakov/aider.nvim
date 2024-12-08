@@ -24,13 +24,7 @@ local M = {
 --- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
 	local last_content_length = 0 -- Track the length of previously shown content
-=======>>> REPLACE
-```
-
-lua/aider/terminal.lua
-```lua
-<<<<<<< SEARCH
---- 1. Displays a notification that a file has been updated by AI
+	--- 1. Displays a notification that a file has been updated by AI
 
 	-- Function to append new text to the notification
 	local function add_text(data)
@@ -173,8 +167,12 @@ end
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-expr "_G.AiderUpdateHook()""'
+	-- local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-expr "_G.AiderUpdateHook()""'
 
+	local hook_command = "/bin/bash -c"
+		.. '"'
+		.. 'nvim --remote-send "<C-\\><C-N>:lua _G.AiderUpdateHook()<CR>" --server $NVIM'
+		.. '"'
 	local command = string.format(
 		"aider --no-pretty %s %s %s %s ",
 		env_args,
@@ -188,18 +186,9 @@ function M.aider_command(paths)
 	return command
 end
 
---- Handles file updates triggered by AI modifications
----
---- This global function is called after an AI-driven file update.
---- It performs the following actions:
---- 1. Displays a notification that a file has been updated by AI
---- 2. Triggers a 'checktime' on all loaded buffers to reload files that have changed on disk
----
---- The function is typically used as a remote command for Neovim to refresh buffers
---- after external modifications by the AI assistant.
+-- add docs to this func ai!
 _G.AiderUpdateHook = function()
-	vim.notify("File updated by AI!", vim.log.levels.INFO)
-	vim.notify("hook called!")
+	vim.notify("File updated by AI!", vim.log.levels.ERROR)
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
 		if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == "" then
 			vim.api.nvim_buf_call(bufnr, function()
