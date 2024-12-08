@@ -59,8 +59,13 @@ function M.aider_command(paths)
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
   -- stylua: ignore
 	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua AiderUpdateHook()<CR>\""'
-	local command =
-		string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode, "--test-cmd " .. hook_command)
+	local command = string.format(
+		"aider %s %s %s ",
+		env_args,
+		config.values.aider_args,
+		dark_mode,
+		"--test-cmd " .. "'" .. hook_command .. "'"
+	)
 	if paths then
 		command = command .. paths
 	end
@@ -121,6 +126,7 @@ function M.toggle_aider_window(size, direction)
 	M.term:toggle(size, direction)
 end
 
+-- add docs to this command ai!
 function M.send_command_to_aider(command)
 	if not M.term then
 		M.laod_files_in_aider({})
