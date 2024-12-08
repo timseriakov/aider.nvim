@@ -108,9 +108,11 @@ function M.setup(opts)
 			end
 		end
 
-		-- make this execute in the buffer that's currently open instead ai!
 		if opts.update_hook_cmd then
-			vim.cmd(opts.update_hook_cmd)
+			local current_buf = vim.api.nvim_get_current_buf()
+			vim.api.nvim_buf_call(current_buf, function()
+				vim.cmd(opts.update_hook_cmd)
+			end)
 		end
 		vim.notify("File updated by AI!", vim.log.levels.INFO)
 	end, {
