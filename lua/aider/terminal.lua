@@ -123,8 +123,9 @@ local function create_aider_terminal(cmd)
 				return
 			end
 			for _, line in ipairs(data) do
-				-- add an if statement to check if the line contains a string "(Y)es/(N)o" ai!
-				term:focus()
+				if line:match("%(Y%)es/%(N%)o") then
+					term:focus()
+				end
 			end
 			if use_notifications then
 				for _, line in ipairs(data) do
