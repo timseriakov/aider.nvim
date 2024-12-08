@@ -7,6 +7,7 @@ local M = {
 }
 
 local function create_persistent_notification(title, id)
+	-- this
 	local last_content_length = 0 -- Track the length of previously shown content
 
 	-- Function to append new text to the notification
@@ -51,7 +52,7 @@ end
 --- Create a persistent terminal for Aider interactions
 ---
 --- This function sets up a terminal using toggleterm with custom output handling
---- and notification management. It cleans terminal output, manages a buffer of 
+--- and notification management. It cleans terminal output, manages a buffer of
 --- output lines, and provides persistent notifications.
 ---
 --- @param cmd string The command to run in the terminal
@@ -150,10 +151,8 @@ end
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-  -- stylua: ignore
-	-- local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\""'
-  -- stylua: ignore
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua vim.notify(\"foo bar\")<CR>\""'
+	local hook_command = 'nvim --server $NVIM --remote-expr "_G.AiderUpdateHook()"'
+
 	local command = string.format(
 		"aider --no-pretty %s %s %s %s ",
 		env_args,
@@ -167,6 +166,7 @@ function M.aider_command(paths)
 	return command
 end
 
+-- add docs to this func ai!
 _G.AiderUpdateHook = function()
 	vim.notify("File updated by AI!", vim.log.levels.INFO)
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
