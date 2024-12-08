@@ -13,6 +13,7 @@ local function create_aider_terminal(cmd)
 		hidden = true,
 		float_opts = config.values.toggleterm.float_opts,
 		display_name = "Aider.nvim",
+		close_on_exit = true,
 		on_exit = function()
 			M.term = nil
 		end,
@@ -48,10 +49,11 @@ function M.laod_files_in_aider(selected, opts)
 	M.term:open(M.size, M.direction)
 end
 
+-- add documentation to this func ai!
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send "<C-\\><C-n>:AiderUpdateHook<CR>""'
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:AiderUpdateHook<CR>\\""'
 	local command =
 		string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode, "--test-cmd " .. hook_command)
 	if paths then
