@@ -96,8 +96,8 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	-- make this run the edit command in all open buffers, not just the current one ai!
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
+		-- make this run this edit command in all open buffers ai!
 		vim.cmd("edit")
 		if opts.update_hook_cmd then
 			vim.cmd(opts.update_hook_cmd)
