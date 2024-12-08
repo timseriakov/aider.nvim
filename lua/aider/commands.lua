@@ -97,15 +97,18 @@ function M.setup(opts)
 	})
 
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
-		-- Reload all open buffers
 		for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-			if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buftype') == '' then
+			if
+				vim.api.nvim_buf_is_loaded(bufnr)
+				and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == ""
+			then
 				vim.api.nvim_buf_call(bufnr, function()
-					vim.cmd("edit")
+					vim.cmd("checktime")
 				end)
 			end
 		end
 
+		-- make this execute in the buffer that's currently open instead ai!
 		if opts.update_hook_cmd then
 			vim.cmd(opts.update_hook_cmd)
 		end
