@@ -6,6 +6,7 @@ local M = {
 	term = nil,
 }
 
+-- add docs to this func ai!
 -- Create Aider terminal instance
 local function create_aider_terminal(cmd)
 	return Terminal:new({
@@ -56,13 +57,31 @@ function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
   -- stylua: ignore
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:AiderUpdateHook<CR>\""'
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua AiderUpdateHook()<CR>\""'
 	local command =
 		string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode, "--test-cmd " .. hook_command)
 	if paths then
 		command = command .. paths
 	end
 	return command
+end
+
+_G.AiderUpdateHook = function()
+	vim.notify("File updated by AI!", vim.log.levels.INFO)
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == "" then
+			vim.api.nvim_buf_call(bufnr, function()
+				vim.cmd("checktime")
+			end)
+		end
+	end
+
+	-- if opts.update_hook_cmd then
+	-- 	local current_buf = vim.api.nvim_get_current_buf()
+	-- 	vim.api.nvim_buf_call(current_buf, function()
+	-- 		vim.cmd(opts.update_hook_cmd)
+	-- 	end)
+	-- end
 end
 
 --- Spawn an Aider terminal session with optional file paths
