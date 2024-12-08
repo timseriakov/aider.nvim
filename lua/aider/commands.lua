@@ -96,12 +96,12 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	-- add a  vim.notify command at the callback end that says file updated ai!
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
 		vim.cmd("edit")
 		if opts.update_hook_cmd then
 			vim.cmd(opts.update_hook_cmd)
 		end
+		vim.notify("File updated by AI!", vim.log.levels.INFO)
 	end, {
 		desc = "Ran after aider makes file update",
 		bang = true,
