@@ -14,6 +14,14 @@ local M = {
 --- @param title string The title of the notification
 --- @param id string|number A unique identifier for the notification
 --- @return table A table with methods to add text and clear the notification
+--- Create a persistent notification with incremental updates
+---
+--- This function manages a notification that can be updated incrementally,
+--- tracking and displaying only new content since the last update.
+---
+--- @param title string The title of the notification
+--- @param id string|number A unique identifier for the notification
+--- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
 	local last_content_length = 0 -- Track the length of previously shown content
 =======>>> REPLACE
