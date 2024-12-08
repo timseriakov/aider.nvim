@@ -166,7 +166,15 @@ function M.aider_command(paths)
 	return command
 end
 
--- add docs to this func ai!
+--- Handles file updates triggered by AI modifications
+---
+--- This global function is called after an AI-driven file update.
+--- It performs the following actions:
+--- 1. Displays a notification that a file has been updated by AI
+--- 2. Triggers a 'checktime' on all loaded buffers to reload files that have changed on disk
+---
+--- The function is typically used as a remote command for Neovim to refresh buffers
+--- after external modifications by the AI assistant.
 _G.AiderUpdateHook = function()
 	vim.notify("File updated by AI!", vim.log.levels.INFO)
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
