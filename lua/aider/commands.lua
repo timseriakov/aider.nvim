@@ -114,14 +114,32 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	-- Create the autocmd right after defining the command
+	vim.api.nvim_create_autocmd("TermOpen", {
+		callback = function()
+			local function tmap(key, val)
+				local opts = { buffer = 0 }
+				vim.keymap.set("t", key, val, opts)
+			end
+			-- exit insert mode
+			tmap("<Esc>", "<C-\\><C-n>")
+			tmap("jj", "<C-\\><C-n>")
+			-- enter command mode
+			tmap(":", "<C-\\><C-n>:")
+			-- scrolling up/down
+			tmap("<C-u>", "<C-\\><C-n><C-u>")
+			tmap("<C-d>", "<C-\\><C-n><C-d>")
+			-- remove line numbers
+			vim.wo.number = false
+			vim.wo.relativenumber = false
+			-- auto start terminal in insert mode
+			vim.cmd("startinsert")
+		end,
+	})
+
 	if opts and opts.spawn_on_startup then
-		vim.api.nvim_create_autocmd("VimEnter", {
-			callback = function()
-				vim.cmd("AiderSpawn")
-			end,
-		})
+		vim.schedule(function()
+			vim.cmd("AiderSpawn")
+		end)
 	end
 end
-
 return M
