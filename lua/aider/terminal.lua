@@ -10,26 +10,16 @@ local M = {
 ---
 --- This function manages a notification that can be updated incrementally,
 --- tracking and displaying only new content since the last update.
----
---- @param title string The title of the notification
---- @param id string|number A unique identifier for the notification
---- @return table A table with methods to add text and clear the notification
---- Create a persistent notification with incremental updates
----
---- This function manages a notification that can be updated incrementally,
---- tracking and displaying only new content since the last update.
----
---- @param title string The title of the notification
---- @param id string|number A unique identifier for the notification
---- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
-	local last_content_length = 0 -- Track the length of previously shown content
-	--- Append new text to the notification
-	---
-	--- @param data table A list of lines to process
-	--- @return table A table of newly added, non-empty lines
-	local function add_text(data)
-		-- If we're getting the full history each time, we need to slice only the new content
+	local last_content_length = 0
+	local is_suppressed = false
+
+	local function add_text(data, display)
+		-- Don't process if notifications are suppressed
+		if is_suppressed then
+			return {}
+		end
+
 		local new_content = {}
 		for i = last_content_length + 1, #data do
 			local clean_line = data[i]
@@ -38,32 +28,32 @@ local function create_persistent_notification(title, id)
 			end
 		end
 
-		-- Update our tracker for next time
 		last_content_length = #data
 
-		-- Only notify if we have new content
-		if #new_content > 0 then
+		-- Check for Yes/No prompt before sending notification
+		local has_prompt = table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o")
+
+		-- Only notify if we have new content, display is true, and no prompt
+		if display and #new_content > 0 and not has_prompt then
 			vim.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
 				id = id,
 				title = title,
 				replace = id,
 			})
 		end
+
 		return new_content
 	end
 
-	local function clear()
-		last_content_length = 0
-		vim.notify("Done!", vim.log.levels.INFO, {
-			id = id,
-			title = title,
-			replace = id,
-		})
-	end
-
+	-- Add methods to control notification suppression
 	return {
 		add_text = add_text,
-		clear = clear,
+		suppress = function()
+			is_suppressed = true
+		end,
+		resume = function()
+			is_suppressed = false
+		end,
 	}
 end
 
@@ -108,39 +98,46 @@ end
 --- @param cmd string The command to run in the terminal
 --- @return table A new Terminal instance configured for Aider interactions
 local function create_aider_terminal(cmd)
-	local notification = create_persistent_notification("Aider.nvim", "aider")
+	local notification_handler = create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
-	--- Controls whether terminal output is displayed as persistent notifications
-	--- When set to true, terminal output will be captured and shown in notifications
-	--- When set to false, terminal output will not trigger notifications
-	local use_notifications = config.values.use_notifications
 
-	return Terminal:new({
+	local terminal = Terminal:new({
 		cmd = cmd,
 		hidden = true,
 		float_opts = config.values.float_opts,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = true,
-		on_stdout = function(term, _, data, _)
-			if use_notifications then
-				for _, line in ipairs(data) do
-					local clean_line = clean_output(line)
-					if clean_line ~= "" then
-						table.insert(buffer, clean_line)
-					end
-				end
-				local new_content = notification.add_text(buffer)
-				if new_content:match("%(Y%)es/%(N%)o") then
-					term:focus()
-				end
-			end
-		end,
 		on_exit = function()
 			M.term = nil
-			notification.clear()
+		end,
+		on_open = function()
+			notification_handler.suppress()
+		end,
+		on_close = function()
+			notification_handler.resume()
 		end,
 	})
+
+	terminal.on_stdout = function(term, _, data, _)
+		if config.values.use_notifications then
+			for _, line in ipairs(data) do
+				local clean_line = clean_output(line)
+				if clean_line ~= "" then
+					table.insert(buffer, clean_line)
+				end
+			end
+
+			local new_content = notification_handler.add_text(buffer, not term:is_focused())
+
+			-- Focus terminal immediately if we detect a prompt
+			if table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o") then
+				terminal:focus()
+			end
+		end
+	end
+
+	return terminal
 end
 
 ---Load files into aider session
