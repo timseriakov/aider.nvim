@@ -106,11 +106,13 @@ end
 local function create_aider_terminal(cmd)
 	local notification = create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
+	-- add docs for this to the readme ai!
+	local use_notifications = config.values.use_notifications
 
 	return Terminal:new({
 		cmd = cmd,
 		hidden = true,
-		float_opts = config.values.toggleterm.float_opts,
+		float_opts = config.values.float_opts,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = true,
@@ -118,13 +120,15 @@ local function create_aider_terminal(cmd)
 			if term:is_focused() then
 				return
 			end
-			for _, line in ipairs(data) do
-				local clean_line = clean_output(line)
-				if clean_line ~= "" then
-					table.insert(buffer, clean_line)
+			if use_notifications then
+				for _, line in ipairs(data) do
+					local clean_line = clean_output(line)
+					if clean_line ~= "" then
+						table.insert(buffer, clean_line)
+					end
 				end
+				notification.add_text(buffer)
 			end
-			notification.add_text(buffer)
 		end,
 		on_exit = function()
 			M.term = nil
@@ -166,10 +170,11 @@ function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
 
+	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "
 		.. '"'
-		.. 'nvim --server $NVIM --remote-send "<C-\\><C-n>:lua _G.AiderUpdateHook()<CR>"'
-		.. ' "'
+		.. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\\"'
+		.. '"'
 
 	local command = string.format(
 		"aider --no-pretty %s %s %s %s ",
