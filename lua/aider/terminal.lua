@@ -35,7 +35,13 @@ local function create_persistent_notification(title, id)
 
 		-- Only notify if we have new content, display is true, and no prompt
 		if display and #new_content > 0 and not has_prompt then
-			vim.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
+			local use_fidget, fidget = pcall(require, "fidget")
+			local notify = vim.notify
+			if use_fidget then
+				notify = fidget.notify
+			end
+
+			notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
 				id = id,
 				title = title,
 				replace = id,
