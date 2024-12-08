@@ -31,10 +31,8 @@ function M.setup(opts)
 		complete = "file",
 	})
 
-	-- remove comments in this func ai!
 	local function handle_aider_send(opts)
 		if opts.range == 0 then
-			-- No selection, just use the arguments
 			if not opts.args or opts.args == "" then
 				vim.notify("Empty input provided", vim.log.levels.WARN)
 				return
