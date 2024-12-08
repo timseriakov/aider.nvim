@@ -1,6 +1,6 @@
 local Terminal = require("toggleterm.terminal").Terminal
 local path = require("fzf-lua.path")
-local config = require("aider.config")
+local config = require("aider")
 
 local M = {
 	term = nil,

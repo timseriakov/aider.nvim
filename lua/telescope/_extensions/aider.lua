@@ -6,7 +6,7 @@ end
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local terminal = require("aider.terminal")
-local config = require("aider.config")
+local config = require("aider")
 
 local function aider_action(prompt_bufnr)
 	local picker = action_state.get_current_picker(prompt_bufnr)
