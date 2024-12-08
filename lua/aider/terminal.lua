@@ -4,7 +4,6 @@ local config = require("aider.config")
 
 local M = {
 	term = nil,
-	prev_buf = nil,
 }
 
 -- Create Aider terminal instance
@@ -35,14 +34,15 @@ function M.laod_files_in_aider(selected, opts)
 
 		if M.term and M.term:is_open() then
 			local add_paths = "/add " .. paths
+			vim.notify("Running: " .. add_paths)
 			M.term:send(add_paths)
 			return
 		end
 	end
 
 	local command = M.aider_command(paths)
+	vim.notify("Running: " .. command)
 
-	M.prev_buf = vim.api.nvim_get_current_buf()
 	M.term = create_aider_terminal(command)
 
 	M.term:open(M.size, M.direction)
@@ -72,7 +72,6 @@ end
 ---@param direction? string
 function M.toggle_aider_window(size, direction)
 	if not M.term then
-		M.prev_buf = vim.api.nvim_get_current_buf()
 		if size then
 			M.size = size
 		end
