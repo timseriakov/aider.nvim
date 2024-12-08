@@ -59,9 +59,9 @@ end
 
 local function clean_output(line)
 	-- Remove EOF delimiters
-	if line:match("^%s*{EOF%s*$") or line:match("^%s*EOF}%s*$") then
-		return ""
-	end
+	-- Remove EOF delimiters
+	line = line:gsub("^%s*[%s%.]*{EOF%s*$", "")
+	line = line:gsub("^%s*[%s%.]*EOF}%s*$", "")
 
 	-- Remove cursor style codes (like [6 q)
 	line = line:gsub("%[%d+ q", "")
