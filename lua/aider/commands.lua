@@ -97,8 +97,15 @@ function M.setup(opts)
 	})
 
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
-		-- make this run this edit command in all open buffers ai!
-		vim.cmd("edit")
+		-- Reload all open buffers
+		for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+			if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buftype') == '' then
+				vim.api.nvim_buf_call(bufnr, function()
+					vim.cmd("edit")
+				end)
+			end
+		end
+
 		if opts.update_hook_cmd then
 			vim.cmd(opts.update_hook_cmd)
 		end
