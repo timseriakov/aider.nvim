@@ -24,8 +24,6 @@ local M = {
 --- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
 	local last_content_length = 0 -- Track the length of previously shown content
-	--- 1. Displays a notification that a file has been updated by AI
-
 	-- Function to append new text to the notification
 	local function add_text(data)
 		-- If we're getting the full history each time, we need to slice only the new content
@@ -186,9 +184,12 @@ function M.aider_command(paths)
 	return command
 end
 
--- add docs to this func ai!
+--- Reload all open buffers after an AI update
+--- This function is called after an AI-driven file modification to:
+--- 1. Notify the user of the update
+--- 2. Trigger a reload of all open buffers to reflect the changes
 _G.AiderUpdateHook = function()
-	vim.notify("File updated by AI!", vim.log.levels.ERROR)
+	vim.notify("File updated by AI!", vim.log.levels.INFO)
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
 		if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == "" then
 			vim.api.nvim_buf_call(bufnr, function()
