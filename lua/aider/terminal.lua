@@ -48,7 +48,14 @@ local function create_persistent_notification(title, id)
 	}
 end
 
--- document this func ai!
+--- Create a persistent terminal for Aider interactions
+---
+--- This function sets up a terminal using toggleterm with custom output handling
+--- and notification management. It cleans terminal output, manages a buffer of 
+--- output lines, and provides persistent notifications.
+---
+--- @param cmd string The command to run in the terminal
+--- @return table A new Terminal instance configured for Aider interactions
 local function create_aider_terminal(cmd)
 	local notification = create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
@@ -233,7 +240,7 @@ function M.send_command_to_aider(command)
 end
 
 --- Send an AI query to the Aider session
---- @param prompt string The query or instruction to send to the AI
+--- @param prompt string The query or instruction to send
 --- @param selection string? Optional selected text to include with the prompt
 --- Sends a command to the Aider terminal to process an AI request
 --- If no prompt is provided, a warning notification is shown
