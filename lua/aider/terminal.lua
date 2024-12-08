@@ -144,7 +144,11 @@ function M.send_command_to_aider(command)
 	M.term:send(multi_line_command)
 end
 
--- add docs to this func ai!
+--- Send an AI query to the Aider session
+--- @param prompt string The query or instruction to send to the AI
+--- @param selection string? Optional selected text to include with the prompt
+--- Sends a command to the Aider terminal to process an AI request
+--- If no prompt is provided, a warning notification is shown
 function M.ask_aider(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
