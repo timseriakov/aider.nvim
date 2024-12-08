@@ -49,7 +49,9 @@ function M.laod_files_in_aider(selected, opts)
 	M.term:open(M.size, M.direction)
 end
 
--- add documentation to this func ai!
+---Generates the command to launch the Aider AI coding assistant
+---@param paths string|nil Optional paths to files to be loaded into the Aider session
+---@return string The complete Aider command with environment arguments, configuration, and optional file paths
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
