@@ -58,7 +58,7 @@ function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
   -- stylua: ignore
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua AiderUpdateHook()<CR>\""'
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\""'
 	local command = string.format(
 		"aider %s %s %s %s",
 		env_args,
@@ -126,9 +126,7 @@ function M.toggle_aider_window(size, direction)
 	M.term:toggle(size, direction)
 end
 
---- Send a command to the Aider terminal session
---- @param command string The command to send to Aider
---- If no terminal session exists, it will first create one
+-- add docs to this command ai!
 function M.send_command_to_aider(command)
 	if not M.term then
 		M.laod_files_in_aider({})
