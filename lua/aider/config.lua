@@ -8,6 +8,9 @@
 ---@field aider_args string Additional arguments for aider CLI
 ---@field toggleterm ToggletermConfig Toggleterm configuration
 ---@field spawn_on_startup boolean|nil
+---@field use_notifications boolean
+---@field float_opts table<string, any>?
+---@field after_update_hook function|nil
 
 local M = {}
 
@@ -17,8 +20,10 @@ M.defaults = {
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",
+	use_notifications = true,
 	aider_args = "",
 	spawn_on_startup = nil,
+	after_update_hook = nil,
 	toggleterm = {
 		direction = "vertical",
 		size = function(term)
