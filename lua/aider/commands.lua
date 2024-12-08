@@ -4,7 +4,7 @@ local selection = require("aider.selection")
 local M = {}
 
 ---Create user commands for aider functionality
-function M.setup()
+function M.setup(opts)
 	vim.api.nvim_create_user_command("AiderToggle", function(opts)
 		if not opts.args or opts.args == "" then
 			terminal.toggle_aider_window(nil, nil)
@@ -98,6 +98,9 @@ function M.setup()
 
 	vim.api.nvim_create_user_command("AiderUpdatedHook", function()
 		vim.cmd("checktime")
+		if opts.update_hook_cmd then
+			vim.cmd(opts.update_hook_cmd)
+		end
 		vim.notify("Aider updated file")
 	end, {
 		desc = "Ran after aider makes file update",

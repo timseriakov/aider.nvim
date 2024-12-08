@@ -51,9 +51,7 @@ end
 function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
-	-- change this ro run the command :AiderUpdateHook instead of lua vim.notify ai!
-	local hook_command =
-		'/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\><C-n>:AiderUpdateHook<CR>i\""'
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send "<C-\\><C-n>:AiderUpdateHook<CR>""'
 	local command =
 		string.format("aider %s %s %s ", env_args, config.values.aider_args, dark_mode, "--test-cmd " .. hook_command)
 	if paths then
