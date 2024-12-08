@@ -358,7 +358,7 @@ require('aider').setup({
     aider_args = "",
 
     -- Optional command to run after Aider updates a file
-    update_hook_cmd = nil,
+    update_hook_cmd = "Diffview HEAD^",
 
     -- Configure toggleterm settings
     toggleterm = {
