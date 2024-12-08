@@ -6,18 +6,104 @@ local M = {
 	term = nil,
 }
 
---- Create a new terminal instance for Aider
---- @param cmd string The command to run in the terminal
---- @return table A new Terminal instance configured for Aider
+local function create_persistent_notification(title, id)
+	local last_content_length = 0 -- Track the length of previously shown content
+
+	-- Function to append new text to the notification
+	local function add_text(data)
+		-- If we're getting the full history each time, we need to slice only the new content
+		local new_content = {}
+		for i = last_content_length + 1, #data do
+			local clean_line = data[i]
+			if clean_line ~= "" then
+				table.insert(new_content, clean_line)
+			end
+		end
+
+		-- Update our tracker for next time
+		last_content_length = #data
+
+		-- Only notify if we have new content
+		if #new_content > 0 then
+			vim.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
+				id = id,
+				title = title,
+				replace = id,
+			})
+		end
+	end
+
+	local function clear()
+		last_content_length = 0
+		vim.notify("Done!", vim.log.levels.INFO, {
+			id = id,
+			title = title,
+			replace = id,
+		})
+	end
+
+	return {
+		add_text = add_text,
+		clear = clear,
+	}
+end
+
+-- document this func ai!
 local function create_aider_terminal(cmd)
+	local notification = create_persistent_notification("Aider.nvim", "aider")
+	local buffer = {}
+
+	local function clean_output(line)
+		-- Remove cursor style codes (like [6 q)
+		line = line:gsub("%[%d+ q", "")
+
+		-- Remove ANSI escape sequences
+		line = line:gsub("\27%[%d*;?%d*[A-Za-z]", "")
+		line = line:gsub("\27%[%?%d+[hl]", "")
+		line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
+		line = line:gsub("\27%[%d*[A-Za-z]", "")
+		line = line:gsub("\27%(%[%d*;%d*[A-Za-z]", "")
+
+		-- Remove other control characters
+		line = line:gsub("[\r\n]", "")
+		line = line:gsub("[\b]", "")
+		line = line:gsub("[\a]", "")
+		line = line:gsub("[\t]", "    ")
+		line = line:gsub("[%c]", "")
+
+		-- Remove leading '>' character if it's alone on a line
+		line = line:gsub("^%s*>%s*$", "")
+
+		-- Remove or clean up file headers that are alone on a line
+		line = line:gsub("^%s*lua/[%w/_]+%.lua%s*$", "")
+
+		-- Remove empty lines after cleaning
+		if line:match("^%s*$") then
+			return ""
+		end
+
+		return line
+	end
+
 	return Terminal:new({
 		cmd = cmd,
 		hidden = true,
 		float_opts = config.values.toggleterm.float_opts,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
+		auto_scroll = true,
+		on_stdout = function(term, job, data, name)
+			for _, line in ipairs(data) do
+				local clean_line = clean_output(line)
+				if clean_line ~= "" then
+					table.insert(buffer, clean_line)
+				end
+			end
+			notification.add_text(buffer)
+		end,
 		on_exit = function()
 			M.term = nil
+			notification.clear()
 		end,
 	})
 end
@@ -58,9 +144,11 @@ function M.aider_command(paths)
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
   -- stylua: ignore
-	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\""'
+	-- local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\""'
+  -- stylua: ignore
+	local hook_command = '/bin/bash -c "nvim --server $NVIM --remote-send \"<C-\\\\><C-n>:lua vim.notify(\"foo bar\")<CR>\""'
 	local command = string.format(
-		"aider %s %s %s %s",
+		"aider --no-pretty %s %s %s %s ",
 		env_args,
 		config.values.aider_args,
 		dark_mode,
