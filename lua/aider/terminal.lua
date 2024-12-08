@@ -65,7 +65,9 @@ function M.aider_command(paths)
 	return command
 end
 
--- generate docs for this func ai!
+--- Spawn an Aider terminal session with optional file paths
+---@param paths string|nil Optional paths to load into the Aider session
+---Initializes a new terminal if one doesn't exist and opens the Aider window
 function M.spawn(paths)
 	if not M.term then
 		local cmd = M.aider_command(paths)
