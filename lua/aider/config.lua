@@ -7,6 +7,7 @@
 ---@field fzf_action_key string Key to trigger aider load in fzf
 ---@field aider_args string Additional arguments for aider CLI
 ---@field toggleterm ToggletermConfig Toggleterm configuration
+---@field spawn_on_startup boolean|nil
 
 local M = {}
 
@@ -17,6 +18,7 @@ M.defaults = {
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",
 	aider_args = "",
+	spawn_on_startup = nil,
 	toggleterm = {
 		direction = "vertical",
 		size = function(term)
@@ -31,11 +33,7 @@ M.defaults = {
 
 ---Current configuration
 ---@type AiderConfig
-M.values = {
-	-- fzf_action_key = M.defaults.fzf_action_key,
-	-- aider_args = M.defaults.aider_args,
-	-- toggleterm = M.defaults.toggleterm,
-}
+M.values = {}
 
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
