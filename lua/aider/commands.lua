@@ -78,6 +78,13 @@ function M.setup(opts)
 
 	---Handles the AiderAsk command, processing a prompt with optional visual selection
 	---@param opts table Command options containing arguments
+	---Handles the AiderAsk command, processing a prompt with optional visual selection
+	---
+	--- This function can be called in two ways:
+	--- 1. With arguments directly passed to the command
+	--- 2. Interactively prompting the user for input if no arguments are provided
+	---
+	---@param opts table Command options containing arguments
 	local function handle_aider_ask(opts)
 		if #opts.args > 0 then
 			process_prompt(opts.args)
