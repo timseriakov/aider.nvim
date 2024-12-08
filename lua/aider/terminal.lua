@@ -6,10 +6,23 @@ local M = {
 	term = nil,
 }
 
--- add docs to this func ai!
+--- Create a persistent notification with incremental updates
+---
+--- This function manages a notification that can be updated incrementally,
+--- tracking and displaying only new content since the last update.
+---
+--- @param title string The title of the notification
+--- @param id string|number A unique identifier for the notification
+--- @return table A table with methods to add text and clear the notification
 local function create_persistent_notification(title, id)
-	-- this
 	local last_content_length = 0 -- Track the length of previously shown content
+=======>>> REPLACE
+```
+
+lua/aider/terminal.lua
+```lua
+<<<<<<< SEARCH
+--- 1. Displays a notification that a file has been updated by AI
 
 	-- Function to append new text to the notification
 	local function add_text(data)
