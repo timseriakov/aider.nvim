@@ -122,6 +122,10 @@ local function create_aider_terminal(cmd)
 			if term:is_focused() then
 				return
 			end
+			for _, line in ipairs(data) do
+				-- add an if statement to check if the line contains a string "(Y)es/(N)o" ai!
+				term:focus()
+			end
 			if use_notifications then
 				for _, line in ipairs(data) do
 					local clean_line = clean_output(line)
@@ -203,6 +207,9 @@ _G.AiderUpdateHook = function()
 				vim.cmd("checktime")
 			end)
 		end
+	end
+	if config.values.after_update_hook then
+		config.values.after_update_hook()
 	end
 end
 
