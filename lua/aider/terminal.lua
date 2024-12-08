@@ -58,6 +58,11 @@ local function create_persistent_notification(title, id)
 end
 
 local function clean_output(line)
+	-- Remove EOF delimiters
+	if line:match("^%s*{EOF%s*$") or line:match("^%s*EOF}%s*$") then
+		return ""
+	end
+
 	-- Remove cursor style codes (like [6 q)
 	line = line:gsub("%[%d+ q", "")
 
