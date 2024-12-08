@@ -76,6 +76,7 @@ function M.setup(opts)
 		terminal.ask_aider(input, selected)
 	end
 
+	-- write docs for this func ai!
 	local function handle_aider_ask(opts)
 		if #opts.args > 0 then
 			process_prompt(opts.args)
