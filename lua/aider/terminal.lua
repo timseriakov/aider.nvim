@@ -6,6 +6,7 @@ local M = {
 	term = nil,
 }
 
+-- add docs to this func ai!
 local function create_persistent_notification(title, id)
 	-- this
 	local last_content_length = 0 -- Track the length of previously shown content
@@ -177,6 +178,7 @@ end
 --- after external modifications by the AI assistant.
 _G.AiderUpdateHook = function()
 	vim.notify("File updated by AI!", vim.log.levels.INFO)
+	vim.notify("hook called!")
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
 		if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == "" then
 			vim.api.nvim_buf_call(bufnr, function()
