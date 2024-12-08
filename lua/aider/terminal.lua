@@ -64,7 +64,7 @@ function M.aider_command(paths)
 		env_args,
 		config.values.aider_args,
 		dark_mode,
-		"--test-cmd " .. "'" .. hook_command .. "'"
+		"--auto-test --test-cmd " .. "'" .. hook_command .. "'"
 	)
 	if paths then
 		command = command .. paths
@@ -133,7 +133,7 @@ end
 --- @usage
 --- -- Send a simple command
 --- M.send_command_to_aider("/help")
---- 
+---
 --- -- Send a multi-line command
 --- M.send_command_to_aider("Some complex\nmulti-line command")
 function M.send_command_to_aider(command)
@@ -144,6 +144,7 @@ function M.send_command_to_aider(command)
 	M.term:send(multi_line_command)
 end
 
+-- add docs to this func ai!
 function M.ask_aider(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
