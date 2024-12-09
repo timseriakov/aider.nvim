@@ -19,7 +19,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Can be used to create custom prompts
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
 - Load files into Aider session
-  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file or specify file args
+  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args in either mode
   - You can use fzf-lua or telescope to select files (multi-select supported) with any file viewer (git_files, buffers..)
 - Ask questions about code with visual selection support
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
