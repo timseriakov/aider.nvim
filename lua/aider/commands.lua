@@ -77,7 +77,6 @@ function M.setup(opts)
 	end
 
 	---Handles the AiderAsk command, processing a prompt with optional visual selection
-	---@param opts table Command options containing arguments
 	---Handles the AiderAsk command, processing a prompt with optional visual selection
 	---
 	--- This function can be called in two ways:

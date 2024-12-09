@@ -55,11 +55,19 @@ function M.setup(opts)
 	-- Setup fzf-lua integration if available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
 	if ok then
-		local load_in_aider = require("aider.terminal").laod_files_in_aider
+		local fzf_load_in_aider = function(selected, fopts)
+			local cleaned_paths = {}
+			for _, entry in ipairs(selected) do
+				local file_info = entry
+				file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
+				table.insert(cleaned_paths, file_info.path)
+			end
+			require("aider.terminal").load_files_in_aider(cleaned_paths, fopts)
+		end
 
 		---@type { [string]: function|table }
 		local actions = fzf_config.defaults.files.actions
-		actions[M.values.fzf_action_key] = load_in_aider
+		actions[M.values.fzf_action_key] = fzf_load_in_aider
 	end
 
 	-- Setup telescope integration if available
