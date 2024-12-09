@@ -30,9 +30,10 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 ## Prerequisites
 
 - Neovim 0.5+
-- [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
-- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) (required for terminal management)
-- [fidget](https://github.com/j-hui/fidget.nvim) optional but is the recommended way to show Aider activity, see configuration bellow
+- [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`)
+- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management
+- [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration bellow
+- [fidget](https://github.com/j-hui/fidget.nvim) is optional but it is the recommended way to show Aider activity, see configuration bellow
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
 - [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
 
