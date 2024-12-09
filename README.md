@@ -6,19 +6,34 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## Features
 
-- Toggle Aider terminal window
+- Optionally start Aider automatically in the background (default)
+- When in background mode (default):
+  - Get live streamed notifications as Aider is processing
+  - The terminal will automatically be brought to the foreground if Aider prompts for input
+  - Will default to using the `--watch-file`
+    - So that all open files will get added to Aider automatically
+    - Aider will auto-detect `AI` and `AI!` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+- Add configurable hooks to run when Aider finishes updating a file
+  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
+- Send commands to Aider explicitly with `AiderSend <cmd>`
+  - Can be used to create custom prompts
+- Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
 - Load files into Aider session
+  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file or specify file args
+  - You can use fzf-lua or telescope to select files (multi-select supported) with any file viewer (git_files, buffers..)
 - Ask questions about code with visual selection support
-- Integration with fzf-lua and Telescope for file selection
-- Maintains persistent Aider sessions
+  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
+- For diff viewing, accepting or rejecting changes, have a look at:
+  - Use [diffview](https://github.com/sindrets/diffview.nvim) which can be auto triggered after Aider makes changes (see below).
+  - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
 
 ## Prerequisites
 
 - Neovim 0.5+
 - [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
-- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (required for `/editor` command functionality)
 - [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) (required for terminal management)
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
+- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
 
 ## Installation
 
@@ -26,59 +41,34 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ```lua
 return {
-  { "willothy/flatten.nvim", config = true },
-  {
-    "akinsho/toggleterm.nvim",
-    opts = {
-      shade_terminals = false,
-      direction = "float", -- default direction when none specified in AiderToggle
-      float_opts = {
-        border = "curved",
-        title_pos = "center",
-      },
-      close_on_exit = true,
-      size = function(term)
-        if term.direction == "horizontal" then
-          return vim.o.lines * 0.4  -- 40% height
-        elseif term.direction == "vertical" then
-          return vim.o.columns * 0.4  -- 40% width
-        end
-      end,
-    },
-  },
   {
     "aweis89/aider.nvim",
     dependencies = {
       "akinsho/toggleterm.nvim",
-      "ibhagwan/fzf-lua", -- or "nvim-telescope/telescope.nvim"
-      "willothy/flatten.nvim",
+      "nvim-telescope/telescope.nvim", -- or "ibhagwan/fzf-lua"
+      "willothy/flatten.nvim", -- only if you care about using /editor command
     },
-    config = true,
+    lazy = false,
+    opts = {
+      after_update_hook = function()
+        require("diffview").open({ "HEAD^" })
+      end,
+    },
     keys = {
-      {
-        "<leader>a<space>",
-        "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider (default)",
-      },
       {
         "<leader>as",
         "<cmd>AiderSpawn<CR>",
-        desc = "Spawn Aider Background",
+        desc = "Toggle Aidper (default)",
       },
       {
-        "<leader>av",
-        "<cmd>AiderToggle vertical<CR>",
-        desc = "Toggle Aider vertical split",
+        "<leader>ac",
+        "<cmd>AiderSend /commit<CR>",
+        desc = "Aider commit",
       },
       {
-        "<leader>ah",
-        "<cmd>AiderToggle horizontal<CR>",
-        desc = "Toggle Aider horizontal split",
-      },
-      {
-        "<leader>af",
-        "<cmd>AiderToggle float<CR>",
-        desc = "Toggle Aider floating window",
+        "<leader>a<space>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
       },
       {
         "<leader>al",
@@ -96,181 +86,6 @@ return {
 }
 ```
 
-### Using [vim-plug](https://github.com/junegunn/vim-plug)
-
-```vim
-Plug 'willothy/flatten.nvim'
-Plug 'akinsho/toggleterm.nvim'
-" Choose one of:
-Plug 'ibhagwan/fzf-lua'
-" or
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'aweis89/aider.nvim'
-
-" After plug#end(), add the setup:
-lua << EOF
-require('flatten').setup()
-require('toggleterm').setup({
-  shade_terminals = false,
-  direction = "float",
-  float_opts = {
-    border = "curved",
-    title_pos = "center",
-  },
-  close_on_exit = true,
-  size = function(term)
-    if term.direction == "horizontal" then
-      return vim.o.lines * 0.4
-    elseif term.direction == "vertical" then
-      return vim.o.columns * 0.4
-    end
-  end,
-})
-require('aider').setup()
-
-" Key mappings
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
-vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
-vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
-vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
-EOF
-```
-
-### Using [packer.nvim](https://github.com/wbthomason/packer.nvim)
-
-```lua
-use { "willothy/flatten.nvim", config = true }
-use {
-  "akinsho/toggleterm.nvim",
-  config = function()
-    require("toggleterm").setup({
-      shade_terminals = false,
-      direction = "float",
-      float_opts = {
-        border = "curved",
-        title_pos = "center",
-      },
-      close_on_exit = true,
-      size = function(term)
-        if term.direction == "horizontal" then
-          return vim.o.lines * 0.4
-        elseif term.direction == "vertical" then
-          return vim.o.columns * 0.4
-        end
-      end,
-    })
-  end
-}
-use {
-  "aweis89/aider.nvim",
-  requires = {
-    "akinsho/toggleterm.nvim",
-    -- Choose one of:
-    "ibhagwan/fzf-lua",
-    -- or
-    "nvim-telescope/telescope.nvim",
-    "willothy/flatten.nvim",
-  },
-  config = function()
-    require("aider").setup()
-  end,
-  keys = {
-    { "<leader>a<space>", "<cmd>AiderToggle<CR>", desc = "Toggle Aider (default)" },
-    { "<leader>av", "<cmd>AiderToggle vertical<CR>", desc = "Toggle Aider vertical split" },
-    { "<leader>ah", "<cmd>AiderToggle horizontal<CR>", desc = "Toggle Aider horizontal split" },
-    { "<leader>af", "<cmd>AiderToggle float<CR>", desc = "Toggle Aider floating window" },
-    { "<leader>al", "<cmd>AiderLoad<CR>", desc = "Add file to aider" },
-    { "<leader>ad", "<cmd>AiderAsk<CR>", desc = "Ask with selection", mode = { "v", "n" } },
-  },
-}
-```
-
-### Using [dein.vim](https://github.com/Shougo/dein.vim)
-
-```vim
-call dein#add('willothy/flatten.nvim')
-call dein#add('akinsho/toggleterm.nvim')
-" Choose one of:
-call dein#add('ibhagwan/fzf-lua')
-" or
-call dein#add('nvim-telescope/telescope.nvim')
-call dein#add('aweis89/aider.nvim')
-
-" After loading plugins, add the setup:
-lua << EOF
-require('flatten').setup()
-require('toggleterm').setup({
-  shade_terminals = false,
-  direction = "float",
-  float_opts = {
-    border = "curved",
-    title_pos = "center",
-  },
-  close_on_exit = true,
-  size = function(term)
-    if term.direction == "horizontal" then
-      return vim.o.lines * 0.4
-    elseif term.direction == "vertical" then
-      return vim.o.columns * 0.4
-    end
-  end,
-})
-require('aider').setup()
-
-" Key mappings
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
-vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
-vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
-vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
-EOF
-```
-
-### Using [Vundle.vim](https://github.com/VundleVim/Vundle.vim)
-
-```vim
-Plugin 'willothy/flatten.nvim'
-Plugin 'akinsho/toggleterm.nvim'
-" Choose one of:
-Plugin 'ibhagwan/fzf-lua'
-" or
-Plugin 'nvim-telescope/telescope.nvim'
-Plugin 'aweis89/aider.nvim'
-
-" After Plugin commands, add the setup:
-lua << EOF
-require('flatten').setup()
-require('toggleterm').setup({
-  shade_terminals = false,
-  direction = "float",
-  float_opts = {
-    border = "curved",
-    title_pos = "center",
-  },
-  close_on_exit = true,
-  size = function(term)
-    if term.direction == "horizontal" then
-      return vim.o.lines * 0.4
-    elseif term.direction == "vertical" then
-      return vim.o.columns * 0.4
-    end
-  end,
-})
-require('aider').setup()
-
-" Key mappings
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { desc = 'Toggle Aider (default)' })
-vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { desc = 'Toggle Aider vertical split' })
-vim.keymap.set('n', '<leader>ah', '<cmd>AiderToggle horizontal<CR>', { desc = 'Toggle Aider horizontal split' })
-vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { desc = 'Toggle Aider floating window' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { desc = 'Add file to aider' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ad', '<cmd>AiderAsk<CR>', { desc = 'Ask with selection' })
-EOF
-```
-
 ## Commands
 
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
@@ -279,48 +94,11 @@ EOF
   - `horizontal` - Switch to horizontal split
   - `float` - Switch to floating window (default)
   - `tab` - Switch to new tab
-  - When called without a direction argument, it opens in the to the last specified direction (or the toggleterm specified default). With a direction argument, will switch the terminal to that layout (even if already open).
+  - When called without a direction argument, it opens in the to the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
 
-- `:AiderLoad [files...]` - Load files into Aider session
+- `:AiderLoad [files...]` - Load files into Aider session, defaults to the current file when no args are specified
 - `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
 - `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
-
-Example commands for common prompts:
-
-```vim
-" In your vimrc/init.vim:
-command! -range AiderExplain execute "normal! '<,'>AiderSend /ask Explain this code"
-command! -range AiderOptimize execute "normal! '<,'>AiderSend Please optimize this code for performance"
-command! -range AiderTest execute "normal! '<,'>AiderSend Please write tests for this code"
-command! -range AiderDoc execute "normal! '<,'>AiderSend Please add documentation for this code"
-```
-
-Or using Lua in your init.lua:
-
-```lua
--- Create user commands for common Aider interactions
-local aider_commands = {
-  AiderExplain = "/ask Explain this code",
-  AiderOptimize = "Please optimize this code for performance",
-  AiderTest = "Please write tests for this code",
-  AiderDoc = "Please add documentation for this code"
-}
-
--- Register all commands
-for cmd_name, prompt in pairs(aider_commands) do
-  vim.api.nvim_create_user_command(cmd_name,
-    string.format([[execute "normal! '<,'>AiderSend %s"]], prompt),
-    { range = true }
-  )
-end
-```
-
-These can be used in visual mode like:
-
-- `:AiderExplain` - Get an explanation of the selected code
-- `:AiderOptimize` - Request performance optimization
-- `:AiderTest` - Generate tests for the selection
-- `:AiderDoc` - Add documentation to the selected code
 
 ## FZF-lua Integration
 
@@ -329,6 +107,7 @@ When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
+  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
 - FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
 
 ## Telescope Integration
@@ -338,6 +117,7 @@ When Telescope is installed, you can use `<C-l>` in any file picker to load file
 - Single file: Navigate to a file and press `<C-l>` to load it into Aider.
 - Multiple files: Use multi-select to choose files, then press `<C-l>` to load all selected files.
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
+  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
 
 ## Configuration
 
@@ -345,50 +125,52 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-    -- Command to use for editor (defaults to nvim with special wq handling)
-    editor_command = nil,
+ -- Enable the new `--watch-files` feature so Aider will auto respond to AI/AI! comments
+ watch_files = true,
 
-    -- Change the FZF action key (defaults to 'ctrl-l')
-    fzf_action_key = 'ctrl-l',
+ -- Always start Aider so it's ready to react to your comments.
+ -- Alternatively run `AiderSpawn` manually to start on-demand
+ spawn_on_startup = true,
 
-    -- Change the Telescope action key (defaults to '<C-l>')
-    telescope_action_key = '<C-l>',
+ -- Editor command to run when triggered via `/editor`.
+ -- Defaults to using flatten plugin to trigger a none-nested neovim session
+ editor_command = nil,
 
-    -- Set default arguments for aider CLI
-    aider_args = "",
+ -- Trigger key to run when in fzf-lua to `/add` selected file/s to Aider.
+ fzf_action_key = "ctrl-l",
+ -- Trigger key to run when in telescope to `/add` selected file/s to Aider.
+ telescope_action_key = "<C-l>",
 
-    -- Optional command to run after Aider updates a file
-    update_hook_cmd = "Diffview HEAD^",
+ -- Command used to notify on Aider activity.
+ -- For a low-intrusive option, enable [fidget](https://github.com/j-hui/fidget.nvim)
+ -- e.x. `notify = require("fidget").notify
+ notify = vim.notify,
 
-    -- Configure toggleterm settings
-    toggleterm = {
-        -- Window layout type: 'float', 'vertical', 'horizontal'
-        direction = "vertical",
+ -- Add additional args to aider,
+ -- .e.x `aider_args = "--no-git"` to disable auto git commits.
+ aider_args = "",
 
-        -- Terminal size (0-1 for percentage, >1 for absolute size)
-        size = 0.4, -- 40% of screen
+ -- Add additional commands to run after Aider updates file/s.
+ -- E.x. you can auto trigger diffs with the diffview plugin.
+ -- With `--no-git` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
+ -- Or with git enabled diff the last commit: `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
+ after_update_hook = nil,
 
-        -- Float window options
-        float_opts = {
-            border = "curved",
-            width = 40,  -- Percentage of screen width
-            height = 40, -- Percentage of screen height
-        },
-    }
+ toggleterm = {
+  -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
+  direction = "vertical",
+
+  -- specify a size for the horizontal or vertical
+  size = function(term)
+   if term.direction == "horizontal" then
+    return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+   elseif term.direction == "vertical" then
+    return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+   end
+  end,
+ },
 })
 ```
-
-### Update Hook
-
-You can specify a custom command to run after Aider updates a file. This is useful for running additional actions like linting, formatting, or running tests. For example:
-
-```lua
-require('aider').setup({
-    update_hook_cmd = "Diffview HEAD^"  -- Show diff of changes after update
-})
-```
-
-In this example, every time Aider updates a file, it will automatically open a Diffview comparing the changes with the previous HEAD commit.
 
 ### Dark Mode
 
@@ -403,8 +185,6 @@ You can customize the editor command in your setup if needed. For example, if yo
 ```lua
 editor_command = "tmux popup -E nvim"
 ```
-
-The default FZF action key is `ctrl-l`, but this can be customized using the `fzf_action_key` option during setup.
 
 ## Usage Examples
 
@@ -433,33 +213,6 @@ The default FZF action key is `ctrl-l`, but this can be customized using the `fz
    - Aider will respond in the terminal window
 
 ## Tips
-
-### Terminal mappings
-
-For terminal mappings to take effect in floats, you need to use `TermOpen` autocommand, e.x.:
-
-```lua
-vim.api.nvim_create_autocmd("TermOpen", {
-  callback = function()
-    local function tmap(key, val)
-      vim.api.nvim_buf_set_keymap(0, "t", key, val, { noremap = true, silent = true })
-    end
-    -- exit insert mode
-    tmap("<Esc>", "<C-\\><C-n>")
-    tmap("jj", "<C-\\><C-n>")
-    -- enter command mode
-    tmap(":", "<C-\\><C-n>:")
-    -- scrolling up/down
-    tmap("<C-u>", "<C-\\><C-n><C-u>")
-    tmap("<C-d>", "<C-\\><C-n><C-d>")
-    -- remove line numbers
-    vim.wo.number = false
-    vim.wo.relativenumber = false
-    -- auto start terminal in insert mode
-    vim.cmd("startinsert")
-  end,
-})
-```
 
 ## License
 

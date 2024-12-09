@@ -10,7 +10,7 @@ local M = {
 ---
 --- This function manages a notification that can be updated incrementally,
 --- tracking and displaying only new content since the last update.
-local function create_persistent_notification(title, id)
+function M.create_persistent_notification(title, id)
 	local last_content_length = 0
 	local is_suppressed = false
 
@@ -35,13 +35,7 @@ local function create_persistent_notification(title, id)
 
 		-- Only notify if we have new content, display is true, and no prompt
 		if display and #new_content > 0 and not has_prompt then
-			local use_fidget, fidget = pcall(require, "fidget")
-			local notify = vim.notify
-			if use_fidget then
-				notify = fidget.notify
-			end
-
-			notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
+			M.values.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
 				id = id,
 				title = title,
 				replace = id,
@@ -107,8 +101,8 @@ end
 ---
 --- @param cmd string The command to run in the terminal
 --- @return table A new Terminal instance configured for Aider interactions
-local function create_aider_terminal(cmd)
-	local notification_handler = create_persistent_notification("Aider.nvim", "aider")
+function M.create_aider_terminal(cmd)
+	local notification_handler = M.create_persistent_notification("Aider.nvim", "aider")
 	local buffer = {}
 
 	local terminal = Terminal:new({
@@ -130,20 +124,18 @@ local function create_aider_terminal(cmd)
 	})
 
 	terminal.on_stdout = function(term, _, data, _)
-		if config.values.use_notifications then
-			for _, line in ipairs(data) do
-				local clean_line = clean_output(line)
-				if clean_line ~= "" then
-					table.insert(buffer, clean_line)
-				end
+		for _, line in ipairs(data) do
+			local clean_line = clean_output(line)
+			if clean_line ~= "" then
+				table.insert(buffer, clean_line)
 			end
+		end
 
-			local new_content = notification_handler.add_text(buffer, not term:is_focused())
+		local new_content = notification_handler.add_text(buffer, not term:is_focused())
 
-			-- Focus terminal immediately if we detect a prompt
-			if table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o") then
-				terminal:focus()
-			end
+		-- Focus terminal immediately if we detect a prompt
+		if table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o") then
+			terminal:focus()
 		end
 	end
 
@@ -174,9 +166,11 @@ function M.laod_files_in_aider(selected, opts)
 	local command = M.aider_command(paths)
 	vim.notify("Running: " .. command)
 
-	M.term = create_aider_terminal(command)
+	M.term = M.create_aider_terminal(command)
 
-	M.term:open(M.size, M.direction)
+	if not M.values.watch_files then
+		M.term:open(M.size, M.direction)
+	end
 end
 
 function M.aider_command(paths)
@@ -229,7 +223,7 @@ end
 function M.spawn(paths)
 	if not M.term then
 		local cmd = M.aider_command(paths)
-		M.term = create_aider_terminal(cmd)
+		M.term = M.create_aider_terminal(cmd)
 	end
 	M.toggle_aider_window()
 	M.toggle_aider_window()
