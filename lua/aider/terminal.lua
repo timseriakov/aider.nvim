@@ -227,6 +227,10 @@ function M.ask_aider(prompt, selection)
 
 	command = "/ask " .. prompt
 	M.send_command_to_aider(command)
+
+	if not M.term:is_open() then
+		M.term:open()
+	end
 end
 
 return M
