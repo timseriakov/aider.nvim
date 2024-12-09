@@ -32,7 +32,7 @@ local function aider_action(prompt_bufnr)
 	end
 
 	actions.close(prompt_bufnr)
-	terminal.load_files_in_aider(paths)
+	terminal.load_aider(paths)
 end
 
 return telescope.register_extension({
