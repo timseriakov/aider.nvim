@@ -72,16 +72,7 @@ function M.create_aider_terminal(cmd)
 				end
 
 				if line:match("%(Y%)es/%(N%)o") then
-					if not config.values.confirm_with_vim_ui then
-						term:open()
-						return
-					end
-					vim.ui.input({ prompt = clean_output(line) }, function(res)
-						local input, _ = res:gsub("^%s*(.-)%s*$", "%1")
-						if input and #input > 0 then
-							term:send(input)
-						end
-					end)
+					term:open()
 					return
 				end
 
