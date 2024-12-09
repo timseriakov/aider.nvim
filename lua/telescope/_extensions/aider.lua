@@ -13,18 +13,26 @@ local function aider_action(prompt_bufnr)
 	local selections = {}
 
 	for _, entry in ipairs(picker:get_multi_selection()) do
-		table.insert(selections, entry.path or entry.value)
+		local path = entry.path or entry.filename or entry.value
+		if path then
+			-- Create a file_info-like object
+			table.insert(selections, { path = path })
+		end
 	end
 
 	if #selections == 0 then
 		local selection = action_state.get_selected_entry()
 		if selection then
-			table.insert(selections, selection.path or selection.value)
+			local path = selection.path or selection.filename or selection.value
+			if path then
+				-- Create a file_info-like object
+				table.insert(selections, { path = path })
+			end
 		end
 	end
 
 	actions.close(prompt_bufnr)
-	terminal.laod_files_in_aider(selections)
+	terminal.load_files_in_aider(selections)
 end
 
 return telescope.register_extension({
