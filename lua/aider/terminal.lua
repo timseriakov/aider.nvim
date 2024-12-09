@@ -5,57 +5,6 @@ local M = {
 	term = nil,
 }
 
---- Create a persistent notification with incremental updates
----
---- This function manages a notification that can be updated incrementally,
---- tracking and displaying only new content since the last update.
-function M.create_persistent_notification(title, id)
-	local last_content_length = 0
-	local is_suppressed = false
-
-	local function add_text(data, display)
-		-- Don't process if notifications are suppressed
-		if is_suppressed then
-			return {}
-		end
-
-		local new_content = {}
-		for i = last_content_length + 1, #data do
-			local clean_line = data[i]
-			if clean_line ~= "" then
-				table.insert(new_content, clean_line)
-			end
-		end
-
-		last_content_length = #data
-
-		-- Check for Yes/No prompt before sending notification
-		local has_prompt = table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o")
-
-		-- Only notify if we have new content, display is true, and no prompt
-		if display and #new_content > 0 and not has_prompt then
-			vim.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
-				id = id,
-				title = title,
-				replace = id,
-			})
-		end
-
-		return new_content
-	end
-
-	-- Add methods to control notification suppression
-	return {
-		add_text = add_text,
-		suppress = function()
-			is_suppressed = true
-		end,
-		resume = function()
-			is_suppressed = false
-		end,
-	}
-end
-
 local function clean_output(line)
 	-- Remove EOF delimiters
 	line = line:gsub(".*{EOF.*", "")
@@ -101,9 +50,6 @@ end
 --- @param cmd string The command to run in the terminal
 --- @return table A new Terminal instance configured for Aider interactions
 function M.create_aider_terminal(cmd)
-	local notification_handler = M.create_persistent_notification("Aider.nvim", "aider")
-	local buffer = {}
-
 	local terminal = Terminal:new({
 		cmd = cmd,
 		hidden = true,
@@ -114,27 +60,29 @@ function M.create_aider_terminal(cmd)
 		on_exit = function()
 			M.term = nil
 		end,
-		on_open = function()
-			notification_handler.suppress()
-		end,
-		on_close = function()
-			notification_handler.resume()
-		end,
 	})
 
+	-- update reame to describe what this does ai!
 	terminal.on_stdout = function(term, _, data, _)
 		for _, line in ipairs(data) do
-			local clean_line = clean_output(line)
-			if clean_line ~= "" then
-				table.insert(buffer, clean_line)
+			if terminal:is_open() then
+				return
 			end
-		end
 
-		local new_content = notification_handler.add_text(buffer, not term:is_focused())
+			if line:match("%(Y%)es/%(N%)o") then
+				terminal:open()
+				return
+			end
 
-		-- Focus terminal immediately if we detect a prompt
-		if table.concat(new_content, "\n"):match("%(Y%)es/%(N%)o") then
-			terminal:focus()
+			local msg = clean_output(line)
+			if #msg > 0 then
+				vim.notify(msg, vim.log.levels.INFO, {
+					id = "aider",
+					title = "Aider.nvim",
+					replace = "aider",
+					hidden = false,
+				})
+			end
 		end
 	end
 
@@ -142,26 +90,25 @@ function M.create_aider_terminal(cmd)
 end
 
 ---Load files into aider session
----@param selected table Selected files or paths
----@param opts table|nil Additional options
-function M.load_files_in_aider(selected, opts)
-	local path_args = ""
-	if selected then
-		path_args = table.concat(selected, " ")
+---@param files table|nil Files or path
+function M.load_aider(files)
+	files = files or {}
+	local path_args = table.concat(files, " ")
 
-		if M.term then
-			local add_paths = "/add " .. path_args
-			vim.notify("Running: " .. add_paths)
-			M.term:send(add_paths)
-			return
+	if not M.term then
+		local command = M.aider_command(path_args)
+		vim.notify("Running: " .. command)
+		M.term = M.create_aider_terminal(command)
+		if not config.values.watch_files then
+			M.term:open(M.size, M.direction)
 		end
+		return
 	end
 
-	local command = M.aider_command(path_args)
-	vim.notify("Running: " .. command)
-	M.term = M.create_aider_terminal(command)
-	if not config.values.watch_files then
-		M.term:open(M.size, M.direction)
+	if #files > 0 then
+		local add_paths = "/add " .. path_args
+		M.term:send(add_paths)
+		return
 	end
 end
 
@@ -232,7 +179,7 @@ function M.toggle_aider_window(size, direction)
 		if direction then
 			M.direction = direction
 		end
-		M.load_files_in_aider({})
+		M.load_aider()
 		return
 	end
 
@@ -257,7 +204,7 @@ end
 --- M.send_command_to_aider("Some complex\nmulti-line command")
 function M.send_command_to_aider(command)
 	if not M.term then
-		M.load_files_in_aider({})
+		M.load_aider()
 	end
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
 	M.term:send(multi_line_command)
