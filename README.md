@@ -172,47 +172,9 @@ require('aider').setup({
 })
 ```
 
-### Dark Mode
+### Auto Dark Mode Detection
 
 The plugin automatically sets the `--dark-mode` flag when Neovim's `background` option is set to "dark". This ensures aider's UI matches your Neovim theme.
-
-### Editor Command Behavior
-
-The plugin uses flatten.nvim to handle the `/editor` command, which allows for proper nested Neovim sessions. When you use the `/editor` command in Aider, it will open a new buffer to format your prompt. The plugin remaps `wq` in this buffer to write the file and return to your Aider session seamlessly.
-
-You can customize the editor command in your setup if needed. For example, if you prefer using tmux:
-
-```lua
-editor_command = "tmux popup -E nvim"
-```
-
-## Usage Examples
-
-1. Toggle Aider window:
-
-```vim
-:AiderToggle
-```
-
-2. Load current file into Aider:
-
-```vim
-:AiderLoad
-```
-
-3. Load specific files:
-
-```vim
-:AiderLoad path/to/file1.lua path/to/file2.lua
-```
-
-4. Ask about code:
-   - Select code in visual mode
-   - Run `:AiderAsk`
-   - Enter your prompt
-   - Aider will respond in the terminal window
-
-## Tips
 
 ## License
 
