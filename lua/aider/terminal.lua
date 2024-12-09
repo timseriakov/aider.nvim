@@ -59,12 +59,13 @@ function M.create_aider_terminal(cmd)
 		auto_scroll = true,
 		direction = config.values.toggleterm.direction,
 		size = config.values.toggleterm.size,
+		start_in_insert = true,
 		on_exit = function()
 			M.term = nil
 		end,
 	})
 
-	-- /ask can you lookup these docs https://github.com/akinsho/toggleterm.nvim/blob/main/lua/toggleterm/terminal.lua and tell me if this is correct ai!
+	-- /ask  can you lookup these docs https://github.com/akinsho/toggleterm.nvim/blob/main/lua/toggleterm/terminal.lua and tell me if this is correct ai!
 	terminal.on_stdout = function(term, _, data, _)
 		for _, line in ipairs(data) do
 			if terminal:is_open() then
@@ -72,8 +73,10 @@ function M.create_aider_terminal(cmd)
 			end
 
 			if line:match("%(Y%)es/%(N%)o") then
-				vim.ui.input({ prompt = line }, function(input)
-					terminal:send(input)
+				vim.ui.input({ prompt = clean_output(line) }, function(input)
+					if input and #input > 0 then
+						terminal:send(input)
+					end
 				end)
 				-- terminal:open()
 				return
