@@ -110,16 +110,32 @@ return {
 require('packer').startup(function(use)
   use {
     "aweis89/aider.nvim",
-    requires = {
+    dependencies = {
+      -- required for core functionality
       "akinsho/toggleterm.nvim",
-      "nvim-telescope/telescope.nvim", -- or "ibhagwan/fzf-lua"
-      "willothy/flatten.nvim", -- only if you care about using /editor command
+
+      -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
+      "nvim-telescope/telescope.nvim",
+
+      -- Optional, but great for diff viewing and after_update_hook integration
+      "sindrets/diffview.nvim",
+
+      -- Optional but great option for viewing Aider output
+      "j-hui/fidget.nvim",
+      
+      -- Only if you care about using the /editor command
+      "willothy/flatten.nvim",
     },
     config = function()
       require('aider').setup({
+        -- Auto trigger diffview after Aider's file changes
         after_update_hook = function()
           require("diffview").open({ "HEAD^" })
-        end
+        end,
+        -- Customize how Aider output is viewed
+        notify = function(...)
+          require("fidget").notify(...)
+        end,
       })
     end
   }
@@ -132,14 +148,21 @@ end)
 call plug#begin()
 Plug 'aweis89/aider.nvim'
 Plug 'akinsho/toggleterm.nvim'
-Plug 'nvim-telescope/telescope.nvim' " or 'ibhagwan/fzf-lua'
-Plug 'willothy/flatten.nvim' " only if you care about using /editor command
+Plug 'nvim-telescope/telescope.nvim' " for fuzzy file `/add`ing functionality
+Plug 'sindrets/diffview.nvim' " Optional, but great for diff viewing
+Plug 'j-hui/fidget.nvim' " Optional but great option for viewing Aider output
+Plug 'willothy/flatten.nvim' " Only if you care about using /editor command
 
 lua << EOF
 require('aider').setup({
+  -- Auto trigger diffview after Aider's file changes
   after_update_hook = function()
     require("diffview").open({ "HEAD^" })
-  end
+  end,
+  -- Customize how Aider output is viewed
+  notify = function(...)
+    require("fidget").notify(...)
+  end,
 })
 EOF
 call plug#end()
