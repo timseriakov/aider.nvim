@@ -62,7 +62,10 @@ function M.create_aider_terminal(cmd)
 		end,
 	})
 
-	-- update reame to describe what this does ai!
+	-- Handle terminal output by processing each line:
+	-- 1. Check if terminal is already open
+	-- 2. Detect and open terminal for interactive prompts
+	-- 3. Clean and notify non-empty output messages
 	terminal.on_stdout = function(term, _, data, _)
 		for _, line in ipairs(data) do
 			if terminal:is_open() then
