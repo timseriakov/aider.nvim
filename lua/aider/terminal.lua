@@ -57,6 +57,8 @@ function M.create_aider_terminal(cmd)
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = true,
+		direction = config.values.toggleterm.direction,
+		size = config.values.toggleterm.size,
 		on_exit = function()
 			M.term = nil
 		end,
