@@ -12,6 +12,7 @@
 ---@field after_update_hook function|nil
 ---@field notify function
 ---@field watch_files boolean
+---@field confirm_with_vim_ui boolean
 
 local M = {}
 
@@ -28,6 +29,7 @@ M.defaults = {
 	aider_args = "",
 	spawn_on_startup = true,
 	after_update_hook = nil,
+	confirm_with_vim_ui = false,
 	toggleterm = {
 		direction = "vertical",
 		size = function(term)

@@ -63,35 +63,39 @@ function M.create_aider_terminal(cmd)
 		on_exit = function()
 			M.term = nil
 		end,
-	})
 
-	terminal.on_stdout = function(term, _, data, _)
-		for _, line in ipairs(data) do
-			if terminal:is_open() then
-				return
-			end
+		on_stdout = function(term, _, data, _)
+			for _, line in ipairs(data) do
+				if term:is_open() then
+					return
+				end
 
-			if line:match("%(Y%)es/%(N%)o") then
-				vim.ui.input({ prompt = clean_output(line) }, function(input)
-					if input and #input > 0 then
-						terminal:send(input)
+				if line:match("%(Y%)es/%(N%)o") then
+					if not config.values.confirm_with_vim_ui then
+						term:open()
+						return
 					end
-				end)
-				-- terminal:open()
-				return
-			end
+					vim.ui.input({ prompt = clean_output(line) }, function(res)
+						local input = res:strip()
+						if input and #input > 0 then
+							term:send(input)
+						end
+					end)
+					return
+				end
 
-			local msg = clean_output(line)
-			if #msg > 0 then
-				local id = "aider"
-				config.values.notify(msg, vim.log.levels.INFO, {
-					title = "Aider.nvim",
-					id = id,
-					replace = id,
-				})
+				local msg = clean_output(line)
+				if #msg > 0 then
+					local id = "aider"
+					config.values.notify(msg, vim.log.levels.INFO, {
+						title = "Aider.nvim",
+						id = id,
+						replace = id,
+					})
+				end
 			end
-		end
-	end
+		end,
+	})
 
 	return terminal
 end
