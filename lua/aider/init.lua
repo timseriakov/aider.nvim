@@ -11,6 +11,7 @@
 ---@field float_opts table<string, any>?
 ---@field after_update_hook function|nil
 ---@field notify function
+---@filed watch_files bool
 
 local M = {}
 

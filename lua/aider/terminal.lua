@@ -1,5 +1,4 @@
 local Terminal = require("toggleterm.terminal").Terminal
-local path = require("fzf-lua.path")
 local config = require("aider")
 
 local M = {
@@ -35,7 +34,7 @@ function M.create_persistent_notification(title, id)
 
 		-- Only notify if we have new content, display is true, and no prompt
 		if display and #new_content > 0 and not has_prompt then
-			M.values.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
+			vim.notify(table.concat(new_content, "\n"), vim.log.levels.INFO, {
 				id = id,
 				title = title,
 				replace = id,
@@ -145,17 +144,22 @@ end
 ---Load files into aider session
 ---@param selected table Selected files or paths
 ---@param opts table|nil Additional options
-function M.laod_files_in_aider(selected, opts)
+function M.load_files_in_aider(selected, opts)
+	local use_fzf, fzf_path = pcall(require, "fzf-lua.path")
+
 	local paths = ""
 	if selected then
 		local cleaned_paths = {}
 		for _, entry in ipairs(selected) do
-			local file_info = path.entry_to_file(entry, opts)
+			local file_info = entry
+			if use_fzf then
+				file_info = fzf_path.entry_to_file(entry, opts)
+			end
 			table.insert(cleaned_paths, file_info.path)
 		end
 		paths = table.concat(cleaned_paths, " ")
 
-		if M.term and M.term:is_open() then
+		if M.term then
 			local add_paths = "/add " .. paths
 			vim.notify("Running: " .. add_paths)
 			M.term:send(add_paths)
@@ -168,7 +172,7 @@ function M.laod_files_in_aider(selected, opts)
 
 	M.term = M.create_aider_terminal(command)
 
-	if not M.values.watch_files then
+	if not config.values.watch_files then
 		M.term:open(M.size, M.direction)
 	end
 end
@@ -240,7 +244,7 @@ function M.toggle_aider_window(size, direction)
 		if direction then
 			M.direction = direction
 		end
-		M.laod_files_in_aider({})
+		M.load_files_in_aider({})
 		return
 	end
 
@@ -265,7 +269,7 @@ end
 --- M.send_command_to_aider("Some complex\nmulti-line command")
 function M.send_command_to_aider(command)
 	if not M.term then
-		M.laod_files_in_aider({})
+		M.load_files_in_aider({})
 	end
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
 	M.term:send(multi_line_command)
