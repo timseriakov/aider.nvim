@@ -86,6 +86,47 @@ return {
 }
 ```
 
+### Using [Packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+require('packer').startup(function(use)
+  use {
+    "aweis89/aider.nvim",
+    requires = {
+      "akinsho/toggleterm.nvim",
+      "nvim-telescope/telescope.nvim", -- or "ibhagwan/fzf-lua"
+      "willothy/flatten.nvim", -- only if you care about using /editor command
+    },
+    config = function()
+      require('aider').setup({
+        after_update_hook = function()
+          require("diffview").open({ "HEAD^" })
+        end
+      })
+    end
+  }
+end)
+```
+
+### Using [vim-plug](https://github.com/junegunn/vim-plug)
+
+```lua
+call plug#begin()
+Plug 'aweis89/aider.nvim'
+Plug 'akinsho/toggleterm.nvim'
+Plug 'nvim-telescope/telescope.nvim' " or 'ibhagwan/fzf-lua'
+Plug 'willothy/flatten.nvim' " only if you care about using /editor command
+
+lua << EOF
+require('aider').setup({
+  after_update_hook = function()
+    require("diffview").open({ "HEAD^" })
+  end
+})
+EOF
+call plug#end()
+```
+
 ## Commands
 
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
