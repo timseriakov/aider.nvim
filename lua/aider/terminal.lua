@@ -65,7 +65,6 @@ function M.create_aider_terminal(cmd)
 		end,
 	})
 
-	-- /ask  can you lookup these docs https://github.com/akinsho/toggleterm.nvim/blob/main/lua/toggleterm/terminal.lua and tell me if this is correct ai!
 	terminal.on_stdout = function(term, _, data, _)
 		for _, line in ipairs(data) do
 			if terminal:is_open() then
