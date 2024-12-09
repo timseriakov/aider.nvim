@@ -137,6 +137,14 @@ require('packer').startup(function(use)
           require("fidget").notify(...)
         end,
       })
+
+      -- Add keymaps
+      local opts = { noremap = true, silent = true }
+      vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider (default)' }))
+      vim.keymap.set('n', '<leader>ac', '<cmd>AiderSend /commit<CR>', vim.tbl_extend('force', opts, { desc = 'Aider commit' }))
+      vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
+      vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
+      vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Ask with selection' }))
     end
   }
 end)
@@ -164,6 +172,13 @@ require('aider').setup({
     require("fidget").notify(...)
   end,
 })
+
+-- Add keymaps
+vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', { noremap = true, silent = true, desc = 'Toggle Aider (default)' })
+vim.keymap.set('n', '<leader>ac', '<cmd>AiderSend /commit<CR>', { noremap = true, silent = true, desc = 'Aider commit' })
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
+vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', { noremap = true, silent = true, desc = 'Ask with selection' })
 EOF
 call plug#end()
 ```
