@@ -145,33 +145,21 @@ end
 ---@param selected table Selected files or paths
 ---@param opts table|nil Additional options
 function M.load_files_in_aider(selected, opts)
-	local use_fzf, fzf_path = pcall(require, "fzf-lua.path")
-
-	local paths = ""
+	local path_args = ""
 	if selected then
-		local cleaned_paths = {}
-		for _, entry in ipairs(selected) do
-			local file_info = entry
-			if use_fzf then
-				file_info = fzf_path.entry_to_file(entry, opts)
-			end
-			table.insert(cleaned_paths, file_info.path)
-		end
-		paths = table.concat(cleaned_paths, " ")
+		path_args = table.concat(selected, " ")
 
 		if M.term then
-			local add_paths = "/add " .. paths
+			local add_paths = "/add " .. path_args
 			vim.notify("Running: " .. add_paths)
 			M.term:send(add_paths)
 			return
 		end
 	end
 
-	local command = M.aider_command(paths)
+	local command = M.aider_command(path_args)
 	vim.notify("Running: " .. command)
-
 	M.term = M.create_aider_terminal(command)
-
 	if not config.values.watch_files then
 		M.term:open(M.size, M.direction)
 	end

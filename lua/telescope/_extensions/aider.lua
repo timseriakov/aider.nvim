@@ -10,29 +10,29 @@ local config = require("aider")
 
 local function aider_action(prompt_bufnr)
 	local picker = action_state.get_current_picker(prompt_bufnr)
-	local selections = {}
+	local paths = {}
 
 	for _, entry in ipairs(picker:get_multi_selection()) do
 		local path = entry.path or entry.filename or entry.value
 		if path then
 			-- Create a file_info-like object
-			table.insert(selections, { path = path })
+			table.insert(paths, path)
 		end
 	end
 
-	if #selections == 0 then
+	if #paths == 0 then
 		local selection = action_state.get_selected_entry()
 		if selection then
 			local path = selection.path or selection.filename or selection.value
 			if path then
 				-- Create a file_info-like object
-				table.insert(selections, { path = path })
+				table.insert(paths, path)
 			end
 		end
 	end
 
 	actions.close(prompt_bufnr)
-	terminal.load_files_in_aider(selections)
+	terminal.load_files_in_aider(paths)
 end
 
 return telescope.register_extension({
