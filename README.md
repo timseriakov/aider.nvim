@@ -19,7 +19,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Can be used to create custom prompts
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
 - Load files into Aider session
-  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file or specify file args
+  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args in either mode
   - You can use fzf-lua or telescope to select files (multi-select supported) with any file viewer (git_files, buffers..)
 - Ask questions about code with visual selection support
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
@@ -30,8 +30,10 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 ## Prerequisites
 
 - Neovim 0.5+
-- [Aider](https://github.com/paul-gauthier/aider) installed (`pip install aider-chat`)
-- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) (required for terminal management)
+- [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`)
+- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management
+- [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration bellow
+- [fidget](https://github.com/j-hui/fidget.nvim) is optional but it is the recommended way to show Aider activity, see configuration bellow
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
 - [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
 
@@ -188,12 +190,12 @@ require('aider').setup({
  notify = vim.notify,
 
  -- Add additional args to aider,
- -- .e.x `aider_args = "--no-git"` to disable auto git commits.
+ -- .e.x `aider_args = "--no-auto-commit"` to disable auto git commits.
  aider_args = "",
 
  -- Add additional commands to run after Aider updates file/s.
  -- E.x. you can auto trigger diffs with the diffview plugin.
- -- With `--no-git` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
+ -- With `--no-auto-commit` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
  -- Or with git enabled diff the last commit: `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
  after_update_hook = nil,
 
