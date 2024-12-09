@@ -46,11 +46,16 @@ return {
   {
     "aweis89/aider.nvim",
     dependencies = {
-      "akinsho/toggleterm.nvim", -- required for core functionality
-      "nvim-telescope/telescope.nvim", -- or "ibhagwan/fzf-lua" for fuzzy file `/add`ing functionality
-       -- only if you want to use for diff viewing and/or in the after_update_hook bellow
+       -- required for core functionality
+      "akinsho/toggleterm.nvim",
+
+       -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
+      "nvim-telescope/telescope.nvim",
+
+      -- Optional, but great for diff viewing and after_update_hook integration
       "sindrets/diffview.nvim",
-       -- only if you care about using the /editor command
+
+      -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
     },
     lazy = false,
