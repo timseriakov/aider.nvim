@@ -41,14 +41,15 @@ local function clean_output(line)
 	return line
 end
 
---- Create a persistent terminal for Aider interactions
+--- Create a new terminal for the Aider session
 ---
---- This function sets up a terminal using toggleterm with custom output handling
---- and notification management. It cleans terminal output, manages a buffer of
---- output lines, and provides persistent notifications.
+--- This function initializes a new terminal using toggleterm with specific
+--- configuration for the Aider AI assistant. It handles various terminal
+--- behaviors like floating window options, stdout processing, and user
+--- interaction for confirmations.
 ---
---- @param cmd string The command to run in the terminal
---- @return table A new Terminal instance configured for Aider interactions
+--- @param cmd string The command to run in the terminal (typically the aider command)
+--- @return table A configured terminal object ready to be used
 function M.create_aider_terminal(cmd)
 	local terminal = Terminal:new({
 		cmd = cmd,
@@ -76,7 +77,7 @@ function M.create_aider_terminal(cmd)
 						return
 					end
 					vim.ui.input({ prompt = clean_output(line) }, function(res)
-						local input = res:strip()
+						local input, _ = res:gsub("^%s*(.-)%s*$", "%1")
 						if input and #input > 0 then
 							term:send(input)
 						end
