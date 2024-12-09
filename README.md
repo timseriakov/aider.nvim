@@ -183,7 +183,7 @@ require('aider').setup({
  telescope_action_key = "<C-l>",
 
  -- Command used to notify on Aider activity.
- -- For a low-intrusive option, enable [fidget](https://github.com/j-hui/fidget.nvim)
+ -- For a low-intrusive option that works great with Aider.nvim, try [fidget](https://github.com/j-hui/fidget.nvim)
  -- e.x. `notify = require("fidget").notify
  notify = vim.notify,
 

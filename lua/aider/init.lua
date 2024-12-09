@@ -22,7 +22,9 @@ M.defaults = {
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",
-	notify = vim.notify,
+	notify = function(msg, level, opts)
+		vim.notify(msg, level, opts)
+	end,
 	aider_args = "",
 	spawn_on_startup = true,
 	after_update_hook = nil,
