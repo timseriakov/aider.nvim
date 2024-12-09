@@ -10,7 +10,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - When in background mode (default):
   - Get live streamed notifications as Aider is processing
   - The terminal will automatically be brought to the foreground if Aider prompts for input
-  - Will default to using the `--watch-file`
+  - Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
     - So that all open files will get added to Aider automatically
     - Aider will auto-detect `AI` and `AI!` [comments](https://aider.chat/docs/config/options.html#--watch-files)
 - Add configurable hooks to run when Aider finishes updating a file
