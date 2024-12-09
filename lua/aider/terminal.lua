@@ -75,8 +75,8 @@ function M.create_aider_terminal(cmd)
 
 			local msg = clean_output(line)
 			if #msg > 0 then
-				id = "aider"
-				vim.notify(msg, vim.log.levels.INFO, {
+				local id = "aider"
+				config.values.notify(msg, vim.log.levels.INFO, {
 					title = "Aider.nvim",
 					id = id,
 					replace = id,
