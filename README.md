@@ -55,13 +55,21 @@ return {
       -- Optional, but great for diff viewing and after_update_hook integration
       "sindrets/diffview.nvim",
 
+      -- Optional but great option for viewing Aider output
+      "j-hui/fidget.nvim",
+      
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
     },
     lazy = false,
     opts = {
+      -- Auto trigger diffview after Aider's file changes
       after_update_hook = function()
         require("diffview").open({ "HEAD^" })
+      end,
+      -- Customize how Aider output is viewed
+      notify = function(...)
+        require("fidget").notify(...)
       end,
     },
     keys = {
