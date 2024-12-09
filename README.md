@@ -189,12 +189,12 @@ require('aider').setup({
  notify = vim.notify,
 
  -- Add additional args to aider,
- -- .e.x `aider_args = "--no-git"` to disable auto git commits.
+ -- .e.x `aider_args = "--no-auto-commit"` to disable auto git commits.
  aider_args = "",
 
  -- Add additional commands to run after Aider updates file/s.
  -- E.x. you can auto trigger diffs with the diffview plugin.
- -- With `--no-git` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
+ -- With `--no-auto-commit` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
  -- Or with git enabled diff the last commit: `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
  after_update_hook = nil,
 
