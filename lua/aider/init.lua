@@ -8,9 +8,9 @@
 ---@field aider_args string Additional arguments for aider CLI
 ---@field toggleterm ToggletermConfig Toggleterm configuration
 ---@field spawn_on_startup boolean|nil
----@field use_notifications boolean
 ---@field float_opts table<string, any>?
 ---@field after_update_hook function|nil
+---@field notify function
 
 local M = {}
 
@@ -21,7 +21,7 @@ M.defaults = {
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",
-	use_notifications = true,
+	notify = vim.notify,
 	aider_args = "",
 	spawn_on_startup = true,
 	after_update_hook = nil,
