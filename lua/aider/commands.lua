@@ -105,7 +105,6 @@ function M.setup(opts)
 
 	vim.api.nvim_create_user_command("AiderSpawn", function()
 		terminal.spawn()
-		vim.notify("Aider running in background")
 	end, {
 		range = true,
 		nargs = "*",
