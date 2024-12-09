@@ -100,6 +100,7 @@ function M.setup(opts)
 		range = true,
 		nargs = "*",
 		desc = "Send a prompt to the AI with optional visual selection context",
+
 		bang = true,
 	})
 

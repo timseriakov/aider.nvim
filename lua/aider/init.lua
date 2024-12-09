@@ -62,7 +62,7 @@ function M.setup(opts)
 				file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
 				table.insert(cleaned_paths, file_info.path)
 			end
-			require("aider.terminal").load_files_in_aider(cleaned_paths, fopts)
+			require("aider.terminal").load_aider(cleaned_paths)
 		end
 
 		---@type { [string]: function|table }
