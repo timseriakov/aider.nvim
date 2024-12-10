@@ -1,9 +1,5 @@
 local Terminal = require("toggleterm.terminal").Terminal
-local config = require("aider")
-
-local M = {
-	term = nil,
-}
+local config = require("aider").config
 
 local function clean_output(line)
 	-- Remove EOF delimiters
@@ -41,28 +37,27 @@ local function clean_output(line)
 	return line
 end
 
---- Create a new terminal for the Aider session
----
---- This function initializes a new terminal using toggleterm with specific
---- configuration for the Aider AI assistant. It handles various terminal
---- behaviors like floating window options, stdout processing, and user
---- interaction for confirmations.
----
---- @param cmd string The command to run in the terminal (typically the aider command)
---- @return table A configured terminal object ready to be used
-function M.create_aider_terminal(cmd)
-	local terminal = Terminal:new({
-		cmd = cmd,
+local M = {
+	__term = nil,
+}
+
+--- @return Terminal A configured terminal object ready to be used
+function M.aider_terminal()
+	if M.__term then
+		return M.__term
+	end
+	M.__term = Terminal:new({
+		cmd = M.aider_command(),
 		hidden = true,
-		float_opts = config.values.float_opts,
+		float_opts = config.float_opts,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = true,
-		direction = config.values.toggleterm.direction,
-		size = config.values.toggleterm.size,
+		direction = config.toggleterm.direction,
+		size = config.toggleterm.size,
 		start_in_insert = true,
 		on_exit = function()
-			M.term = nil
+			M.__term = nil
 		end,
 
 		on_stdout = function(term, _, data, _)
@@ -79,7 +74,7 @@ function M.create_aider_terminal(cmd)
 				local msg = clean_output(line)
 				if #msg > 0 then
 					local id = "aider"
-					config.values.notify(msg, vim.log.levels.INFO, {
+					config.notify(msg, vim.log.levels.INFO, {
 						title = "Aider.nvim",
 						id = id,
 						replace = id,
@@ -89,33 +84,26 @@ function M.create_aider_terminal(cmd)
 		end,
 	})
 
-	return terminal
+	return M.__term
 end
 
 ---Load files into aider session
 ---@param files table|nil Files or path
-function M.load_aider(files)
+function M.load_files(files)
 	files = files or {}
-	local path_args = table.concat(files, " ")
-
-	if not M.term then
-		local command = M.aider_command(path_args)
-		vim.notify("Running: " .. command)
-		M.term = M.create_aider_terminal(command)
-		if not config.values.watch_files then
-			M.term:open(M.size, M.direction)
-		end
-		return
-	end
+	local term = M.aider_terminal()
 
 	if #files > 0 then
-		local add_paths = "/add " .. path_args
-		M.term:send(add_paths)
-		return
+		local add_paths = "/add " .. table.concat(files, " ")
+		term:send(add_paths)
+	end
+
+	if not config.watch_files then
+		term:open(config.toggleterm.size(term), config.toggleterm.direction)
 	end
 end
 
-function M.aider_command(paths)
+function M.aider_command()
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
 
@@ -128,23 +116,16 @@ function M.aider_command(paths)
 	local command = string.format(
 		"aider --no-pretty %s %s %s %s ",
 		env_args,
-		config.values.aider_args,
+		config.aider_args,
 		dark_mode,
 		"--auto-test --test-cmd " .. "'" .. hook_command .. "'"
 	)
-	if config.values.watch_files then
+	if config.watch_files then
 		command = command .. "--watch-files "
-	end
-	if paths then
-		command = command .. paths
 	end
 	return command
 end
 
---- Reload all open buffers after an AI update
---- This function is called after an AI-driven file modification to:
---- 1. Notify the user of the update
---- 2. Trigger a reload of all open buffers to reflect the changes
 _G.AiderUpdateHook = function()
 	vim.notify("File updated by AI!", vim.log.levels.INFO)
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -154,45 +135,37 @@ _G.AiderUpdateHook = function()
 			end)
 		end
 	end
-	if config.values.after_update_hook then
-		config.values.after_update_hook()
+	if config.after_update_hook then
+		config.after_update_hook()
 	end
 end
 
---- Spawn an Aider terminal session with optional file paths
----@param paths string|nil Optional paths to load into the Aider session
----Initializes a new terminal if one doesn't exist and opens the Aider window
-function M.spawn(paths)
-	if not M.term then
-		local cmd = M.aider_command(paths)
-		M.term = M.create_aider_terminal(cmd)
-	end
-	M.toggle_aider_window()
-	M.toggle_aider_window()
+function M.spawn()
+	local term = M.aider_terminal()
+	term:spawn()
 end
 
 --- Toggle Aider window
 ---@param size? number
 ---@param direction? string
 function M.toggle_aider_window(size, direction)
-	if not M.term then
-		if size then
-			M.size = size
-		end
-		if direction then
-			M.direction = direction
-		end
-		M.load_aider()
-		return
-	end
-
-	if M.term:is_open() then
-		if direction and direction ~= M.term.direction then
-			M.term:close()
+	local term = M.aider_terminal()
+	if size then
+		config.toggleterm.size = function()
+			return size(term)
 		end
 	end
+	if direction then
+		config.toggleterm.direction = direction
+	end
 
-	M.term:toggle(size, direction)
+	if term:is_open() then
+		if direction and direction ~= term.direction then
+			term:close()
+		end
+	end
+
+	term:toggle(config.toggleterm.size(term), config.toggleterm.direction)
 end
 
 --- Send a command to the active Aider terminal session
@@ -206,11 +179,9 @@ end
 --- -- Send a multi-line command
 --- M.send_command_to_aider("Some complex\nmulti-line command")
 function M.send_command_to_aider(command)
-	if not M.term then
-		M.load_aider()
-	end
+	local term = M.aider_terminal()
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
-	M.term:send(multi_line_command)
+	term:send(multi_line_command)
 end
 
 --- Send an AI query to the Aider session
@@ -232,8 +203,9 @@ function M.ask_aider(prompt, selection)
 	command = "/ask " .. prompt
 	M.send_command_to_aider(command)
 
-	if not M.term:is_open() then
-		M.term:open()
+	local term = M.aider_terminal()
+	if not term:is_open() then
+		term:open()
 	end
 end
 
