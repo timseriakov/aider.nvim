@@ -74,6 +74,12 @@ return {
     },
     keys = {
       {
+        "<C-x>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+        mode = { "i", "t", "n" },
+      },
+      {
         "<leader>as",
         "<cmd>AiderSpawn<CR>",
         desc = "Toggle Aidper (default)",
@@ -82,11 +88,6 @@ return {
         "<leader>ac",
         "<cmd>AiderSend /commit<CR>",
         desc = "Aider commit",
-      },
-      {
-        "<leader>a<space>",
-        "<cmd>AiderToggle<CR>",
-        desc = "Toggle Aider",
       },
       {
         "<leader>al",
