@@ -7,10 +7,10 @@ local M = {}
 function M.setup(opts)
 	vim.api.nvim_create_user_command("AiderToggle", function(opt)
 		if not opt.args or opt.args == "" then
-			terminal.toggle_aider_window(nil, nil)
+			terminal.toggle_window(nil, nil)
 			return
 		end
-		terminal.toggle_aider_window(nil, opt.args)
+		terminal.toggle_window(nil, opt.args)
 	end, {
 		desc = "Toggle Aider window",
 		nargs = "?",
@@ -37,7 +37,7 @@ function M.setup(opts)
 				vim.notify("Empty input provided", vim.log.levels.WARN)
 				return
 			end
-			terminal.send_command_to_aider(opt.args)
+			terminal.send_command(opt.args)
 			return
 		end
 
@@ -51,7 +51,7 @@ function M.setup(opts)
 		-- Combine selection with any additional arguments
 		local input = opt.args and opt.args ~= "" and string.format("%s\n%s", opt.args, selected) or selected
 
-		terminal.send_command_to_aider(input)
+		terminal.send_command(input)
 	end
 
 	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
@@ -73,7 +73,7 @@ function M.setup(opts)
 			return
 		end
 
-		terminal.ask_aider(input, selected)
+		terminal.ask(input, selected)
 	end
 
 	---Handles the AiderAsk command, processing a prompt with optional visual selection
