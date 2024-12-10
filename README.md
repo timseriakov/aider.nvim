@@ -249,9 +249,8 @@ require('aider').setup({
  aider_args = "",
 
  -- Add additional commands to run after Aider updates file/s.
- -- E.x. you can auto trigger diffs with the diffview plugin.
- -- With `--no-auto-commit` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
- -- Or with git enabled diff the last commit: `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
+ -- E.x. you can auto trigger diffs with the diffview plugin:
+ -- `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
  after_update_hook = nil,
 
   -- Always open terminal in insert mode
