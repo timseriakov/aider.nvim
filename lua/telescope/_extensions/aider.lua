@@ -37,15 +37,28 @@ end
 
 return telescope.register_extension({
 	setup = function()
+		-- Add mappings only to file pickers
+		local telescope_builtin = require("telescope.builtin")
+		local files_attach_mappings = function(_, map)
+			map("i", config.telescope_action_key, aider_action)
+			map("n", config.telescope_action_key, aider_action)
+			return true
+		end
+
+		-- Override just the file-related pickers
 		telescope.setup({
-			defaults = {
-				mappings = {
-					i = {
-						[config.telescope_action_key] = aider_action,
-					},
-					n = {
-						[config.telescope_action_key] = aider_action,
-					},
+			pickers = {
+				find_files = {
+					attach_mappings = files_attach_mappings,
+				},
+				git_files = {
+					attach_mappings = files_attach_mappings,
+				},
+				buffers = {
+					attach_mappings = files_attach_mappings,
+				},
+				oldfiles = {
+					attach_mappings = files_attach_mappings,
 				},
 			},
 		})
