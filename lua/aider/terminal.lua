@@ -37,17 +37,17 @@ local function clean_output(line)
 	return line
 end
 
-local M = {
+local Aider = {
 	__term = nil,
 }
 
 --- @return Terminal A configured terminal object ready to be used
-function M.aider_terminal()
-	if M.__term then
-		return M.__term
+function Aider.terminal()
+	if Aider.__term then
+		return Aider.__term
 	end
-	M.__term = Terminal:new({
-		cmd = M.aider_command(),
+	Aider.__term = Terminal:new({
+		cmd = Aider.command(),
 		hidden = true,
 		float_opts = config.float_opts,
 		display_name = "Aider.nvim",
@@ -56,11 +56,11 @@ function M.aider_terminal()
 		direction = config.toggleterm.direction,
 		size = config.toggleterm.size,
 		on_exit = function()
-			M.__term = nil
+			Aider.__term = nil
 		end,
-		on_open = function()
+		on_open = function(term)
 			if config.auto_insert then
-				M.__term:set_mode("i")
+				term:set_mode("i")
 			end
 		end,
 		on_stdout = function(term, _, data, _)
@@ -87,14 +87,14 @@ function M.aider_terminal()
 		end,
 	})
 
-	return M.__term
+	return Aider.__term
 end
 
 ---Load files into aider session
 ---@param files table|nil Files or path
-function M.load_files(files)
+function Aider.load_files(files)
 	files = files or {}
-	local term = M.aider_terminal()
+	local term = Aider.terminal()
 
 	if #files > 0 then
 		local add_paths = "/add " .. table.concat(files, " ")
@@ -106,7 +106,7 @@ function M.load_files(files)
 	end
 end
 
-function M.aider_command()
+function Aider.command()
 	local env_args = vim.env.AIDER_ARGS or ""
 	local dark_mode = config.dark_mode and " --dark-mode" or ""
 
@@ -143,15 +143,15 @@ _G.AiderUpdateHook = function()
 	end
 end
 
-function M.spawn()
-	local term = M.aider_terminal()
+function Aider.spawn()
+	local term = Aider.terminal()
 	term:spawn()
 end
 
 ---@param size? number
 ---@param direction? string
-function M.toggle_aider_window(size, direction)
-	local term = M.aider_terminal()
+function Aider.toggle_window(size, direction)
+	local term = Aider.terminal()
 	if size then
 		config.toggleterm.size = function()
 			return size(term)
@@ -180,8 +180,8 @@ end
 ---
 --- -- Send a multi-line command
 --- M.send_command_to_aider("Some complex\nmulti-line command")
-function M.send_command_to_aider(command)
-	local term = M.aider_terminal()
+function Aider.send_command(command)
+	local term = Aider.terminal()
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
 	term:send(multi_line_command)
 end
@@ -191,7 +191,7 @@ end
 --- @param selection string? Optional selected text to include with the prompt
 --- Sends a command to the Aider terminal to process an AI request
 --- If no prompt is provided, a warning notification is shown
-function M.ask_aider(prompt, selection)
+function Aider.ask(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
 		return
@@ -203,12 +203,12 @@ function M.ask_aider(prompt, selection)
 	end
 
 	command = "/ask " .. prompt
-	M.send_command_to_aider(command)
+	Aider.send_command(command)
 
-	local term = M.aider_terminal()
+	local term = Aider.terminal()
 	if not term:is_open() then
 		term:open()
 	end
 end
 
-return M
+return Aider

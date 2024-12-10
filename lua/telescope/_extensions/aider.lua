@@ -38,7 +38,6 @@ end
 return telescope.register_extension({
 	setup = function()
 		-- Add mappings only to file pickers
-		local telescope_builtin = require("telescope.builtin")
 		local files_attach_mappings = function(_, map)
 			map("i", config.telescope_action_key, aider_action)
 			map("n", config.telescope_action_key, aider_action)
