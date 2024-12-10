@@ -15,6 +15,7 @@
 ---@field confirm_with_vim_ui boolean
 ---@field telescope_action_key string
 ---@field auto_insert true
+---@field dark_mode true
 
 local M = {}
 
@@ -33,6 +34,7 @@ M.defaults = {
 	spawn_on_startup = true,
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
+	dark_mode = vim.o.background == "dark",
 	toggleterm = {
 		direction = "float",
 		size = function(term)

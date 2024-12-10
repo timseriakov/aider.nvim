@@ -108,7 +108,7 @@ end
 
 function M.aider_command()
 	local env_args = vim.env.AIDER_ARGS or ""
-	local dark_mode = vim.o.background == "dark" and " --dark-mode" or ""
+	local dark_mode = config.dark_mode and " --dark-mode" or ""
 
 	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "
