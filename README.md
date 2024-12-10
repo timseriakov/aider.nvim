@@ -13,13 +13,14 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
     - So that all open files will get added to Aider automatically
     - Aider will auto-detect `AI` and `AI!` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+- Auto reload all files changed by Aider
 - Add configurable hooks to run when Aider finishes updating a file
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
 - Send commands to Aider explicitly with `AiderSend <cmd>`
   - Can be used to create custom prompts
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
 - Load files into Aider session
-  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args in either mode
+  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args
   - You can use fzf-lua or telescope to select files (multi-select supported) with any file viewer (git_files, buffers..)
 - Ask questions about code with visual selection support
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
