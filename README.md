@@ -57,7 +57,7 @@ return {
 
       -- Optional but great option for viewing Aider output
       "j-hui/fidget.nvim",
-      
+
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
     },
@@ -122,7 +122,7 @@ require('packer').startup(function(use)
 
       -- Optional but great option for viewing Aider output
       "j-hui/fidget.nvim",
-      
+
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
     },
@@ -252,6 +252,9 @@ require('aider').setup({
  -- With `--no-auto-commit` diff unstaged changes: `after_update_hook = function() require("diffview").open({}) end`
  -- Or with git enabled diff the last commit: `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
  after_update_hook = nil,
+
+  -- Always open terminal in insert mode
+  auto_insert = true
 
  toggleterm = {
   -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'

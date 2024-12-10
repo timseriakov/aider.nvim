@@ -6,7 +6,7 @@ end
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local terminal = require("aider.terminal")
-local config = require("aider")
+local config = require("aider").config
 
 local function aider_action(prompt_bufnr)
 	local picker = action_state.get_current_picker(prompt_bufnr)
@@ -32,7 +32,7 @@ local function aider_action(prompt_bufnr)
 	end
 
 	actions.close(prompt_bufnr)
-	terminal.load_aider(paths)
+	terminal.load_files(paths)
 end
 
 return telescope.register_extension({
@@ -41,10 +41,10 @@ return telescope.register_extension({
 			defaults = {
 				mappings = {
 					i = {
-						[config.values.telescope_action_key] = aider_action,
+						[config.telescope_action_key] = aider_action,
 					},
 					n = {
-						[config.values.telescope_action_key] = aider_action,
+						[config.telescope_action_key] = aider_action,
 					},
 				},
 			},
