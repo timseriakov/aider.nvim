@@ -13,6 +13,7 @@
 ---@field notify function
 ---@field watch_files boolean
 ---@field confirm_with_vim_ui boolean
+---@field telescope_action_key string
 
 local M = {}
 
@@ -43,14 +44,14 @@ M.defaults = {
 }
 
 ---Current configuration
----@type AiderConfig
-M.values = {}
+---@class AiderConfig
+M.config = {}
 
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
 function M.setup(opts)
 	opts = opts or {}
-	M.values = vim.tbl_deep_extend("force", {}, M.defaults, opts)
+	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
 	if M.editor_command == nil then
 		vim.env.AIDER_EDITOR = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'"
@@ -66,12 +67,12 @@ function M.setup(opts)
 				file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
 				table.insert(cleaned_paths, file_info.path)
 			end
-			require("aider.terminal").load_aider(cleaned_paths)
+			require("aider.terminal").load_files(cleaned_paths)
 		end
 
 		---@type { [string]: function|table }
 		local actions = fzf_config.defaults.files.actions
-		actions[M.values.fzf_action_key] = fzf_load_in_aider
+		actions[M.config.fzf_action_key] = fzf_load_in_aider
 	end
 
 	-- Setup telescope integration if available
@@ -79,7 +80,7 @@ function M.setup(opts)
 	if telescope_ok then
 		telescope.load_extension("aider")
 	end
-	require("aider.commands").setup(M.values)
+	require("aider.commands").setup(M.config)
 end
 
 return M
