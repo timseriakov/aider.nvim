@@ -5,12 +5,12 @@ local M = {}
 
 ---Create user commands for aider functionality
 function M.setup(opts)
-	vim.api.nvim_create_user_command("AiderToggle", function(opts)
-		if not opts.args or opts.args == "" then
+	vim.api.nvim_create_user_command("AiderToggle", function(opt)
+		if not opt.args or opt.args == "" then
 			terminal.toggle_aider_window(nil, nil)
 			return
 		end
-		terminal.toggle_aider_window(nil, opts.args)
+		terminal.toggle_aider_window(nil, opt.args)
 	end, {
 		desc = "Toggle Aider window",
 		nargs = "?",
@@ -19,25 +19,25 @@ function M.setup(opts)
 		end,
 	})
 
-	vim.api.nvim_create_user_command("AiderLoad", function(opts)
-		local files = opts.fargs
+	vim.api.nvim_create_user_command("AiderLoad", function(opt)
+		local files = opt.fargs
 		if #files == 0 then
 			files = { vim.api.nvim_buf_get_name(0) }
 		end
-		terminal.laod_files_in_aider(files)
+		terminal.load_files(files)
 	end, {
 		nargs = "*",
 		desc = "Load files into Aider",
 		complete = "file",
 	})
 
-	local function handle_aider_send(opts)
-		if opts.range == 0 then
-			if not opts.args or opts.args == "" then
+	local function handle_aider_send(opt)
+		if opt.range == 0 then
+			if not opt.args or opt.args == "" then
 				vim.notify("Empty input provided", vim.log.levels.WARN)
 				return
 			end
-			terminal.send_command_to_aider(opts.args)
+			terminal.send_command_to_aider(opt.args)
 			return
 		end
 
@@ -49,7 +49,7 @@ function M.setup(opts)
 		end
 
 		-- Combine selection with any additional arguments
-		local input = opts.args and opts.args ~= "" and string.format("%s\n%s", opts.args, selected) or selected
+		local input = opt.args and opt.args ~= "" and string.format("%s\n%s", opt.args, selected) or selected
 
 		terminal.send_command_to_aider(input)
 	end
@@ -83,10 +83,10 @@ function M.setup(opts)
 	--- 1. With arguments directly passed to the command
 	--- 2. Interactively prompting the user for input if no arguments are provided
 	---
-	---@param opts table Command options containing arguments
-	local function handle_aider_ask(opts)
-		if #opts.args > 0 then
-			process_prompt(opts.args)
+	---@param opt table Command options containing arguments
+	local function handle_aider_ask(opt)
+		if #opt.args > 0 then
+			process_prompt(opt.args)
 		else
 			vim.schedule(function()
 				vim.ui.input({ prompt = "Prompt: " }, function(input)
@@ -116,8 +116,8 @@ function M.setup(opts)
 	vim.api.nvim_create_autocmd("TermOpen", {
 		callback = function()
 			local function tmap(key, val)
-				local opts = { buffer = 0 }
-				vim.keymap.set("t", key, val, opts)
+				local opt = { buffer = 0 }
+				vim.keymap.set("t", key, val, opt)
 			end
 			-- exit insert mode
 			tmap("<Esc>", "<C-\\><C-n>")
@@ -130,8 +130,6 @@ function M.setup(opts)
 			-- remove line numbers
 			vim.wo.number = false
 			vim.wo.relativenumber = false
-			-- auto start terminal in insert mode
-			vim.cmd("startinsert")
 		end,
 	})
 
