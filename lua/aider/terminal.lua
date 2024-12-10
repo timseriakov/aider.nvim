@@ -55,11 +55,14 @@ function M.aider_terminal()
 		auto_scroll = true,
 		direction = config.toggleterm.direction,
 		size = config.toggleterm.size,
-		start_in_insert = true,
 		on_exit = function()
 			M.__term = nil
 		end,
-
+		on_open = function()
+			if config.auto_insert then
+				M.__term:set_mode("i")
+			end
+		end,
 		on_stdout = function(term, _, data, _)
 			for _, line in ipairs(data) do
 				if term:is_open() then
@@ -145,7 +148,6 @@ function M.spawn()
 	term:spawn()
 end
 
---- Toggle Aider window
 ---@param size? number
 ---@param direction? string
 function M.toggle_aider_window(size, direction)

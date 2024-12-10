@@ -14,6 +14,7 @@
 ---@field watch_files boolean
 ---@field confirm_with_vim_ui boolean
 ---@field telescope_action_key string
+---@field auto_insert true
 
 local M = {}
 
@@ -24,6 +25,7 @@ M.defaults = {
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	telescope_action_key = "<C-l>",
+	auto_insert = true,
 	notify = function(msg, level, opts)
 		vim.notify(msg, level, opts)
 	end,
@@ -32,7 +34,7 @@ M.defaults = {
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
 	toggleterm = {
-		direction = "vertical",
+		direction = "float",
 		size = function(term)
 			if term.direction == "horizontal" then
 				return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
