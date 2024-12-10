@@ -210,10 +210,11 @@ When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files
 
 ## Telescope Integration
 
-When Telescope is installed, you can use `<C-l>` in any file picker to load files into Aider:
+When Telescope is installed, you can use `<C-l>` load files into Aider:
 
+- Current pickers with this registered action include: find_files, git_files, buffers and oldfiles
 - Single file: Navigate to a file and press `<C-l>` to load it into Aider.
-- Multiple files: Use multi-select to choose files, then press `<C-l>` to load all selected files.
+- Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files.
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
 
