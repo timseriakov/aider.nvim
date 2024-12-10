@@ -260,7 +260,7 @@ require('aider').setup({
 
  toggleterm = {
   -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
-  direction = "vertical",
+  direction = "float",
 
   -- specify a size for the horizontal or vertical
   size = function(term)
