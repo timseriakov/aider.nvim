@@ -1,6 +1,14 @@
 local Terminal = require("toggleterm.terminal").Terminal
 local config = require("aider").config
+local CONSTANTS = {
+	DEFAULT_TITLE = "Aider.nvim",
+	NOTIFICATION_ID = "aider",
+	YES_NO_PATTERN = "%(Y%)es/%(N%)o",
+}
 
+--- Clean line outputs for aider
+---@param line string
+---@return string
 local function clean_output(line)
 	-- Remove EOF delimiters
 	line = line:gsub(".*{EOF.*", "")
@@ -41,7 +49,8 @@ local Aider = {
 	__term = nil,
 }
 
---- @return Terminal A configured terminal object ready to be used
+--- Get or generate a terminal object for Aider
+---@return Terminal
 function Aider.terminal()
 	if Aider.__term then
 		return Aider.__term
@@ -50,7 +59,7 @@ function Aider.terminal()
 		cmd = Aider.command(),
 		hidden = true,
 		float_opts = config.float_opts,
-		display_name = "Aider.nvim",
+		display_name = CONSTANTS.DEFAULT_TITLE,
 		close_on_exit = true,
 		auto_scroll = true,
 		direction = config.toggleterm.direction,
@@ -69,18 +78,17 @@ function Aider.terminal()
 					return
 				end
 
-				if line:match("%(Y%)es/%(N%)o") then
+				if line:match(CONSTANTS.YES_NO_PATTERN) then
 					term:open()
 					return
 				end
 
 				local msg = clean_output(line)
 				if #msg > 0 then
-					local id = "aider"
 					config.notify(msg, vim.log.levels.INFO, {
-						title = "Aider.nvim",
-						id = id,
-						replace = id,
+						title = CONSTANTS.DEFAULT_TITLE,
+						id = CONSTANTS.NOTIFICATION_ID,
+						replace = CONSTANTS.NOTIFICATION_ID,
 					})
 				end
 			end
@@ -174,12 +182,6 @@ end
 --- If no terminal is currently open, it will first create a new terminal
 ---
 --- @param command string The command to send to the Aider session
---- @usage
---- -- Send a simple command
---- M.send_command_to_aider("/help")
----
---- -- Send a multi-line command
---- M.send_command_to_aider("Some complex\nmulti-line command")
 function Aider.send_command(command)
 	local term = Aider.terminal()
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
@@ -189,8 +191,6 @@ end
 --- Send an AI query to the Aider session
 --- @param prompt string The query or instruction to send
 --- @param selection string? Optional selected text to include with the prompt
---- Sends a command to the Aider terminal to process an AI request
---- If no prompt is provided, a warning notification is shown
 function Aider.ask(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
