@@ -6,45 +6,29 @@ local action_state = require("telescope.actions.state")
 local aider = require("aider.terminal")
 local config = require("aider").config
 
-local model_cache = nil
-
-local function extract_models(output)
-	local models = {}
-	for line in output:gmatch("[^\r\n]+") do
-		-- Check if line starts with a dash and space
-		if line:match("^%- ") then
-			-- Remove the dash and space prefix
-			local model = line:sub(3)
-			table.insert(models, model)
+local function get_models()
+	local models = require("telescope._extensions.model_data")
+	local filtered_models = {}
+	for _, model in ipairs(models) do
+		-- Check if model matches any pattern
+		for _, match in ipairs(config.model_picker_search) do
+			if model:match(match) then
+				table.insert(filtered_models, model)
+				break
+			end
 		end
 	end
-	return models
+	return filtered_models
 end
 
 local model_picker = function(opts)
 	opts = opts or {}
 
-	if not model_cache then
-		-- Create job to run aider --list-models command
-		local outputs = {}
-		for _, model_search in ipairs(config.model_picker_search) do
-			local models = require("telescope._extensions.model_data")
-			for _, model in ipairs(models) do
-				if model:match(model_search) then
-					table.insert(outputs, "- " .. model)
-				end
-			end
-		end
-
-		-- Extract models from output
-		model_cache = extract_models(table.concat(outputs, "\n"))
-	end
-
 	pickers
 		.new(opts, {
 			prompt_title = "Aider Models",
 			finder = finders.new_table({
-				results = model_cache,
+				results = get_models(),
 				entry_maker = function(entry)
 					return {
 						value = entry,
