@@ -271,8 +271,8 @@ require('aider').setup({
  -- `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
  after_update_hook = nil,
 
- -- Specify which models to use for `Telescope model_picker` (passed as arg to `aider --list-models`)
- model_picker_search = { "anthropic/", "openai/" }
+ -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
+ model_picker_search = { "^anthropic/", "^openai/" }
 
   -- Always open terminal in insert mode
   auto_insert = true
