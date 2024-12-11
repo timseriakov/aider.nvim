@@ -16,6 +16,7 @@
 ---@field telescope_action_key string
 ---@field auto_insert true
 ---@field dark_mode true
+---@field model_picker_search table
 
 local M = {}
 
@@ -25,6 +26,7 @@ M.defaults = {
 	watch_files = true,
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
+	model_picker_search = { "anthropic/", "openai/" },
 	telescope_action_key = "<C-l>",
 	auto_insert = true,
 	notify = function(msg, level, opts)
@@ -82,7 +84,8 @@ function M.setup(opts)
 	-- Setup telescope integration if available
 	local telescope_ok, telescope = pcall(require, "telescope")
 	if telescope_ok then
-		telescope.load_extension("aider")
+		telescope.load_extension("file_pickers")
+		telescope.load_extension("model_picker")
 	end
 	require("aider.commands").setup(M.config)
 end
