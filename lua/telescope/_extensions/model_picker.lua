@@ -28,15 +28,12 @@ local model_picker = function(opts)
 		-- Create job to run aider --list-models command
 		local outputs = {}
 		for _, model_search in ipairs(config.model_picker_search) do
-			-- change this to read a relative file to this plugin to obtain this data ai!
-			local job = io.popen("aider --no-pretty --list-models " .. '"' .. model_search .. '"')
-			if not job then
-				vim.notify("Failed to run aider command", vim.log.levels.ERROR)
-				return
+			local models = require("telescope._extensions.model_data")
+			for _, model in ipairs(models) do
+				if model:match(model_search) then
+					table.insert(outputs, "- " .. model)
+				end
 			end
-			-- Read the output
-			table.insert(outputs, job:read("*a"))
-			job:close()
 		end
 
 		-- Extract models from output
