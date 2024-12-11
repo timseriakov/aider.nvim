@@ -93,6 +93,16 @@ return {
         desc = "Aider commit",
       },
       {
+        "<leader>ams",
+        "<cmd>AiderSend /model sonnet<CR>",
+        desc = "Switch to sonnet",
+      },
+      {
+        "<leader>amh",
+        "<cmd>AiderSend /model haiku<CR>",
+        desc = "Switch to haiku",
+      },
+      {
         "<leader>al",
         "<cmd>AiderLoad<CR>",
         desc = "Add file to aider",
