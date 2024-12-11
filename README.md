@@ -27,8 +27,8 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - For diff viewing, accepting or rejecting changes:
   - Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below).
   - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
-- Telescope picker for selecting models `:Telescope model_picker` (slow on first load but will cache subsequently)
-  - Use `model_picker_search = { "anthropic/", "openai/" }` to specify which models to look for
+- Telescope picker for selecting models `:Telescope model_picker`
+  - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
 
 ## Prerequisites
 
