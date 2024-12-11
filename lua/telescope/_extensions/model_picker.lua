@@ -6,6 +6,8 @@ local action_state = require("telescope.actions.state")
 local aider = require("aider.terminal")
 local config = require("aider").config
 
+local model_cache = nil
+
 local function extract_models(output)
 	local models = {}
 	for line in output:gmatch("[^\r\n]+") do
@@ -22,27 +24,29 @@ end
 local model_picker = function(opts)
 	opts = opts or {}
 
-	-- Create job to run aider --list-models command
-	local outputs = {}
-	for _, model_search in ipairs(config.model_picker_search) do
-		local job = io.popen("aider --no-pretty --list-models " .. '"' .. model_search .. '"')
-		if not job then
-			vim.notify("Failed to run aider command", vim.log.levels.ERROR)
-			return
+	if not model_cache then
+		-- Create job to run aider --list-models command
+		local outputs = {}
+		for _, model_search in ipairs(config.model_picker_search) do
+			local job = io.popen("aider --no-pretty --list-models " .. '"' .. model_search .. '"')
+			if not job then
+				vim.notify("Failed to run aider command", vim.log.levels.ERROR)
+				return
+			end
+			-- Read the output
+			table.insert(outputs, job:read("*a"))
+			job:close()
 		end
-		-- Read the output
-		table.insert(outputs, job:read("*a"))
-		job:close()
-	end
 
-	-- Extract models from output
-	local models = extract_models(table.concat(outputs, "\n"))
+		-- Extract models from output
+		model_cache = extract_models(table.concat(outputs, "\n"))
+	end
 
 	pickers
 		.new(opts, {
 			prompt_title = "Aider Models",
 			finder = finders.new_table({
-				results = models,
+				results = model_cache,
 				entry_maker = function(entry)
 					return {
 						value = entry,
