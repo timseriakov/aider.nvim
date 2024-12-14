@@ -153,7 +153,11 @@ end
 
 function Aider.spawn()
 	local term = Aider.terminal()
-	term:spawn()
+	term:open()
+	if not config.focus_on_spawn then
+		term:close()
+		vim.notify("Running Aider in background")
+	end
 end
 
 ---@param size? number
