@@ -277,6 +277,10 @@ require('aider').setup({
   -- Always open terminal in insert mode
   auto_insert = true
 
+ -- Whether to focus the terminal window when spawning Aider
+ -- If false, Aider will run in the background  
+ focus_on_spawn = false,
+
  toggleterm = {
   -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
   direction = "float",
