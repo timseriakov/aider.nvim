@@ -37,6 +37,7 @@ M.defaults = {
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
 	dark_mode = vim.o.background == "dark",
+	focus_on_spawn = false,
 	toggleterm = {
 		direction = "float",
 		size = function(term)
