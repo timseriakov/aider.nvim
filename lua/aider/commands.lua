@@ -1,11 +1,12 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
-local config = require("aider").config
 
 local M = {}
 
 ---Create user commands for aider functionality
+---@param opts AiderConfig
 function M.setup(opts)
+	opts = opts or {}
 	vim.api.nvim_create_user_command("AiderToggle", function(opt)
 		if not opt.args or opt.args == "" then
 			terminal.toggle_window(nil, nil)
@@ -114,7 +115,7 @@ function M.setup(opts)
 		bang = true,
 	})
 
-	if config.restart_on_chdir then
+	if opts.restart_on_chdir then
 		vim.api.nvim_create_autocmd("DirChanged", {
 			pattern = "*",
 			callback = function()
@@ -128,11 +129,13 @@ function M.setup(opts)
 		})
 	end
 
-	vim.api.nvim_create_autocmd("TermOpen", {
-		callback = config.on_term_open,
-	})
+	if opts.on_term_open then
+		vim.api.nvim_create_autocmd("TermOpen", {
+			callback = opts.on_term_open,
+		})
+	end
 
-	if opts and opts.spawn_on_startup then
+	if opts.spawn_on_startup then
 		vim.schedule(function()
 			vim.cmd("AiderSpawn")
 		end)
