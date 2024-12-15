@@ -172,10 +172,10 @@ end)
 call plug#begin()
 Plug 'aweis89/aider.nvim'
 Plug 'akinsho/toggleterm.nvim'
-Plug 'nvim-telescope/telescope.nvim' " for fuzzy file `/add`ing functionality
-Plug 'sindrets/diffview.nvim' " Optional, but great for diff viewing
-Plug 'j-hui/fidget.nvim' " Optional but great option for viewing Aider output
-Plug 'willothy/flatten.nvim' " Only if you care about using /editor command
+Plug 'nvim-telescope/telescope.nvim' -- for fuzzy file `/add`ing functionality
+Plug 'sindrets/diffview.nvim' -- Optional, but great for diff viewing
+Plug 'j-hui/fidget.nvim' -- Optional but great option for viewing Aider output
+Plug 'willothy/flatten.nvim' -- Only if you care about using /editor command
 
 lua << EOF
 require('aider').setup({
