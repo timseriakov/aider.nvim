@@ -241,59 +241,81 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
- -- Enable the new `--watch-files` feature so Aider will auto respond to AI/AI! comments
- watch_files = true,
+  -- Enable the new `--watch-files` feature so Aider will auto respond to AI/AI! comments
+  watch_files = true,
 
- -- Always start Aider so it's ready to react to your comments.
- -- Alternatively run `AiderSpawn` manually to start on-demand
- spawn_on_startup = true,
+  -- Always start Aider so it's ready to react to your comments.
+  -- Alternatively run `AiderSpawn` manually to start on-demand
+  spawn_on_startup = true,
 
- -- Editor command to run when triggered via `/editor`.
- -- Defaults to using flatten plugin to trigger a none-nested neovim session
- editor_command = nil,
+  -- Editor command to run when triggered via `/editor`.
+  -- Defaults to using flatten plugin to trigger a none-nested neovim session
+  editor_command = nil,
 
- -- Trigger key to run when in fzf-lua to `/add` selected file/s to Aider.
- fzf_action_key = "ctrl-l",
- -- Trigger key to run when in telescope to `/add` selected file/s to Aider.
- telescope_action_key = "<C-l>",
+  -- Trigger key to run when in fzf-lua to `/add` selected file/s to Aider.
+  fzf_action_key = "ctrl-l",
+  -- Trigger key to run when in telescope to `/add` selected file/s to Aider.
+  telescope_action_key = "<C-l>",
 
- -- Command used to notify on Aider activity.
- -- For a low-intrusive option that works great with Aider.nvim, try [fidget](https://github.com/j-hui/fidget.nvim)
- -- e.x. `notify = require("fidget").notify
- notify = vim.notify,
+  -- Command used to notify on Aider activity.
+  -- For a low-intrusive option that works great with Aider.nvim, try [fidget](https://github.com/j-hui/fidget.nvim)
+  -- e.x. `notify = require("fidget").notify
+  notify = vim.notify,
 
- -- Add additional args to aider,
- -- .e.x `aider_args = "--no-auto-commit"` to disable auto git commits.
- aider_args = "",
+  -- Add additional args to aider,
+  -- .e.x `aider_args = "--no-auto-commit"` to disable auto git commits.
+  aider_args = "",
 
- -- Add additional commands to run after Aider updates file/s.
- -- E.x. you can auto trigger diffs with the diffview plugin:
- -- `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
- after_update_hook = nil,
+  -- Add additional commands to run after Aider updates file/s.
+  -- E.x. you can auto trigger diffs with the diffview plugin:
+  -- `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
+  after_update_hook = nil,
 
- -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
- model_picker_search = { "^anthropic/", "^openai/" }
+  -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
+  model_picker_search = { "^anthropic/", "^openai/" }
 
   -- Always open terminal in insert mode
   auto_insert = true
 
- -- Whether to focus the terminal window when spawning Aider
- -- If false, Aider will run in the background  
- focus_on_spawn = false,
+  -- Whether to focus the terminal window when spawning Aider
+  -- If false, Aider will run in the background
+  focus_on_spawn = false,
 
- toggleterm = {
-  -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
-  direction = "float",
+  -- When CWD changes, restart aider
+  restart_on_chdir = true,
 
-  -- specify a size for the horizontal or vertical
-  size = function(term)
-   if term.direction == "horizontal" then
-    return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-   elseif term.direction == "vertical" then
-    return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-   end
-  end,
- },
+  -- Function to run when term is initially opened
+ on_term_open = function()
+  local function tmap(key, val)
+   local opt = { buffer = 0 }
+   vim.keymap.set("t", key, val, opt)
+  end
+  -- exit insert mode
+  tmap("<Esc>", "<C-\\><C-n>")
+  tmap("jj", "<C-\\><C-n>")
+  -- enter command mode
+  tmap(":", "<C-\\><C-n>:")
+  -- scrolling up/down
+  tmap("<C-u>", "<C-\\><C-n><C-u>")
+  tmap("<C-d>", "<C-\\><C-n><C-d>")
+  -- remove line numbers
+  vim.wo.number = false
+  vim.wo.relativenumber = false
+ end,
+
+  toggleterm = {
+    -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
+    direction = "float",
+
+    -- specify a size for the horizontal or vertical
+    size = function(term)
+     if term.direction == "horizontal" then
+      return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+     elseif term.direction == "vertical" then
+      return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+     end
+    end,
+  },
 })
 ```
 
