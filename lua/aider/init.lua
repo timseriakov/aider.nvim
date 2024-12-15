@@ -17,6 +17,8 @@
 ---@field auto_insert true
 ---@field dark_mode true
 ---@field model_picker_search table
+---@field on_term_open function|nil
+---@field restart_on_chdir boolean
 
 local M = {}
 
@@ -34,6 +36,24 @@ M.defaults = {
 	end,
 	aider_args = "",
 	spawn_on_startup = true,
+	restart_on_chdir = true,
+	on_term_open = function()
+		local function tmap(key, val)
+			local opt = { buffer = 0 }
+			vim.keymap.set("t", key, val, opt)
+		end
+		-- exit insert mode
+		tmap("<Esc>", "<C-\\><C-n>")
+		tmap("jj", "<C-\\><C-n>")
+		-- enter command mode
+		tmap(":", "<C-\\><C-n>:")
+		-- scrolling up/down
+		tmap("<C-u>", "<C-\\><C-n><C-u>")
+		tmap("<C-d>", "<C-\\><C-n><C-d>")
+		-- remove line numbers
+		vim.wo.number = false
+		vim.wo.relativenumber = false
+	end,
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
 	dark_mode = vim.o.background == "dark",
