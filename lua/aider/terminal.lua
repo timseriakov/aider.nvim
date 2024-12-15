@@ -49,6 +49,15 @@ local Aider = {
 	__term = nil,
 }
 
+---@return boolean
+function Aider.is_running()
+	return Aider.__term ~= nil
+end
+
+function Aider.clear()
+	Aider.__term = nil
+end
+
 --- Get or generate a terminal object for Aider
 ---@return Terminal
 function Aider.terminal()

@@ -1,5 +1,6 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
+local config = require("aider").config
 
 local M = {}
 
@@ -113,24 +114,22 @@ function M.setup(opts)
 		bang = true,
 	})
 
+	if config.restart_on_chdir then
+		vim.api.nvim_create_autocmd("DirChanged", {
+			pattern = "*",
+			callback = function()
+				-- restart terminal
+				vim.notify("Restarting terminal..")
+				if terminal.is_running() then
+					terminal.clear()
+					terminal.spawn()
+				end
+			end,
+		})
+	end
+
 	vim.api.nvim_create_autocmd("TermOpen", {
-		callback = function()
-			local function tmap(key, val)
-				local opt = { buffer = 0 }
-				vim.keymap.set("t", key, val, opt)
-			end
-			-- exit insert mode
-			tmap("<Esc>", "<C-\\><C-n>")
-			tmap("jj", "<C-\\><C-n>")
-			-- enter command mode
-			tmap(":", "<C-\\><C-n>:")
-			-- scrolling up/down
-			tmap("<C-u>", "<C-\\><C-n><C-u>")
-			tmap("<C-d>", "<C-\\><C-n><C-d>")
-			-- remove line numbers
-			vim.wo.number = false
-			vim.wo.relativenumber = false
-		end,
+		callback = config.on_term_open,
 	})
 
 	if opts and opts.spawn_on_startup then
