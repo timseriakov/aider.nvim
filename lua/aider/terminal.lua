@@ -104,6 +104,7 @@ function Aider.terminal()
 		end,
 	})
 
+	Aider.__term:spawn()
 	return Aider.__term
 end
 
