@@ -6,13 +6,13 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## Features
 
-- Optionally start Aider automatically in the background (default)
+- Optionally start Aider automatically in the background
 - When in background mode (default):
   - Get live streamed notifications as Aider is processing
   - The terminal will automatically be brought to the foreground if Aider prompts for input
   - Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
     - So that all open files will get added to Aider automatically
-    - Aider will auto-detect `AI` and `AI!` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+    - Aider will auto-detect `AI`, `AI!` and `AI?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
 - Auto reload all files changed by Aider
 - Add configurable hooks to run when Aider finishes updating a file
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
@@ -27,6 +27,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - For diff viewing, accepting or rejecting changes:
   - Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below).
   - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
+- Supports switching to different repos and will maintain context per repo
 - Telescope picker for selecting models `:Telescope model_picker`
   - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
 
@@ -282,7 +283,11 @@ require('aider').setup({
   focus_on_spawn = false,
 
   -- When CWD changes, restart aider
-  restart_on_chdir = true,
+  -- Each terminal in indexed to current working director, so this is not required for multiple project support
+  restart_on_chdir = false,
+
+  -- Auto scroll the terminal on new output
+  auto_scroll = false,
 
   -- Function to run when term is initially opened
  on_term_open = function()

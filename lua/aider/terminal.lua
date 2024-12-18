@@ -45,36 +45,42 @@ local function clean_output(line)
 	return line
 end
 
+---@return string
+local cwd = function()
+	return vim.fn.getcwd(-1, -1)
+end
+
 local Aider = {
-	__term = nil,
+	__term = {},
 }
 
 ---@return boolean
 function Aider.is_running()
-	return Aider.__term ~= nil
+	return Aider.__term[cwd()] ~= nil
 end
 
 function Aider.clear()
-	Aider.__term = nil
+	Aider.__term[cwd()] = nil
 end
 
 --- Get or generate a terminal object for Aider
 ---@return Terminal
 function Aider.terminal()
-	if Aider.__term then
-		return Aider.__term
+	local cwd = cwd()
+	if Aider.__term[cwd] then
+		return Aider.__term[cwd]
 	end
-	Aider.__term = Terminal:new({
+	local term = Terminal:new({
 		cmd = Aider.command(),
 		hidden = true,
 		float_opts = config.float_opts,
 		display_name = CONSTANTS.DEFAULT_TITLE,
 		close_on_exit = true,
-		auto_scroll = true,
+		auto_scroll = config.auto_scroll,
 		direction = config.toggleterm.direction,
 		size = config.toggleterm.size,
 		on_exit = function()
-			Aider.__term = nil
+			Aider.__term[cwd] = nil
 		end,
 		on_open = function(term)
 			if config.auto_insert then
@@ -103,9 +109,9 @@ function Aider.terminal()
 			end
 		end,
 	})
-
-	Aider.__term:spawn()
-	return Aider.__term
+	term:spawn()
+	Aider.__term[cwd] = term
+	return term
 end
 
 ---Load files into aider session
