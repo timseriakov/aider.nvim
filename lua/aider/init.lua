@@ -19,6 +19,7 @@
 ---@field model_picker_search table
 ---@field on_term_open function|nil
 ---@field restart_on_chdir boolean
+---@field auto_scroll boolean
 
 local M = {}
 
@@ -36,7 +37,7 @@ M.defaults = {
 	end,
 	aider_args = "",
 	spawn_on_startup = true,
-	restart_on_chdir = true,
+	restart_on_chdir = false,
 	on_term_open = function()
 		local function tmap(key, val)
 			local opt = { buffer = 0 }
@@ -53,11 +54,13 @@ M.defaults = {
 		-- remove line numbers
 		vim.wo.number = false
 		vim.wo.relativenumber = false
+		vim.wo.linebreak = true
 	end,
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
 	dark_mode = vim.o.background == "dark",
 	focus_on_spawn = false,
+	auto_scroll = false,
 	toggleterm = {
 		direction = "float",
 		size = function(term)
