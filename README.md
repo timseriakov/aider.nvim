@@ -273,7 +273,8 @@ require('aider').setup({
   after_update_hook = nil,
 
   -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
-  model_picker_search = { "^anthropic/", "^openai/" }
+  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+
 
   -- Always open terminal in insert mode
   auto_insert = true
