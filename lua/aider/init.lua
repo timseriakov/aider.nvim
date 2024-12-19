@@ -24,6 +24,9 @@
 
 local M = {}
 
+-- Table to store temporary file names
+vim.g.aider_temp_files = {}
+
 ---Default configuration values
 ---@type AiderConfig
 M.defaults = {
