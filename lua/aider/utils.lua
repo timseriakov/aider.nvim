@@ -55,7 +55,7 @@ end
 ---@return string
 function M.truncate_message(msg, max_length)
 	if #msg > max_length then
-		return msg:sub(1, max_length - 3) .. "..."
+		return msg:sub(1, max_length - 3) .. ".."
 	end
 	return msg
 end
