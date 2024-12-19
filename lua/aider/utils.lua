@@ -4,51 +4,43 @@ local M = {}
 ---@param line string
 ---@return string
 function M.clean_output(line)
-	-- move all the gsub args to a table and then loop trhough to call gsub ai!
-	-- Remove EOF delimiters
-	line = line:gsub(".*{EOF.*", "")
-	line = line:gsub(".*EOF}.*", "")
-	-- Remove cursor style codes
-	line = line:gsub("%[%d+ q", "")
-	-- Handle RGB color codes and extended ANSI sequences
-	line = line:gsub("\27%[38;2;%d+;%d+;%d+m", "") -- RGB foreground
-	line = line:gsub("\27%[48;2;%d+;%d+;%d+m", "") -- RGB background
-	line = line:gsub("\27%[%d+;%d+;%d+;%d+;%d+m", "") -- Multiple color parameters
-	-- Enhanced RGB and extended color handling
-	line = line:gsub("\27%[%d+;%d+;%d+;%d+;%d+;%d+;%d+;%d+m", "") -- Extended color with multiple parameters
-	line = line:gsub("\27%[38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "") -- RGB fore/background combined
-	line = line:gsub("\27%[48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "") -- RGB back/foreground combined
-	-- New patterns to catch RGB codes without escape character
-	line = line:gsub("38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "") -- RGB fore/background without escape
-	line = line:gsub("48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "") -- RGB back/foreground without escape
-	line = line:gsub("38;2;%d+;%d+;%d+m", "") -- Single RGB foreground without escape
-	line = line:gsub("48;2;%d+;%d+;%d+m", "") -- Single RGB background without escape
-	-- Catch any remaining color codes with semicolons
-	line = line:gsub("%[([%d;]+)m", "")
-	line = line:gsub("([%d;]+)m", "") -- New pattern to catch remaining codes without brackets
-	-- Remove standard ANSI escape sequences
-	line = line:gsub("\27%[%?%d+[hl]", "")
-	line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
-	line = line:gsub("\27%[%d*[A-Za-z]", "")
-	line = line:gsub("\27%(%[%d*;%d*[A-Za-z]", "")
-	-- Remove line numbers and decorators that appear in your output
-	line = line:gsub("^%s*%d+%s*│%s*", "") -- Remove line numbers and vertical bars
-	line = line:gsub("^%s*▎?│%s*", "") -- Remove just vertical bars with optional decorators
-	-- Remove control characters
-	line = line:gsub("[\r\n]", "")
-	line = line:gsub("[\b]", "")
-	line = line:gsub("[\a]", "")
-	line = line:gsub("[\t]", "    ")
-	line = line:gsub("[%c]", "")
-	-- Remove leading '>' character if it's alone on a line
-	line = line:gsub("^%s*>%s*$", "")
-	-- Remove or clean up file headers
-	line = line:gsub("^%s*lua/[%w/_]+%.lua%s*$", "")
-	-- Remove the (Nx) count indicators
-	line = line:gsub("%(%d+x%)", "")
-	-- Remove trailing "INFO" markers
-	line = line:gsub("%s*INFO%s*$", "")
-	-- Remove empty lines after cleaning
+	local gsub_patterns = {
+		{ ".*{EOF.*", "" },
+		{ ".*EOF}.*", "" },
+		{ "%[%d+ q", "" },
+		{ "\27%[38;2;%d+;%d+;%d+m", "" },
+		{ "\27%[48;2;%d+;%d+;%d+m", "" },
+		{ "\27%[%d+;%d+;%d+;%d+;%d+m", "" },
+		{ "\27%[%d+;%d+;%d+;%d+;%d+;%d+;%d+;%d+m", "" },
+		{ "\27%[38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "" },
+		{ "\27%[48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "" },
+		{ "38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "" },
+		{ "48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "" },
+		{ "38;2;%d+;%d+;%d+m", "" },
+		{ "48;2;%d+;%d+;%d+m", "" },
+		{ "%[([%d;]+)m", "" },
+		{ "([%d;]+)m", "" },
+		{ "\27%[%?%d+[hl]", "" },
+		{ "\27%[[%d;]*[A-Za-z]", "" },
+		{ "\27%[%d*[A-Za-z]", "" },
+		{ "\27%(%[%d*;%d*[A-Za-z]", "" },
+		{ "^%s*%d+%s*│%s*", "" },
+		{ "^%s*▎?│%s*", "" },
+		{ "[\r\n]", "" },
+		{ "[\b]", "" },
+		{ "[\a]", "" },
+		{ "[\t]", "    " },
+		{ "[%c]", "" },
+		{ "^%s*>%s*$", "" },
+		{ "^%s*lua/[%w/_]+%.lua%s*$", "" },
+		{ "%(%d+x%)", "" },
+		{ "%s*INFO%s*$", "" },
+	}
+
+	for _, pattern in ipairs(gsub_patterns) do
+		line = line:gsub(pattern[1], pattern[2])
+	end
+
 	if line:match("^%s*$") then
 		return ""
 	end
