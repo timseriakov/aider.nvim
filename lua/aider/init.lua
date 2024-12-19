@@ -15,7 +15,7 @@
 ---@field confirm_with_vim_ui boolean
 ---@field telescope_action_key string
 ---@field auto_insert true
----@field dark_mode true
+---@field dark_mode function|boolean
 ---@field model_picker_search table
 ---@field on_term_open function|nil
 ---@field restart_on_chdir boolean
@@ -63,7 +63,9 @@ M.defaults = {
 	end,
 	after_update_hook = nil,
 	confirm_with_vim_ui = false,
-	dark_mode = vim.o.background == "dark",
+	dark_mode = function()
+		return vim.o.background == "dark"
+	end,
 	focus_on_spawn = false,
 	auto_scroll = false,
 	toggleterm = {
