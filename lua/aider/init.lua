@@ -20,6 +20,7 @@
 ---@field on_term_open function|nil
 ---@field restart_on_chdir boolean
 ---@field auto_scroll boolean
+---@field write_to_buffer boolean
 
 local M = {}
 
@@ -31,6 +32,7 @@ M.defaults = {
 	fzf_action_key = "ctrl-l",
 	model_picker_search = { "^anthropic/", "^openai/" },
 	telescope_action_key = "<C-l>",
+	write_to_buffer = true,
 	auto_insert = true,
 	notify = function(msg, level, opts)
 		vim.notify(msg, level, opts)
