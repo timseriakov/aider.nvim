@@ -13,41 +13,84 @@ local function clean_output(line)
 	-- Remove EOF delimiters
 	line = line:gsub(".*{EOF.*", "")
 	line = line:gsub(".*EOF}.*", "")
-
-	-- Remove cursor style codes (like [6 q)
+	-- Remove cursor style codes
 	line = line:gsub("%[%d+ q", "")
-
-	-- Remove ANSI escape sequences
-	line = line:gsub("\27%[%d*;?%d*[A-Za-z]", "")
+	-- Handle RGB color codes and extended ANSI sequences
+	line = line:gsub("\27%[38;2;%d+;%d+;%d+m", "") -- RGB foreground
+	line = line:gsub("\27%[48;2;%d+;%d+;%d+m", "") -- RGB background
+	line = line:gsub("\27%[%d+;%d+;%d+;%d+;%d+m", "") -- Multiple color parameters
+	-- Enhanced RGB and extended color handling
+	line = line:gsub("\27%[%d+;%d+;%d+;%d+;%d+;%d+;%d+;%d+m", "") -- Extended color with multiple parameters
+	line = line:gsub("\27%[38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "") -- RGB fore/background combined
+	line = line:gsub("\27%[48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "") -- RGB back/foreground combined
+	-- New patterns to catch RGB codes without escape character
+	line = line:gsub("38;2;%d+;%d+;%d+;48;2;%d+;%d+;%d+m", "") -- RGB fore/background without escape
+	line = line:gsub("48;2;%d+;%d+;%d+;38;2;%d+;%d+;%d+m", "") -- RGB back/foreground without escape
+	line = line:gsub("38;2;%d+;%d+;%d+m", "") -- Single RGB foreground without escape
+	line = line:gsub("48;2;%d+;%d+;%d+m", "") -- Single RGB background without escape
+	-- Catch any remaining color codes with semicolons
+	line = line:gsub("%[([%d;]+)m", "")
+	line = line:gsub("([%d;]+)m", "") -- New pattern to catch remaining codes without brackets
+	-- Remove standard ANSI escape sequences
 	line = line:gsub("\27%[%?%d+[hl]", "")
 	line = line:gsub("\27%[[%d;]*[A-Za-z]", "")
 	line = line:gsub("\27%[%d*[A-Za-z]", "")
 	line = line:gsub("\27%(%[%d*;%d*[A-Za-z]", "")
-
-	-- Remove other control characters
+	-- Remove line numbers and decorators that appear in your output
+	line = line:gsub("^%s*%d+%s*│%s*", "") -- Remove line numbers and vertical bars
+	line = line:gsub("^%s*▎?│%s*", "") -- Remove just vertical bars with optional decorators
+	-- Remove control characters
 	line = line:gsub("[\r\n]", "")
 	line = line:gsub("[\b]", "")
 	line = line:gsub("[\a]", "")
 	line = line:gsub("[\t]", "    ")
 	line = line:gsub("[%c]", "")
-
 	-- Remove leading '>' character if it's alone on a line
 	line = line:gsub("^%s*>%s*$", "")
-
-	-- Remove or clean up file headers that are alone on a line
+	-- Remove or clean up file headers
 	line = line:gsub("^%s*lua/[%w/_]+%.lua%s*$", "")
-
+	-- Remove the (Nx) count indicators
+	line = line:gsub("%(%d+x%)", "")
+	-- Remove trailing "INFO" markers
+	line = line:gsub("%s*INFO%s*$", "")
 	-- Remove empty lines after cleaning
 	if line:match("^%s*$") then
 		return ""
 	end
-
 	return line
 end
 
 ---@return string
 local cwd = function()
 	return vim.fn.getcwd(-1, -1)
+end
+
+local function truncate_message(msg, max_length)
+	if #msg > max_length then
+		return msg:sub(1, max_length - 3) .. "..."
+	end
+	return msg
+end
+
+-- Store last 5 messages in a circular buffer
+local MessageBuffer = {
+	messages = {},
+	capacity = 50,
+	current = 0,
+}
+
+function MessageBuffer:add(msg)
+	self.current = (self.current % self.capacity) + 1
+	self.messages[self.current] = msg
+end
+
+function MessageBuffer:contains(msg)
+	for _, stored_msg in pairs(self.messages) do
+		if stored_msg == msg then
+			return true
+		end
+	end
+	return false
 end
 
 local Aider = {
@@ -70,6 +113,7 @@ function Aider.terminal()
 	if Aider.__term[cwd] then
 		return Aider.__term[cwd]
 	end
+	local message_buffer = MessageBuffer
 	local term = Terminal:new({
 		cmd = Aider.command(),
 		hidden = true,
@@ -100,11 +144,16 @@ function Aider.terminal()
 
 				local msg = clean_output(line)
 				if #msg > 0 then
-					config.notify(msg, vim.log.levels.INFO, {
-						title = CONSTANTS.DEFAULT_TITLE,
-						id = CONSTANTS.NOTIFICATION_ID,
-						replace = CONSTANTS.NOTIFICATION_ID,
-					})
+					-- Check if message is duplicate before processing
+					msg = truncate_message(msg, 60)
+					if not message_buffer:contains(msg) then
+						message_buffer:add(msg)
+						config.notify(msg, vim.log.levels.INFO, {
+							title = CONSTANTS.DEFAULT_TITLE,
+							id = CONSTANTS.NOTIFICATION_ID,
+							replace = CONSTANTS.NOTIFICATION_ID,
+						})
+					end
 				end
 			end
 		end,
@@ -141,7 +190,7 @@ function Aider.command()
 		.. '"'
 
 	local command = string.format(
-		"aider --no-pretty %s %s %s %s ",
+		"aider %s %s %s %s ",
 		env_args,
 		config.aider_args,
 		dark_mode,
@@ -170,10 +219,8 @@ end
 function Aider.spawn()
 	local term = Aider.terminal()
 	term:open()
-	if not config.focus_on_spawn then
-		term:close()
-		vim.notify("Running Aider in background")
-	end
+	term:close()
+	vim.notify("Running Aider in background")
 end
 
 ---@param size? number
