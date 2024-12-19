@@ -29,7 +29,7 @@ function MessageBuffer:contains(msg)
 	return false
 end
 
-function M.on_stdout(term, _, data, _)
+function M.on_stdout(term, data)
 	local message_buffer = MessageBuffer
 
 	for _, line in ipairs(data) do
