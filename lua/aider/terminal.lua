@@ -99,22 +99,17 @@ local Aider = {
 
 --- Write data to a temporary markdown file
 ---@param data table
-function Aider.write_to_file(lines)
-  if Aider.__chat_file == nil then
-    Aider.__chat_file = vim.fn.tempname() .. ".md"
-    vim.notify("writing chat to output to: " .. Aider.__chat_file, vim.log.levels.INFO)
-  end
+function Aider.write_to_file(data)
+	if Aider.__chat_file == nil then
+		Aider.__chat_file = vim.fn.tempname() .. ".md"
+		vim.notify(Aider.__chat_file, vim.log.levels.Error)
+	end
 
-  local chat_file = Aider.__chat_file
-  local file = io.open(chat_file, "a")
-  if file then
-    for _, line in ipairs(lines) do
-      file:write(line .. "\n")
-    end
-    file:close()
-  else
-    vim.notify("Error opening file for writing: " .. chat_file, vim.log.levels.ERROR)
-  end
+	local chat_file = Aider.__chat_file
+	for _, row in ipairs(data) do
+		-- cervert row into blob ai!
+		vim.fn.writefile(row, chat_file)
+	end
 end
 
 ---@return boolean
