@@ -16,12 +16,11 @@ local MessageBuffer = {
 }
 
 --- Write data to a temporary markdown file
----@param data string
+---@param data string[]
 local function write_to_file(data)
 	local chat_file = "/tmp/aider.md"
 
-	-- make this append to file ai!
-	vim.fn.writefile(data, chat_file)
+	vim.fn.writefile(data, chat_file, "a")
 end
 
 function MessageBuffer:add(msg)
