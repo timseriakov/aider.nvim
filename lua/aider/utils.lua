@@ -1,4 +1,5 @@
 local M = {}
+
 --- Clean line outputs for aider
 ---@param line string
 ---@return string
@@ -58,6 +59,7 @@ function M.cwd()
 	return vim.fn.getcwd(-1, -1)
 end
 
+---@return string
 function M.truncate_message(msg, max_length)
 	if #msg > max_length then
 		return msg:sub(1, max_length - 3) .. "..."
