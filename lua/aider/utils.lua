@@ -4,6 +4,7 @@ local M = {}
 ---@param line string
 ---@return string
 function M.clean_output(line)
+	-- move all the gsub args to a table and then loop trhough to call gsub ai!
 	-- Remove EOF delimiters
 	line = line:gsub(".*{EOF.*", "")
 	line = line:gsub(".*EOF}.*", "")
