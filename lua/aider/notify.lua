@@ -15,6 +15,15 @@ local MessageBuffer = {
 	current = 0,
 }
 
+--- Write data to a temporary markdown file
+---@param data string
+local function write_to_file(data)
+	local chat_file = "/tmp/aider.md"
+
+	-- make this append to file ai!
+	vim.fn.writefile(data, chat_file)
+end
+
 function MessageBuffer:add(msg)
 	self.current = (self.current % self.capacity) + 1
 	self.messages[self.current] = msg
@@ -33,6 +42,7 @@ function M.on_stdout(term, data)
 	local message_buffer = MessageBuffer
 
 	for _, line in ipairs(data) do
+		write_to_file(line)
 		if term:is_open() then
 			return
 		end
