@@ -97,6 +97,28 @@ local Aider = {
 	__term = {},
 }
 
+--- Write data to a temporary markdown file
+---@param data table
+function Aider.write_to_file(data)
+	if Aider.__chat_file == nil then
+		Aider.__chat_file = vim.fn.tempname() .. ".md"
+		vim.notify("writing chat to output to: " .. Aider.__chat_file, vim.log.levels.INFO)
+	end
+
+	local chat_file = Aider.__chat_file
+	for _, row in ipairs(data) do
+		-- fix this ai!
+		vim.fn.writefile(row, chat_file)
+		-- Vim:E475: Invalid argument: writefile() first argument must be a List or a Blob
+		-- stack traceback:
+		-- 	[C]: in function 'writefile'
+		-- 	/Users/aaron.weisberg/p/aider.nvim/lua/aider/terminal.lua:110: in function 'write_to_file'
+		-- 	/Users/aaron.weisberg/p/aider.nvim/lua/aider/terminal.lua:160: in function 'handler'
+		-- 	...re/nvim/lazy/toggleterm.nvim/lua/toggleterm/terminal.lua:384: in function <...re/nvim/lazy/toggleterm.nvim/lua/toggleterm/terminal.lua:382>
+		--
+	end
+end
+
 ---@return boolean
 function Aider.is_running()
 	return Aider.__term[cwd()] ~= nil
@@ -142,6 +164,9 @@ function Aider.terminal()
 					return
 				end
 
+				if config.write_to_buffer then
+					Aider.write_to_file(data)
+				end
 				local msg = clean_output(line)
 				if #msg > 0 then
 					-- Check if message is duplicate before processing
