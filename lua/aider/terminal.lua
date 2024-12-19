@@ -1,32 +1,7 @@
 local Terminal = require("toggleterm.terminal").Terminal
 local config = require("aider").config
 local utils = require("aider.utils")
-local CONSTANTS = {
-	DEFAULT_TITLE = "Aider.nvim",
-	NOTIFICATION_ID = "aider",
-	YES_NO_PATTERN = "%(Y%)es/%(N%)o",
-}
-
--- Store last 5 messages in a circular buffer
-local MessageBuffer = {
-	messages = {},
-	capacity = 50,
-	current = 0,
-}
-
-function MessageBuffer:add(msg)
-	self.current = (self.current % self.capacity) + 1
-	self.messages[self.current] = msg
-end
-
-function MessageBuffer:contains(msg)
-	for _, stored_msg in pairs(self.messages) do
-		if stored_msg == msg then
-			return true
-		end
-	end
-	return false
-end
+local notify = require("aider.notify")
 
 local Aider = {
 	__term = {},
@@ -62,12 +37,11 @@ function Aider.terminal()
 	if Aider.__term[cwd] then
 		return Aider.__term[cwd]
 	end
-	local message_buffer = MessageBuffer
 	local term = Terminal:new({
 		cmd = Aider.command(),
 		hidden = true,
 		float_opts = config.float_opts,
-		display_name = CONSTANTS.DEFAULT_TITLE,
+		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = config.auto_scroll,
 		direction = config.toggleterm.direction,
@@ -81,33 +55,7 @@ function Aider.terminal()
 			end
 		end,
 		on_stdout = function(term, _, data, _)
-			for _, line in ipairs(data) do
-				if term:is_open() then
-					return
-				end
-
-				if line:match(CONSTANTS.YES_NO_PATTERN) then
-					term:open()
-					return
-				end
-
-				if config.write_to_buffer then
-					Aider.write_to_file(data)
-				end
-				local msg = utils.clean_output(line)
-				if #msg > 0 then
-					-- Check if message is duplicate before processing
-					msg = utils.truncate_message(msg, 60)
-					if not message_buffer:contains(msg) then
-						message_buffer:add(msg)
-						config.notify(msg, vim.log.levels.INFO, {
-							title = CONSTANTS.DEFAULT_TITLE,
-							id = CONSTANTS.NOTIFICATION_ID,
-							replace = CONSTANTS.NOTIFICATION_ID,
-						})
-					end
-				end
-			end
+			notify.on_stdout(term, data)
 		end,
 	})
 	term:spawn()
