@@ -65,9 +65,18 @@ function Aider.load_files(files)
 	end
 end
 
+function Aider.dark_mode()
+	if type(config.dark_mode) == "function" then
+		return config.dark_mode()
+	elseif type(config.dark_mode) == "boolean" then
+		return config.dark_mode
+	end
+	return false
+end
+
 function Aider.command()
 	local env_args = vim.env.AIDER_ARGS or ""
-	local dark_mode = config.dark_mode and " --dark-mode" or ""
+	local dark_mode = Aider.dark_mode() and " --dark-mode" or ""
 
 	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "

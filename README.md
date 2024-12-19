@@ -289,6 +289,11 @@ require('aider').setup({
   -- Auto scroll the terminal on new output
   auto_scroll = false,
 
+ -- Whether to enable aider `--dark-mode` can be boolean or function
+ dark_mode = function()
+  return vim.o.background == "dark"
+ end,
+
   -- Function to run when term is initially opened
  on_term_open = function()
   local function tmap(key, val)
