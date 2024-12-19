@@ -7,20 +7,6 @@ local Aider = {
 	__term = {},
 }
 
---- Write data to a temporary markdown file
----@param data table
-function Aider.write_to_file(data)
-	if Aider.__chat_file == nil then
-		Aider.__chat_file = vim.fn.tempname() .. ".md"
-		vim.notify(Aider.__chat_file, vim.log.levels.Error)
-	end
-
-	local chat_file = Aider.__chat_file
-	for _, row in ipairs(data) do
-		vim.fn.writefile(row, chat_file)
-	end
-end
-
 ---@return boolean
 function Aider.is_running()
 	return Aider.__term[utils.cwd()] ~= nil
@@ -147,7 +133,6 @@ end
 
 --- Send a command to the active Aider terminal session
 --- If no terminal is currently open, it will first create a new terminal
----
 --- @param command string The command to send to the Aider session
 function Aider.send_command(command)
 	local term = Aider.terminal()
