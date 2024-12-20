@@ -80,21 +80,53 @@ M.defaults = {
 		end,
 	},
 	theme = {
-		user_input_color = "#a6da95",
-		tool_output_color = "#8aadf4",
-		tool_error_color = "#ed8796",
-		tool_warning_color = "#eed49f",
-		assistant_output_color = "#c6a0f6",
-		completion_menu_color = "#cad3f5",
-		completion_menu_bg_color = "#24273a",
-		completion_menu_current_color = "#181926",
-		completion_menu_current_bg_color = "#f4dbd6",
+		-- 	user_input_color = "#a6da95",
+		-- 	tool_output_color = "#8aadf4",
+		-- 	tool_error_color = "#ed8796",
+		-- 	tool_warning_color = "#eed49f",
+		-- 	assistant_output_color = "#c6a0f6",
+		-- 	completion_menu_color = "#cad3f5",
+		-- 	completion_menu_bg_color = "#24273a",
+		-- 	completion_menu_current_color = "#181926",
+		-- 	completion_menu_current_bg_color = "#f4dbd6",
 	},
 }
 
----Current configuration
+---ion/
 ---@class AiderConfig
 M.config = {}
+
+---@type tokyonight.HighlightsFn
+function set_tokyonight_theme(c, opts)
+	M.config.theme = {
+		user_input_color = c.green, -- Green often signifies user input or success
+		tool_output_color = c.blue2, --  A neutral color for general tool output
+		tool_error_color = c.red1, -- Red is standard for errors
+		tool_warning_color = c.yellow, -- Yellow is standard for warnings
+		assistant_output_color = c.blue, -- Blue for AI/assistant output, similar to default
+		completion_menu_color = c.fg_dark, --  Foreground color for readable text
+		completion_menu_bg_color = c.bg_popup, --  Dark background for contrast
+		completion_menu_current_color = c.bg, -- Dark background for contrast on highlighted item
+		completion_menu_current_bg_color = c.blue0, -- Highlight color for the selected item, using a blue shade
+	}
+end
+
+local function setup_tokyonight_integration()
+	-- 1. Check if tokyonight is the active colorscheme
+	local theme = vim.g.colors_name
+	if not theme or not string.starts(theme, "tokyonight") then
+		return -- Do nothing if tokyonight is not active
+	end
+
+	-- 2. Get the tokyonight configuration
+	local tokyonight_config = require("tokyonight.config")
+	local opts = tokyonight_config.options
+
+	-- 3. Get the tokyonight colors
+	local tokyonight_colors = require("tokyonight.colors").setup(opts)
+
+	set_tokyonight_theme(tokyonight_colors, opts)
+end
 
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
@@ -102,6 +134,7 @@ function M.setup(opts)
 	opts = opts or {}
 	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
+	setup_tokyonight_integration()
 	if M.editor_command == nil then
 		vim.env.AIDER_EDITOR = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'"
 	end
