@@ -87,10 +87,28 @@ function Aider.dark_mode()
 	return false
 end
 
--- make this function return a table and build it up instead of using a string ai!
 function Aider.command()
-	local env_args = vim.env.AIDER_ARGS or ""
-	local dark_mode = Aider.dark_mode() and " --dark-mode" or "--light-mode"
+	local cmd = {}
+
+	table.insert(cmd, "aider")
+
+	if vim.env.AIDER_ARGS then
+		for arg in string.gmatch(vim.env.AIDER_ARGS, "[^%s]+") do
+			table.insert(cmd, arg)
+		end
+	end
+
+	if config.aider_args then
+		for arg in string.gmatch(config.aider_args, "[^%s]+") do
+			table.insert(cmd, arg)
+		end
+	end
+
+	if Aider.dark_mode() then
+		table.insert(cmd, "--dark-mode")
+	else
+		table.insert(cmd, "--light-mode")
+	end
 
 	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "
@@ -98,26 +116,22 @@ function Aider.command()
 		.. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\\"'
 		.. '"'
 
-	local command = string.format(
-		"aider %s %s %s %s ",
-		env_args,
-		config.aider_args,
-		dark_mode,
-		"--auto-test --test-cmd " .. "'" .. hook_command .. "'"
-	)
+	table.insert(cmd, "--auto-test")
+	table.insert(cmd, "--test-cmd")
+	table.insert(cmd, "'" .. hook_command .. "'")
+
 	if config.watch_files then
-		command = command .. "--watch-files "
+		table.insert(cmd, "--watch-files")
 	end
 
-	-- use correct cmd table here and uncomment ai
-	-- if config.theme then
-	-- 	for key, value in pairs(config.theme) do
-	-- 		table.insert(cmd, "--" .. key:gsub("_", "-"))
-	-- 		table.insert(cmd, value)
-	-- 	end
-	-- end
+	if config.theme then
+		for key, value in pairs(config.theme) do
+			table.insert(cmd, "--" .. key:gsub("_", "-"))
+			table.insert(cmd, value)
+		end
+	end
 
-	return command
+	return table.concat(cmd, " ")
 end
 
 _G.AiderUpdateHook = function()
