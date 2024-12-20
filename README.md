@@ -263,9 +263,9 @@ require('aider').setup({
   -- e.x. `notify = require("fidget").notify
   notify = vim.notify,
 
-  -- Add additional args to aider,
-  -- .e.x `aider_args = "--no-auto-commit"` to disable auto git commits.
-  aider_args = "",
+  -- Add additional args to aider as a table of strings
+  -- e.x. `aider_args = {"--no-auto-commit"}` to disable auto git commits.
+  aider_args = {},
 
   -- Add additional commands to run after Aider updates file/s.
   -- E.x. you can auto trigger diffs with the diffview plugin:
@@ -274,7 +274,6 @@ require('aider').setup({
 
   -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
   model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
-
 
   -- Always open terminal in insert mode
   auto_insert = true
@@ -314,7 +313,7 @@ require('aider').setup({
   vim.wo.relativenumber = false
  end,
 
-  toggleterm = {
+  win = {
     -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
     direction = "float",
 
