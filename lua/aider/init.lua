@@ -113,6 +113,7 @@ end
 
 local function setup_tokyonight_integration()
 	-- 1. Check if tokyonight is the active colorscheme
+	-- make this match any theme that starts with tokyonight e.x. tokyonight-day tokyonight-night ai!
 	if vim.g.colors_name ~= "tokyonight" then
 		return -- Do nothing if tokyonight is not active
 	end
