@@ -13,8 +13,15 @@ function Aider.is_running()
 end
 
 function Aider.clear()
+	local term = Aider.__term[utils.cwd()]
+	if term then
+		term:close()
+	end
 	Aider.__term[utils.cwd()] = nil
 end
+
+-- impliment this ai!
+function Aider.clear_all() end
 
 --- Get or generate a terminal object for Aider
 ---@return Terminal
