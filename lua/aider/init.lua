@@ -91,7 +91,7 @@ local function set_tokyonight_theme(c, _)
 		user_input_color = c.blue0,
 		tool_output_color = c.blue,
 		tool_error_color = c.red1,
-		tool_warning_color = c.yellow,
+		tool_warning_color = c.orange,
 		assistant_output_color = c.blue0,
 		completion_menu_color = c.fg_float,
 		completion_menu_bg_color = c.bg_float,
