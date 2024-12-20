@@ -21,7 +21,7 @@
 ---@field restart_on_chdir boolean
 ---@field auto_scroll boolean
 ---@field write_to_buffer boolean
----@field theme table
+---@field theme table|nil
 
 local M = {}
 
@@ -79,25 +79,15 @@ M.defaults = {
 			end
 		end,
 	},
-	theme = {
-		user_input_color = "#a6da95",
-		tool_output_color = "#8aadf4",
-		tool_error_color = "#ed8796",
-		tool_warning_color = "#eed49f",
-		assistant_output_color = "#c6a0f6",
-		completion_menu_color = "#cad3f5",
-		completion_menu_bg_color = "#24273a",
-		completion_menu_current_color = "#181926",
-		completion_menu_current_bg_color = "#f4dbd6",
-	},
+	theme = nil,
 }
 
 ---@class AiderConfig
 M.config = {}
 
 ---@type tokyonight.HighlightsFn
-function set_tokyonight_theme(c, opts)
-	M.config.theme = {
+local function set_tokyonight_theme(c, _)
+	return {
 		user_input_color = c.blue,
 		tool_output_color = c.blue,
 		tool_error_color = c.red1,
@@ -114,19 +104,16 @@ local function setup_tokyonight_integration()
 	if not vim.startswith(vim.g.colors_name, "tokyonight") then
 		return -- Do nothing if tokyonight is not active
 	end
-
 	local ok, tokyonight_config = pcall(require, "tokyonight.config")
 	if not ok then
 		return -- Do nothing if tokyonight.config is not found
 	end
 	local opts = tokyonight_config.options
-
 	local ok, tokyonight_colors = pcall(require, "tokyonight.colors")
 	if not ok then
 		return -- Do nothing if tokyonight.colors is not found
 	end
-
-	set_tokyonight_theme(tokyonight_colors.setup(opts), opts)
+	return set_tokyonight_theme(tokyonight_colors.setup(opts), opts)
 end
 
 ---Initialize configuration with user options
@@ -135,7 +122,10 @@ function M.setup(opts)
 	opts = opts or {}
 	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
-	setup_tokyonight_integration()
+	local tokyonight_theme = setup_tokyonight_integration()
+	if tokyonight_theme then
+		M.config.theme = tokyonight_theme
+	end
 	if M.editor_command == nil then
 		vim.env.AIDER_EDITOR = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'"
 	end

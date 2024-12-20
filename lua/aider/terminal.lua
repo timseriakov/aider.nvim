@@ -96,10 +96,12 @@ function Aider.command()
 		end
 	end
 
-	if Aider.dark_mode() then
-		table.insert(cmd, "--dark-mode")
-	else
-		table.insert(cmd, "--light-mode")
+	if not config.theme then
+		if Aider.dark_mode() then
+			table.insert(cmd, "--dark-mode")
+		else
+			table.insert(cmd, "--light-mode")
+		end
 	end
 
 	local hook_command = "/bin/sh -c "
