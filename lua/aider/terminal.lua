@@ -88,16 +88,9 @@ function Aider.dark_mode()
 end
 
 function Aider.command()
-	local cmd = {}
+	local cmd = { "aider" }
 
-	table.insert(cmd, "aider")
-
-	if vim.env.AIDER_ARGS then
-		for arg in string.gmatch(vim.env.AIDER_ARGS, "[^%s]+") do
-			table.insert(cmd, arg)
-		end
-	end
-
+	-- what does the gmatch do here ai?
 	if config.aider_args then
 		for arg in string.gmatch(config.aider_args, "[^%s]+") do
 			table.insert(cmd, arg)
