@@ -43,8 +43,8 @@ function Aider.terminal()
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = config.auto_scroll,
-		direction = config.toggleterm.direction,
-		size = config.toggleterm.size,
+		direction = config.win.direction,
+		size = config.win.size,
 		on_exit = function()
 			Aider.__term[cwd] = nil
 		end,
@@ -74,7 +74,7 @@ function Aider.load_files(files)
 	end
 
 	if not config.watch_files then
-		term:open(config.toggleterm.size(term), config.toggleterm.direction)
+		term:open(config.win.size(term), config.win.direction)
 	end
 end
 
@@ -102,7 +102,6 @@ function Aider.command()
 		table.insert(cmd, "--light-mode")
 	end
 
-	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "
 		.. '"'
 		.. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\\"'
@@ -119,7 +118,7 @@ function Aider.command()
 	if config.theme then
 		for key, value in pairs(config.theme) do
 			table.insert(cmd, "--" .. key:gsub("_", "-"))
-			table.insert(cmd, value)
+			table.insert(cmd, '"' .. value .. '"')
 		end
 	end
 
@@ -152,12 +151,12 @@ end
 function Aider.toggle_window(size, direction)
 	local term = Aider.terminal()
 	if size then
-		config.toggleterm.size = function()
+		config.win.size = function()
 			return size(term)
 		end
 	end
 	if direction then
-		config.toggleterm.direction = direction
+		config.win.direction = direction
 	end
 
 	if term:is_open() then
@@ -166,7 +165,7 @@ function Aider.toggle_window(size, direction)
 		end
 	end
 
-	term:toggle(config.toggleterm.size(term), config.toggleterm.direction)
+	term:toggle(config.win.size(term), config.win.direction)
 end
 
 --- Send a command to the active Aider terminal session
