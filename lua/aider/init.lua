@@ -1,12 +1,12 @@
 ---@class ToggletermConfig
----@field direction string Window layout type ('float'|'vertical'|'horizontal')
+---@field direction string Window layout type ('float'|'vertical'|'horizontal'|'tab')
 ---@field size function Size function for terminal
 
 ---@class AiderConfig
 ---@field editor_command string|nil Command to use for editor
 ---@field fzf_action_key string Key to trigger aider load in fzf
----@field aider_args string Additional arguments for aider CLI
----@field toggleterm ToggletermConfig Toggleterm configuration
+---@field aider_args table Additional arguments for aider CLI
+---@field win ToggletermConfig window options
 ---@field spawn_on_startup boolean|nil
 ---@field float_opts table<string, any>?
 ---@field after_update_hook function|nil
@@ -21,6 +21,7 @@
 ---@field restart_on_chdir boolean
 ---@field auto_scroll boolean
 ---@field write_to_buffer boolean
+---@field theme table
 
 local M = {}
 
@@ -40,7 +41,7 @@ M.defaults = {
 	notify = function(msg, level, opts)
 		vim.notify(msg, level, opts)
 	end,
-	aider_args = "",
+	aider_args = {},
 	spawn_on_startup = true,
 	restart_on_chdir = false,
 	on_term_open = function()
@@ -68,7 +69,7 @@ M.defaults = {
 	end,
 	focus_on_spawn = false,
 	auto_scroll = false,
-	toggleterm = {
+	win = {
 		direction = "float",
 		size = function(term)
 			if term.direction == "horizontal" then
@@ -77,6 +78,17 @@ M.defaults = {
 				return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
 			end
 		end,
+	},
+	theme = {
+		user_input_color = "#a6da95",
+		tool_output_color = "#8aadf4",
+		tool_error_color = "#ed8796",
+		tool_warning_color = "#eed49f",
+		assistant_output_color = "#c6a0f6",
+		completion_menu_color = "#cad3f5",
+		completion_menu_bg_color = "#24273a",
+		completion_menu_current_color = "#181926",
+		completion_menu_current_bg_color = "#f4dbd6",
 	},
 }
 

@@ -313,19 +313,19 @@ require('aider').setup({
   vim.wo.relativenumber = false
  end,
 
-  win = {
-    -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
-    direction = "float",
+ win = {
+   -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
+   direction = "float",
 
-    -- specify a size for the horizontal or vertical
-    size = function(term)
-     if term.direction == "horizontal" then
-      return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-     elseif term.direction == "vertical" then
-      return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-     end
-    end,
-  },
+   -- specify a size for the horizontal or vertical
+   size = function(term)
+    if term.direction == "horizontal" then
+     return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+    elseif term.direction == "vertical" then
+     return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+    end
+   end,
+ },
 })
 ```
 
