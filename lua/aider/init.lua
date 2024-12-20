@@ -80,48 +80,45 @@ M.defaults = {
 		end,
 	},
 	theme = {
-		-- 	user_input_color = "#a6da95",
-		-- 	tool_output_color = "#8aadf4",
-		-- 	tool_error_color = "#ed8796",
-		-- 	tool_warning_color = "#eed49f",
-		-- 	assistant_output_color = "#c6a0f6",
-		-- 	completion_menu_color = "#cad3f5",
-		-- 	completion_menu_bg_color = "#24273a",
-		-- 	completion_menu_current_color = "#181926",
-		-- 	completion_menu_current_bg_color = "#f4dbd6",
+		user_input_color = "#a6da95",
+		tool_output_color = "#8aadf4",
+		tool_error_color = "#ed8796",
+		tool_warning_color = "#eed49f",
+		assistant_output_color = "#c6a0f6",
+		completion_menu_color = "#cad3f5",
+		completion_menu_bg_color = "#24273a",
+		completion_menu_current_color = "#181926",
+		completion_menu_current_bg_color = "#f4dbd6",
 	},
 }
 
----ion/
 ---@class AiderConfig
 M.config = {}
 
 ---@type tokyonight.HighlightsFn
 function set_tokyonight_theme(c, opts)
 	M.config.theme = {
-		user_input_color = c.green, -- Green often signifies user input or success
-		tool_output_color = c.blue2, --  A neutral color for general tool output
-		tool_error_color = c.red1, -- Red is standard for errors
-		tool_warning_color = c.yellow, -- Yellow is standard for warnings
-		assistant_output_color = c.blue, -- Blue for AI/assistant output, similar to default
-		completion_menu_color = c.fg_dark, --  Foreground color for readable text
-		completion_menu_bg_color = c.bg_popup, --  Dark background for contrast
-		completion_menu_current_color = c.bg, -- Dark background for contrast on highlighted item
-		completion_menu_current_bg_color = c.blue0, -- Highlight color for the selected item, using a blue shade
+		user_input_color = c.blue,
+		tool_output_color = c.blue,
+		tool_error_color = c.red1,
+		tool_warning_color = c.yellow,
+		assistant_output_color = c.blue,
+		completion_menu_color = c.fg_float,
+		completion_menu_bg_color = c.bg_float,
+		completion_menu_current_color = c.fg_dark,
+		completion_menu_current_bg_color = c.bg_highlight,
 	}
 end
 
 local function setup_tokyonight_integration()
-	-- 1. Check if tokyonight is the active colorscheme
 	if not vim.startswith(vim.g.colors_name, "tokyonight") then
 		return -- Do nothing if tokyonight is not active
 	end
 
-	-- 2. Get the tokyonight configuration
+	-- use pcall for these require statements and return early if not found ai!
 	local tokyonight_config = require("tokyonight.config")
 	local opts = tokyonight_config.options
 
-	-- 3. Get the tokyonight colors
 	local tokyonight_colors = require("tokyonight.colors").setup(opts)
 
 	set_tokyonight_theme(tokyonight_colors, opts)
