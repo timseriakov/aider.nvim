@@ -115,13 +115,18 @@ local function setup_tokyonight_integration()
 		return -- Do nothing if tokyonight is not active
 	end
 
-	-- use pcall for these require statements and return early if not found ai!
-	local tokyonight_config = require("tokyonight.config")
+	local ok, tokyonight_config = pcall(require, "tokyonight.config")
+	if not ok then
+		return -- Do nothing if tokyonight.config is not found
+	end
 	local opts = tokyonight_config.options
 
-	local tokyonight_colors = require("tokyonight.colors").setup(opts)
+	local ok, tokyonight_colors = pcall(require, "tokyonight.colors")
+	if not ok then
+		return -- Do nothing if tokyonight.colors is not found
+	end
 
-	set_tokyonight_theme(tokyonight_colors, opts)
+	set_tokyonight_theme(tokyonight_colors.setup(opts), opts)
 end
 
 ---Initialize configuration with user options
