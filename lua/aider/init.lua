@@ -88,8 +88,8 @@ M.config = {}
 ---@type tokyonight.HighlightsFn
 local function set_tokyonight_theme(c, _)
 	return {
-		user_input_color = c.blue,
-		tool_output_color = c.blue,
+		user_input_color = c.blue0,
+		tool_output_color = c.blue0,
 		tool_error_color = c.red1,
 		tool_warning_color = c.yellow,
 		assistant_output_color = c.blue,
