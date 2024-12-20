@@ -20,8 +20,10 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Can be used to create custom prompts
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
 - Load files into Aider session
+  - You can use fzf-lua or telescope to select files (multi-select supported) with multiple file viewers:
+    - Telescope git_files | find_files | buffers | oldfiles
+    - FZF-Lua any file finder that follows standard conventions for passing file params
   - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args
-  - You can use fzf-lua or telescope to select files (multi-select supported) with any file viewer (git_files, buffers..)
 - Ask questions about code with visual selection support
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
 - For diff viewing, accepting or rejecting changes:
@@ -30,6 +32,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Supports switching to different repos and will maintain context per repo
 - Telescope picker for selecting models `:Telescope model_picker`
   - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
+- Integration with tokyonight theme
 
 ## Prerequisites
 
