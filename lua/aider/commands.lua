@@ -115,6 +115,18 @@ function M.setup(opts)
 		bang = true,
 	})
 
+	vim.api.nvim_create_user_command("AiderClear", function()
+		terminal.clear()
+	end, {
+		desc = "Clear current Aider terminal",
+	})
+
+	vim.api.nvim_create_user_command("AiderClearAll", function()
+		terminal.clear_all()
+	end, {
+		desc = "Clear all Aider terminals",
+	})
+
 	if opts.restart_on_chdir then
 		vim.api.nvim_create_autocmd("DirChanged", {
 			pattern = "*",
