@@ -90,9 +90,8 @@ end
 function Aider.command()
 	local cmd = { "aider" }
 
-	-- what does the gmatch do here ai?
 	if config.aider_args then
-		for arg in string.gmatch(config.aider_args, "[^%s]+") do
+		for _, arg in ipairs(config.aider_args) do
 			table.insert(cmd, arg)
 		end
 	end
