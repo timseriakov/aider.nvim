@@ -20,8 +20,14 @@ function Aider.clear()
 	Aider.__term[utils.cwd()] = nil
 end
 
--- impliment this ai!
-function Aider.clear_all() end
+function Aider.clear_all()
+	for _, term in pairs(Aider.__term) do
+		if term then
+			term:close()
+		end
+	end
+	Aider.__term = {}
+end
 
 --- Get or generate a terminal object for Aider
 ---@return Terminal
