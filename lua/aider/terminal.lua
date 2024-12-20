@@ -87,9 +87,10 @@ function Aider.dark_mode()
 	return false
 end
 
+-- make this function return a table and build it up instead of using a string ai!
 function Aider.command()
 	local env_args = vim.env.AIDER_ARGS or ""
-	local dark_mode = Aider.dark_mode() and " --dark-mode" or ""
+	local dark_mode = Aider.dark_mode() and " --dark-mode" or "--light-mode"
 
 	---@diagnostic disable-next-line: undefined-global
 	local hook_command = "/bin/sh -c "
@@ -107,6 +108,15 @@ function Aider.command()
 	if config.watch_files then
 		command = command .. "--watch-files "
 	end
+
+	-- use correct cmd table here and uncomment ai
+	-- if config.theme then
+	-- 	for key, value in pairs(config.theme) do
+	-- 		table.insert(cmd, "--" .. key:gsub("_", "-"))
+	-- 		table.insert(cmd, value)
+	-- 	end
+	-- end
+
 	return command
 end
 
