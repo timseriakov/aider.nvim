@@ -37,6 +37,15 @@ M.defaults = {
 	code_theme_dark = "monokai",
 	code_theme_light = "default",
 	editor_command = nil,
+	float_opts = {
+		border = "none",
+		width = function()
+			return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
+		end,
+		height = function()
+			return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
+		end,
+	},
 	fzf_action_key = "ctrl-l",
 	model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
 	telescope_action_key = "<C-l>",

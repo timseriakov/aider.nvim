@@ -295,7 +295,7 @@ require('aider').setup({
  -- Whether to use dark themes for tokyonight and catppuccin.
  -- If those themes aren't enabled will determine whether to use `--dark-mode`
  dark_mode = function()
-  return vim.o.background == "dark"
+   return vim.o.background == "dark"
  end,
 
  -- Code theme to use for markdown code
@@ -304,22 +304,32 @@ require('aider').setup({
 
   -- Function to run when term is initially opened
  on_term_open = function()
-  local function tmap(key, val)
-   local opt = { buffer = 0 }
-   vim.keymap.set("t", key, val, opt)
-  end
-  -- exit insert mode
-  tmap("<Esc>", "<C-\\><C-n>")
-  tmap("jj", "<C-\\><C-n>")
-  -- enter command mode
-  tmap(":", "<C-\\><C-n>:")
-  -- scrolling up/down
-  tmap("<C-u>", "<C-\\><C-n><C-u>")
-  tmap("<C-d>", "<C-\\><C-n><C-d>")
-  -- remove line numbers
-  vim.wo.number = false
-  vim.wo.relativenumber = false
+   local function tmap(key, val)
+    local opt = { buffer = 0 }
+    vim.keymap.set("t", key, val, opt)
+   end
+   -- exit insert mode
+   tmap("<Esc>", "<C-\\><C-n>")
+   tmap("jj", "<C-\\><C-n>")
+   -- enter command mode
+   tmap(":", "<C-\\><C-n>:")
+   -- scrolling up/down
+   tmap("<C-u>", "<C-\\><C-n><C-u>")
+   tmap("<C-d>", "<C-\\><C-n><C-d>")
+   -- remove line numbers
+   vim.wo.number = false
+   vim.wo.relativenumber = false
  end,
+
+ float_opts = {
+   border = "none",
+   width = function()
+     return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
+   end,
+   height = function()
+     return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
+   end,
+ },
 
  win = {
    -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
