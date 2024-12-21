@@ -32,7 +32,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Supports switching to different repos and will maintain context per repo
 - Telescope picker for selecting models `:Telescope model_picker`
   - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
-- Integration with tokyonight theme
+- Integration with tokyonight and catppuccin themes
 
 ## Prerequisites
 
@@ -292,10 +292,15 @@ require('aider').setup({
   -- Auto scroll the terminal on new output
   auto_scroll = false,
 
- -- Whether to enable aider `--dark-mode` can be boolean or function
+ -- Whether to use dark themes for tokyonight and catppuccin.
+ -- If those themes aren't enabled will determine whether to use `--dark-mode`
  dark_mode = function()
   return vim.o.background == "dark"
  end,
+
+ -- Code theme to use for markdown code
+ code_theme_dark = "monokai",
+ code_theme_light = "default",
 
   -- Function to run when term is initially opened
  on_term_open = function()

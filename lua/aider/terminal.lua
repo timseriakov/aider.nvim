@@ -104,6 +104,13 @@ function Aider.command()
 		end
 	end
 
+	table.insert(cmd, "--code-theme")
+	if Aider.dark_mode() then
+		table.insert(cmd, config.code_theme_dark)
+	else
+		table.insert(cmd, config.code_theme_light)
+	end
+
 	local hook_command = "/bin/sh -c "
 		.. '"'
 		.. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\\"'
