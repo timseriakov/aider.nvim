@@ -22,6 +22,8 @@
 ---@field auto_scroll boolean
 ---@field write_to_buffer boolean
 ---@field theme table|nil
+---@field code_theme_dark string
+---@field code_theme_light string
 
 local M = {}
 
@@ -32,6 +34,8 @@ vim.g.aider_temp_files = {}
 ---@type AiderConfig
 M.defaults = {
 	watch_files = true,
+	code_theme_dark = "monokai",
+	code_theme_light = "default",
 	editor_command = nil,
 	fzf_action_key = "ctrl-l",
 	model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
