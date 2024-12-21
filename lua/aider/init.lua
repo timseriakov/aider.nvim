@@ -88,11 +88,11 @@ M.config = {}
 ---@type tokyonight.HighlightsFn
 local function set_tokyonight_theme(c, _)
 	return {
-		user_input_color = c.blue0,
+		user_input_color = c.git.add,
 		tool_output_color = c.blue,
 		tool_error_color = c.red1,
 		tool_warning_color = c.orange,
-		assistant_output_color = c.blue0,
+		assistant_output_color = c.purple,
 		completion_menu_color = c.fg_float,
 		completion_menu_bg_color = c.bg_float,
 		completion_menu_current_color = c.fg_dark,
@@ -100,7 +100,22 @@ local function set_tokyonight_theme(c, _)
 	}
 end
 
-local function setup_tokyonight_integration()
+---@param c table
+local function set_catppuccin_colors(c)
+	return {
+		user_input_color = c.green,
+		tool_output_color = c.blue,
+		tool_error_color = c.red,
+		tool_warning_color = c.yellow,
+		assistant_output_color = c.mauve,
+		completion_menu_color = c.text,
+		completion_menu_bg_color = c.base,
+		completion_menu_current_color = c.crust,
+		completion_menu_current_bg_color = c.pink,
+	}
+end
+
+local function setup_tokyonight()
 	if not vim.startswith(vim.g.colors_name, "tokyonight") then
 		return -- Do nothing if tokyonight is not active
 	end
@@ -116,15 +131,31 @@ local function setup_tokyonight_integration()
 	return set_tokyonight_theme(tokyonight_colors.setup(opts), opts)
 end
 
+local function setup_catppuccin()
+	local ok, _ = pcall(require, "catppuccin.palettes")
+	if not ok then
+		return
+	end
+
+	local current_color = vim.g.colors_name
+	local flavour = require("catppuccin").flavour or vim.g.catppuccin_flavour
+
+	if current_color and current_color:match("^catppuccin") and flavour then
+		local colors = require("catppuccin.palettes").get_palette()
+		return set_catppuccin_colors(colors)
+	end
+	return
+end
+
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
 function M.setup(opts)
 	opts = opts or {}
 	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
-	local tokyonight_theme = setup_tokyonight_integration()
-	if tokyonight_theme then
-		M.config.theme = tokyonight_theme
+	local theme = setup_tokyonight() or setup_catppuccin()
+	if theme then
+		M.config.theme = theme
 	end
 	if M.editor_command == nil then
 		vim.env.AIDER_EDITOR = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'"
