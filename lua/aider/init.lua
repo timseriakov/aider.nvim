@@ -10,7 +10,6 @@
 ---@field spawn_on_startup boolean|nil
 ---@field float_opts table<string, any>?
 ---@field after_update_hook function|nil
----@field notify function
 ---@field watch_files boolean
 ---@field confirm_with_vim_ui boolean
 ---@field telescope_action_key string
@@ -24,6 +23,9 @@
 ---@field theme table|nil
 ---@field code_theme_dark string
 ---@field code_theme_light string
+---@field progress_notifier boolean
+---@field log_notifier boolean
+---@field open_on_run boolean
 
 local M = {}
 
@@ -34,6 +36,9 @@ vim.g.aider_temp_files = {}
 ---@type AiderConfig
 M.defaults = {
 	watch_files = true,
+	progress_notifier = true,
+	log_notifier = true,
+	open_on_run = true,
 	code_theme_dark = "monokai",
 	code_theme_light = "default",
 	editor_command = nil,
@@ -51,9 +56,6 @@ M.defaults = {
 	telescope_action_key = "<C-l>",
 	write_to_buffer = true,
 	auto_insert = true,
-	notify = function(msg, level, opts)
-		vim.notify(msg, level, opts)
-	end,
 	aider_args = {},
 	spawn_on_startup = true,
 	restart_on_chdir = false,
@@ -81,7 +83,7 @@ M.defaults = {
 		return vim.o.background == "dark"
 	end,
 	focus_on_spawn = false,
-	auto_scroll = false,
+	auto_scroll = true,
 	win = {
 		direction = "float",
 		size = function(term)

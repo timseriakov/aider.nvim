@@ -29,9 +29,49 @@ function MessageBuffer:contains(msg)
 	return false
 end
 
-function M.on_stdout(term, data)
-	local message_buffer = MessageBuffer
+local function progress_notifier()
+	local snacks, snotifier = pcall(require, "snacks.notifier")
+	if not snacks then
+		vim.notify("snacks.nvim is required for progress notifications", vim.log.levels.WARN)
+	end
+	local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+	local msg = "Aider Working ..."
+	snotifier.notify(msg, "info", {
+		id = "aider_progress",
+		title = "Aider",
+		style = "compact",
+		opts = function(notif)
+			notif.icon = spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+		end,
+	})
+end
 
+local function log_notifier(line)
+	local message_buffer = MessageBuffer
+	local fidget, fnotifier = pcall(require, "fidget")
+	if not fidget then
+		vim.notify("fidget.nvim is required for log notifications", vim.log.levels.WARN)
+	end
+	local msg = utils.clean_output(line)
+	if #msg > 20 and msg:match("[a-z]") then
+		-- Check if message is duplicate before processing
+		msg = utils.truncate_message(msg, 60)
+		if not message_buffer:contains(msg) then
+			message_buffer:add(msg)
+			fnotifier.notify(msg, vim.log.levels.INFO, {
+				title = CONSTANTS.DEFAULT_TITLE,
+				id = CONSTANTS.NOTIFICATION_ID,
+				replace = CONSTANTS.NOTIFICATION_ID,
+			})
+		end
+	end
+end
+
+local Terminal = require("toggleterm.terminal").Terminal
+
+---@param term Terminal
+---@param data table
+function M.on_stdout(term, data)
 	for _, line in ipairs(data) do
 		if term:is_open() then
 			return
@@ -42,18 +82,25 @@ function M.on_stdout(term, data)
 			return
 		end
 
-		local msg = utils.clean_output(line)
-		if #msg > 0 then
-			-- Check if message is duplicate before processing
-			msg = utils.truncate_message(msg, 60)
-			if not message_buffer:contains(msg) then
-				message_buffer:add(msg)
-				config.notify(msg, vim.log.levels.INFO, {
-					title = CONSTANTS.DEFAULT_TITLE,
-					id = CONSTANTS.NOTIFICATION_ID,
-					replace = CONSTANTS.NOTIFICATION_ID,
-				})
-			end
+		-- if config.open_on_run then
+		-- 	if not term:is_open() then
+		-- 		local win = vim.api.nvim_get_current_win()
+		-- 		local size = math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+		-- 		term:open(size, "vertical")
+		-- 		vim.api.nvim_feedkeys("A", "i", true)
+		-- 		vim.schedule(function()
+		-- 			vim.api.nvim_set_current_win(win)
+		-- 		end)
+		-- 	end
+		-- 	return
+		-- end
+
+		if config.progress_notifier then
+			progress_notifier()
+		end
+
+		if config.log_notifier then
+			log_notifier(line)
 		end
 	end
 end

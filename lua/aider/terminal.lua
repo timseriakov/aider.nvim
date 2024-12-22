@@ -152,7 +152,6 @@ function Aider.spawn()
 	local term = Aider.terminal()
 	term:open()
 	term:close()
-	vim.notify("Running Aider in background")
 end
 
 ---@param size? number
