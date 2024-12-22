@@ -196,24 +196,27 @@ function M.setup(opts)
 					local lowered = striped:lower()
 
 					-- Check starts with variants
+					-- this should only match if there's whitespace after the match ai
 					local commentStartMatch = lowered:sub(1, 2) == "ai"
 						or lowered:sub(1, 3) == "ai!"
 						or lowered:sub(1, 3) == "ai?"
 
 					-- Check ends with variants
+					-- this should only match if there's whitespace before the match ai!
 					local commentEndMatch = lowered:sub(-2) == "ai"
 						or lowered:sub(-3) == "ai!"
 						or lowered:sub(-3) == "ai?"
 
 					local hasAI = commentStartMatch or commentEndMatch
 					if hasAI then
-						vim.defer_fn(function()
-							if not terminal.is_running() then
-								terminal.spawn()
-								-- Update the last edit timestamp of the current file
-								vim.api.nvim_buf_set_lines(bufnr, 0, 1, false, vim.api.nvim_buf_get_lines(bufnr, 0, 1, false))
-							end
-						end, 2000)
+						if not terminal.is_running() then
+							terminal.spawn()
+							vim.defer_fn(function()
+								vim.api.nvim_buf_call(bufnr, function()
+									vim.cmd("silent w")
+								end)
+							end, 2000)
+						end
 					end
 				end
 			end
