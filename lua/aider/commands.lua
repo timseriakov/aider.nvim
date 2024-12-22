@@ -207,13 +207,15 @@ function M.setup(opts)
 
 					local hasAI = commentStartMatch or commentEndMatch
 					if hasAI then
-						if not terminal.is_running() then
-							terminal.spawn()
-							-- change the last edit timestamp of the current file after a 2 second timer ai!
-						end
+						vim.defer_fn(function()
+							if not terminal.is_running() then
+								terminal.spawn()
+								-- Update the last edit timestamp of the current file
+								vim.api.nvim_buf_set_lines(bufnr, 0, 1, false, vim.api.nvim_buf_get_lines(bufnr, 0, 1, false))
+							end
+						end, 2000)
 					end
 				end
-				-- vim.notify(table.concat(striped, "\n"), vim.log.levels.INFO)
 			end
 		end,
 	})
