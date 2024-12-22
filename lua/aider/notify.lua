@@ -39,7 +39,7 @@ local function progress_notifier()
 	snotifier.notify(msg, "info", {
 		id = "aider_progress",
 		title = "Aider",
-		style = "compact",
+		style = config.progress_notifier.style,
 		opts = function(notif)
 			notif.icon = spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
 		end,
@@ -50,7 +50,7 @@ local function log_notifier(line)
 	local message_buffer = MessageBuffer
 	local fidget, fnotifier = pcall(require, "fidget")
 	if not fidget then
-		vim.notify("fidget.nvim is required for log notifications", vim.log.levels.WARN)
+		return
 	end
 	local msg = utils.clean_output(line)
 	if #msg > 20 and msg:match("[a-z]") then
@@ -81,19 +81,6 @@ function M.on_stdout(term, data)
 			term:open()
 			return
 		end
-
-		-- if config.open_on_run then
-		-- 	if not term:is_open() then
-		-- 		local win = vim.api.nvim_get_current_win()
-		-- 		local size = math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-		-- 		term:open(size, "vertical")
-		-- 		vim.api.nvim_feedkeys("A", "i", true)
-		-- 		vim.schedule(function()
-		-- 			vim.api.nvim_set_current_win(win)
-		-- 		end)
-		-- 	end
-		-- 	return
-		-- end
 
 		if config.progress_notifier then
 			progress_notifier()
