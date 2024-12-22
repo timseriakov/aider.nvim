@@ -159,7 +159,7 @@ function M.setup(opts)
 		end
 		local filetype = vim.bo[bufnr].filetype
 		if not filetype then
-			print("No filetype detected for buffer " .. bufnr)
+			print("No filetype detected for buffer " .. bunr)
 			return nil
 		end
 		local query_string = [[
@@ -193,22 +193,16 @@ function M.setup(opts)
 			if comments and #comments > 0 then
 				for _, comment in ipairs(comments) do
 					local striped = comment:match("[%w]+.*[%w]+")
+					if not striped then
+						goto continue
+					end
+
 					local lowered = striped:lower()
 
-					-- Check starts with variants
-					-- this should only match if there's whitespace after the match ai
-					local commentStartMatch = lowered:sub(1, 2) == "ai"
-						or lowered:sub(1, 3) == "ai!"
-						or lowered:sub(1, 3) == "ai?"
+					-- Check if the comment starts or ends with "ai", "ai!", or "ai?" with optional whitespace
+					local commentMatch = lowered:match("^%s*ai!?%??%s*$") or lowered:match("^%s*ai%s") or lowered:match("ai%s*$")
 
-					-- Check ends with variants
-					-- this should only match if there's whitespace before the match ai!
-					local commentEndMatch = lowered:sub(-2) == "ai"
-						or lowered:sub(-3) == "ai!"
-						or lowered:sub(-3) == "ai?"
-
-					local hasAI = commentStartMatch or commentEndMatch
-					if hasAI then
+					if commentMatch then
 						if not terminal.is_running() then
 							terminal.spawn()
 							vim.defer_fn(function()
@@ -218,6 +212,7 @@ function M.setup(opts)
 							end, 2000)
 						end
 					end
+					::continue::
 				end
 			end
 		end,
