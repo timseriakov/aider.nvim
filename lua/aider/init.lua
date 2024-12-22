@@ -11,7 +11,6 @@
 ---@field float_opts table<string, any>?
 ---@field after_update_hook function|nil
 ---@field watch_files boolean
----@field confirm_with_vim_ui boolean
 ---@field telescope_action_key string
 ---@field auto_insert true
 ---@field dark_mode function|boolean
@@ -19,13 +18,11 @@
 ---@field on_term_open function|nil
 ---@field restart_on_chdir boolean
 ---@field auto_scroll boolean
----@field write_to_buffer boolean
 ---@field theme table|nil
 ---@field code_theme_dark string
 ---@field code_theme_light string
----@field progress_notifier boolean
+---@field progress_notifier table|nil
 ---@field log_notifier boolean
----@field open_on_run boolean
 
 local M = {}
 
@@ -35,13 +32,27 @@ vim.g.aider_temp_files = {}
 ---Default configuration values
 ---@type AiderConfig
 M.defaults = {
+	-- enable the --watch-files flag for Aider
+	-- Aider will automatically start when valid comments are created
 	watch_files = true,
-	progress_notifier = true,
+
+	-- for snacks progress notifications
+	progress_notifier = {
+		style = "minimal",
+	},
+	-- print logs of Aider's output in the right corner, requires fidget.nvim
 	log_notifier = true,
-	open_on_run = true,
+
+	-- code theme to use for markdown blocks when in dark mode
 	code_theme_dark = "monokai",
+	-- code theme to use for markdown blocks when in light mode
 	code_theme_light = "default",
-	editor_command = nil,
+
+	-- commane to run for opening nested editor when invoking `/editor` from Aider terminal
+	-- requires flatten.nvim to work
+	editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
+
+	-- flat config options, see toggleterm.nvim for valid options
 	float_opts = {
 		border = "none",
 		width = function()
@@ -51,41 +62,47 @@ M.defaults = {
 			return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
 		end,
 	},
+
+	-- action key for adding files to aider from fzf-lua file pickers
 	fzf_action_key = "ctrl-l",
-	model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+	-- action key for adding files to aider from Telescope file pickers
 	telescope_action_key = "<C-l>",
-	write_to_buffer = true,
+
+	-- filter `Telescope model_picker` model picker
+	model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+
+	-- auto insert mode
 	auto_insert = true,
+
+	-- additional arguments for aider CLI
 	aider_args = {},
-	spawn_on_startup = true,
+
+	-- always start aider on startup
+	spawn_on_startup = false,
+
+	-- restart aider when directory changes
+	-- aider.nvim will keep separate terminal for each directory so restarting isn't typically necessary
 	restart_on_chdir = false,
-	on_term_open = function()
-		local function tmap(key, val)
-			local opt = { buffer = 0 }
-			vim.keymap.set("t", key, val, opt)
-		end
-		-- exit insert mode
-		tmap("<Esc>", "<C-\\><C-n>")
-		tmap("jj", "<C-\\><C-n>")
-		-- enter command mode
-		tmap(":", "<C-\\><C-n>:")
-		-- scrolling up/down
-		tmap("<C-u>", "<C-\\><C-n><C-u>")
-		tmap("<C-d>", "<C-\\><C-n><C-d>")
-		-- remove line numbers
-		vim.wo.number = false
-		vim.wo.relativenumber = false
-		vim.wo.linebreak = true
-	end,
+
+	-- function to run (e.x. for term mappings) when terminal is opened
+	on_term_open = nil,
+
+	-- function to run when aider updates file/s, useful for triggering git diffs
 	after_update_hook = nil,
-	confirm_with_vim_ui = false,
+
+	-- used to determine whether to use dark themes for code blocks and whether to use `--dark-mode`
+	-- if supported theme is not available
 	dark_mode = function()
 		return vim.o.background == "dark"
 	end,
-	focus_on_spawn = false,
+
+	-- auto scroll terminal on output
 	auto_scroll = true,
+
 	win = {
-		direction = "vertical",
+		-- type of window layout to use
+		direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
+		-- size function for terminal
 		size = function(term)
 			if term.direction == "horizontal" then
 				return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
@@ -94,6 +111,7 @@ M.defaults = {
 			end
 		end,
 	},
+	-- theme colors for aider
 	theme = nil,
 }
 
