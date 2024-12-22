@@ -245,26 +245,40 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-  -- Enable the new `--watch-files` feature so Aider will auto respond to AI/AI! comments
+  -- Enable the `--watch-files` feature so Aider will auto respond to AI/AI! comments
   watch_files = true,
+
+  -- for snacks progress notifications
+  progress_notifier = {
+    style = "minimal",
+  },
+
+  -- print logs of Aider's output in the right corner, requires fidget.nvim
+  log_notifier = true,
+
+  -- code theme to use for markdown blocks when in dark mode
+  code_theme_dark = "monokai",
+  -- code theme to use for markdown blocks when in light mode
+  code_theme_light = "default",
 
   -- Always start Aider so it's ready to react to your comments.
   -- Alternatively run `AiderSpawn` manually to start on-demand
-  spawn_on_startup = true,
+  spawn_on_startup = false,
 
   -- Editor command to run when triggered via `/editor`.
   -- Defaults to using flatten plugin to trigger a none-nested neovim session
-  editor_command = nil,
+  editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
 
   -- Trigger key to run when in fzf-lua to `/add` selected file/s to Aider.
   fzf_action_key = "ctrl-l",
+
   -- Trigger key to run when in telescope to `/add` selected file/s to Aider.
   telescope_action_key = "<C-l>",
 
   -- Command used to notify on Aider activity.
   -- For a low-intrusive option that works great with Aider.nvim, try [fidget](https://github.com/j-hui/fidget.nvim)
   -- e.x. `notify = require("fidget").notify
-  notify = vim.notify,
+  -- notify = vim.notify, -- this is the default and will work fine, but fidget is recommended
 
   -- Add additional args to aider as a table of strings
   -- e.x. `aider_args = {"--no-auto-commit"}` to disable auto git commits.
@@ -279,28 +293,20 @@ require('aider').setup({
   model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
 
   -- Always open terminal in insert mode
-  auto_insert = true
-
-  -- Whether to focus the terminal window when spawning Aider
-  -- If false, Aider will run in the background
-  focus_on_spawn = false,
+  auto_insert = true,
 
   -- When CWD changes, restart aider
   -- Each terminal in indexed to current working director, so this is not required for multiple project support
   restart_on_chdir = false,
 
   -- Auto scroll the terminal on new output
-  auto_scroll = false,
+  auto_scroll = true,
 
  -- Whether to use dark themes for tokyonight and catppuccin.
  -- If those themes aren't enabled will determine whether to use `--dark-mode`
  dark_mode = function()
    return vim.o.background == "dark"
  end,
-
- -- Code theme to use for markdown code
- code_theme_dark = "monokai",
- code_theme_light = "default",
 
   -- Function to run when term is initially opened
  on_term_open = function()
@@ -344,6 +350,8 @@ require('aider').setup({
     end
    end,
  },
+ -- theme colors for aider
+ theme = nil,
 })
 ```
 
