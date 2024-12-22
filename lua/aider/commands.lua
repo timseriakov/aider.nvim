@@ -200,7 +200,9 @@ function M.setup(opts)
 					local lowered = striped:lower()
 
 					-- Check if the comment starts or ends with "ai", "ai!", or "ai?" with optional whitespace
-					local commentMatch = lowered:match("^%s*ai!?%??%s*$") or lowered:match("^%s*ai%s") or lowered:match("ai%s*$")
+					local commentMatch = lowered:match("^%s*ai!?%??%s*$")
+						or lowered:match("^%s*ai%s")
+						or lowered:match("ai%s*$")
 
 					if commentMatch then
 						if not terminal.is_running() then
@@ -210,6 +212,12 @@ function M.setup(opts)
 									vim.cmd("silent w")
 								end)
 							end, 2000)
+						end
+
+						-- this should only execute if the above match is for `ai?` with the question mark ai!
+						local term = terminal.terminal()
+						if not term:is_open() then
+							term:open()
 						end
 					end
 					::continue::
