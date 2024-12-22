@@ -218,7 +218,6 @@ function M.setup(opts)
 						or lowered:match("%s+ai%s*$") -- ends with " ai"
 
 					if commentMatch then
-						vim.notify("match found: " .. lowered)
 						if not terminal.is_running() then
 							terminal.spawn()
 
