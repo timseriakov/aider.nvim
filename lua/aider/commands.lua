@@ -214,10 +214,12 @@ function M.setup(opts)
 							end, 2000)
 						end
 
-						-- this should only execute if the above match is for `ai?` with the question mark ai!
-						local term = terminal.terminal()
-						if not term:is_open() then
-							term:open()
+						-- this should only execute if the above match is for `ai?` with the question mark
+						if lowered:match("^%s*ai%?%s*$") then
+							local term = terminal.terminal()
+							if not term:is_open() then
+								term:open()
+							end
 						end
 					end
 					::continue::
