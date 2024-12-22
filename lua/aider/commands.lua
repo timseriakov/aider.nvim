@@ -146,7 +146,7 @@ function M.setup(opts)
 		end)
 	end
 
-	local function get_comments_with_treesitter(bufnr)
+	local function get_comments(bufnr)
 		local parser = vim.treesitter.get_parser(bufnr)
 		if not parser then
 			print("No Tree-sitter parser found for buffer " .. bufnr)
@@ -159,7 +159,7 @@ function M.setup(opts)
 		end
 		local filetype = vim.bo[bufnr].filetype
 		if not filetype then
-			print("No filetype detected for buffer " .. bunr)
+			print("No filetype detected for buffer " .. bufnr)
 			return nil
 		end
 		local query_string = [[
@@ -170,14 +170,30 @@ function M.setup(opts)
 			print("Failed to parse query for filetype: " .. filetype)
 			return nil
 		end
-
 		local comments = {}
 		for _, captures, _ in query:iter_matches(tree:root(), bufnr) do
 			if captures[1] then -- captures[1] corresponds to @comment
-				local text = vim.treesitter.get_node_text(captures[1], bufnr)
-				if text then
-					table.insert(comments, text)
+				local node = captures[1]
+				local start_row, start_col, end_row, end_col = node:range()
+
+				-- Get all lines of the comment
+				local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row + 1, false)
+
+				-- Process each line to remove delimiter and trim
+				local comment_lines = {}
+				for i, line in ipairs(lines) do
+					if i == 1 then
+						-- Find and remove the comment delimiter only on the first line
+						line = line:gsub("^%s*([%-%-/%#]+%s*)", "")
+					end
+					-- Trim leading and trailing whitespace
+					line = line:match("^%s*(.-)%s*$")
+					table.insert(comment_lines, line)
 				end
+
+				-- Join the processed lines
+				local text = table.concat(comment_lines, "\n")
+				table.insert(comments, text)
 			end
 		end
 		return comments
@@ -189,22 +205,20 @@ function M.setup(opts)
 		pattern = "*",
 		callback = function()
 			local bufnr = vim.fn.bufnr("%")
-			local comments = get_comments_with_treesitter(bufnr)
+			local comments = get_comments(bufnr)
 			if comments and #comments > 0 then
 				for _, comment in ipairs(comments) do
-					local striped = comment:match("[%w]+.*[%w]+")
-					if not striped then
-						goto continue
-					end
+					local lowered = comment:lower()
 
-					local lowered = striped:lower()
-
-					-- Check if the comment starts or ends with "ai", "ai!", or "ai?" with optional whitespace
-					local commentMatch = lowered:match("^%s*ai!?%??%s*$")
-						or lowered:match("^%s*ai%s")
-						or lowered:match("ai%s*$")
+					-- Check for ai/ai!/ai? at start OR end
+					local commentMatch = lowered:match("^%s*ai!?%??%s*$") -- standalone "ai/ai!/ai?"
+						or lowered:match("^%s*ai%?%s+") -- starts with "ai? "
+						or lowered:match("^%s*ai%s+") -- starts with "ai "
+						or lowered:match("%s+ai%?%s*$") -- ends with " ai?"
+						or lowered:match("%s+ai%s*$") -- ends with " ai"
 
 					if commentMatch then
+						vim.notify("match found: " .. lowered)
 						if not terminal.is_running() then
 							terminal.spawn()
 							vim.defer_fn(function()
@@ -214,15 +228,13 @@ function M.setup(opts)
 							end, 2000)
 						end
 
-						-- this should only execute if the above match is for `ai?` with the question mark
-						if lowered:match("^%s*ai%?%s*$") then
-							local term = terminal.terminal()
-							if not term:is_open() then
-								term:open()
+						-- Question mark cases
+						if lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then
+							if not terminal.terminal():is_open() then
+								terminal.toggle_window(nil, nil)
 							end
 						end
 					end
-					::continue::
 				end
 			end
 		end,
