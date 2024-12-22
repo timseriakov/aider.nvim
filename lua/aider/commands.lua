@@ -221,6 +221,7 @@ function M.setup(opts)
 						vim.notify("match found: " .. lowered)
 						if not terminal.is_running() then
 							terminal.spawn()
+
 							vim.defer_fn(function()
 								vim.api.nvim_buf_call(bufnr, function()
 									vim.cmd("silent w")
@@ -228,11 +229,12 @@ function M.setup(opts)
 							end, 2000)
 						end
 
-						-- Question mark cases
 						if lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then
-							if not terminal.terminal():is_open() then
+							local term = terminal.terminal()
+							if not term:is_open() then
 								terminal.toggle_window(nil, nil)
 							end
+							term:focus()
 						end
 					end
 				end
