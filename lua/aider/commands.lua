@@ -78,13 +78,6 @@ function M.setup(opts)
 		terminal.ask(input, selected)
 	end
 
-	---Handles the AiderAsk command, processing a prompt with optional visual selection
-	---Handles the AiderAsk command, processing a prompt with optional visual selection
-	---
-	--- This function can be called in two ways:
-	--- 1. With arguments directly passed to the command
-	--- 2. Interactively prompting the user for input if no arguments are provided
-	---
 	---@param opt table Command options containing arguments
 	local function handle_aider_ask(opt)
 		if #opt.args > 0 then
@@ -152,5 +145,77 @@ function M.setup(opts)
 			vim.cmd("AiderSpawn")
 		end)
 	end
+
+	local function get_comments_with_treesitter(bufnr)
+		local parser = vim.treesitter.get_parser(bufnr)
+		if not parser then
+			print("No Tree-sitter parser found for buffer " .. bufnr)
+			return nil
+		end
+		local tree = parser:parse()[1]
+		if not tree then
+			print("Failed to parse buffer " .. bufnr)
+			return nil
+		end
+		local filetype = vim.bo[bufnr].filetype
+		if not filetype then
+			print("No filetype detected for buffer " .. bufnr)
+			return nil
+		end
+		local query_string = [[
+(comment) @comment
+]]
+		local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
+		if not ok then
+			print("Failed to parse query for filetype: " .. filetype)
+			return nil
+		end
+
+		local comments = {}
+		for _, captures, _ in query:iter_matches(tree:root(), bufnr) do
+			if captures[1] then -- captures[1] corresponds to @comment
+				local text = vim.treesitter.get_node_text(captures[1], bufnr)
+				if text then
+					table.insert(comments, text)
+				end
+			end
+		end
+		return comments
+	end
+
+	vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
+	vim.api.nvim_create_autocmd("BufWritePost", {
+		group = "ReadCommentsTSTree",
+		pattern = "*",
+		callback = function()
+			local bufnr = vim.fn.bufnr("%")
+			local comments = get_comments_with_treesitter(bufnr)
+			if comments and #comments > 0 then
+				for _, comment in ipairs(comments) do
+					local striped = comment:match("[%w]+.*[%w]+")
+					local lowered = striped:lower()
+
+					-- Check starts with variants
+					local commentStartMatch = lowered:sub(1, 2) == "ai"
+						or lowered:sub(1, 3) == "ai!"
+						or lowered:sub(1, 3) == "ai?"
+
+					-- Check ends with variants
+					local commentEndMatch = lowered:sub(-2) == "ai"
+						or lowered:sub(-3) == "ai!"
+						or lowered:sub(-3) == "ai?"
+
+					local hasAI = commentStartMatch or commentEndMatch
+					if hasAI then
+						if not terminal.is_running() then
+							terminal.spawn()
+							-- change the last edit timestamp of the current file after a 2 second timer ai!
+						end
+					end
+				end
+				-- vim.notify(table.concat(striped, "\n"), vim.log.levels.INFO)
+			end
+		end,
+	})
 end
 return M
