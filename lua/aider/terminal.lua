@@ -20,6 +20,7 @@ function Aider.clear()
 	Aider.__term[utils.cwd()] = nil
 end
 
+-- what does this do ai?
 function Aider.clear_all()
 	for _, term in pairs(Aider.__term) do
 		if term then

@@ -85,7 +85,7 @@ M.defaults = {
 	focus_on_spawn = false,
 	auto_scroll = true,
 	win = {
-		direction = "float",
+		direction = "vertical",
 		size = function(term)
 			if term.direction == "horizontal" then
 				return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
