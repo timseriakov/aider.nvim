@@ -58,7 +58,10 @@ M.defaults = {
 
 	-- for snacks progress notifications
 	progress_notifier = {
-		style = "minimal",
+		style = "compact",
+		-- * compact: use border for icon and title
+		-- * minimal: no border, only icon and message
+		-- * fancy: similar to the default nvim-notify style
 	},
 
 	-- print logs of Aider's output in the right corner, requires fidget.nvim

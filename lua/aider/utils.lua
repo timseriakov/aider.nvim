@@ -132,22 +132,17 @@ function M.get_comment_matches(bufnr)
 	for _, comment in ipairs(comments) do
 		local lowered = comment:lower()
 
-		if
-			lowered:match("^%s*ai%?%s+") -- starts with "ai? "
-			or lowered:match("%s+ai%?%s*$") -- ends with " ai?"
-		then
+		if lowered:match("^%s*ai%?%s*$") then -- Matches "ai?" exactly or with leading/trailing spaces
 			matches["ai?"] = true
-		end
-		if
-			lowered:match("^%s*ai!%s+") -- starts with "ai! "
-			or lowered:match("%s+ai!%s*$") -- ends with " ai!"
-		then
+		elseif lowered:match("^%s*ai!%s*$") then -- Matches "ai!" exactly or with leading/trailing spaces
 			matches["ai!"] = true
-		end
-		if
-			lowered:match("^%s*ai%s+") -- starts with "ai "
-			or lowered:match("%s+ai%s*$") -- ends with " ai"
-		then
+		elseif lowered:match("^%s*ai%s*$") then -- Matches "ai" exactly or with leading/trailing spaces
+			matches["ai"] = true
+		elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then -- Starts or ends with "ai?"
+			matches["ai?"] = true
+		elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then -- Starts or ends with "ai!"
+			matches["ai!"] = true
+		elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then -- Starts or ends with "ai"
 			matches["ai"] = true
 		end
 	end
