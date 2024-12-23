@@ -11,9 +11,10 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - All files with AI comments will get added to aider automatically
 - Get live streamed notifications as Aider is processing
 - The terminal will automatically be brought to the foreground if Aider prompts for input
-- Auto reload all files changed by Aider
-- Add configurable hooks to run when Aider finishes updating a file
-  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
+- Auto reload all files in neovim changed by Aider
+- Add configurable function hook to run when Aider finishes updating a file
+  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always gorgeous diff (e.x. `DiffviewOpen HEAD^` to show latest commit or just `DiffviewOpen` if using `--no-auto-commits`
+  - Or trigger `Telescope git_commits` to look throuh the history of changes orr `Telescope git_status` if you have `no-auto-commits`
 - Send commands to Aider explicitly with `AiderSend <cmd>`
   - Can be used to create custom prompts
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
