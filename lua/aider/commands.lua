@@ -147,8 +147,8 @@ function M.setup(opts)
 	end
 
 	local function get_comments(bufnr)
-		local parser = vim.treesitter.get_parser(bufnr)
-		if not parser then
+		local success, parser = pcall(vim.treesitter.get_parser, bufnr)
+		if not success or not parser then
 			print("No Tree-sitter parser found for buffer " .. bufnr)
 			return nil
 		end
