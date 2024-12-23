@@ -24,6 +24,7 @@
 ---@field code_theme_light string
 ---@field progress_notifier table|nil
 ---@field log_notifier boolean
+---@field auto_show_on_ask boolean
 
 local M = {}
 
