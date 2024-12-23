@@ -14,10 +14,9 @@ local function handle_ai_comments()
 			local bufnr = vim.fn.bufnr("%")
 			local matches = utils.get_comment_matches(bufnr)
 
-			if matches then
+			if matches.any then
 				if not terminal.is_running() then
 					terminal.spawn()
-
 					vim.defer_fn(function()
 						vim.api.nvim_buf_call(bufnr, function()
 							vim.cmd("silent w")
