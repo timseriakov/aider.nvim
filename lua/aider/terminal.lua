@@ -20,7 +20,6 @@ function Aider.clear()
 	Aider.__term[utils.cwd()] = nil
 end
 
--- what does this do ai?
 function Aider.clear_all()
 	for _, term in pairs(Aider.__term) do
 		if term then
@@ -205,7 +204,7 @@ function Aider.ask(prompt, selection)
 
 	local term = Aider.terminal()
 	if not term:is_open() then
-		term:open()
+		Aider.toggle_window(nil, nil)
 	end
 end
 
