@@ -125,6 +125,9 @@ M.defaults = {
 	},
 	-- theme colors for aider
 	theme = nil,
+
+	-- git pager to use, defaults to 'cat' to prevent blocking after_update_hook
+	git_pager = "cat",
 }
 
 ---@class AiderConfig
@@ -202,9 +205,9 @@ function M.setup(opts)
 	if theme then
 		M.config.theme = theme
 	end
-	if M.editor_command == nil then
-		vim.env.AIDER_EDITOR = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'"
-	end
+
+	vim.env.AIDER_EDITOR = M.editor_command
+	vim.env.GIT_PAGER = M.git_pager
 
 	-- Setup fzf-lua integration if available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
