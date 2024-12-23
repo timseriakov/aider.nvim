@@ -2,8 +2,6 @@
 
 A Neovim plugin for seamless integration with [Aider](https://github.com/paul-gauthier/aider), an AI pair programming tool.
 
-> ⚠️ **Warning**: This plugin is under rapid development and breaking changes may occur. If you encounter any issues, please [file an issue](https://github.com/aweis89/aider.nvim/issues) on GitHub.
-
 ## Features
 
 - Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
