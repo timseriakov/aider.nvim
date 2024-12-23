@@ -70,12 +70,12 @@ function M.get_comments(bufnr)
 	end
 	local tree = parser:parse()[1]
 	if not tree then
-		print("Failed to parse buffer " .. bufnr)
+		vim.notify("Aider.nvim failed to parse buffer " .. bufnr, vim.log.levels.DEBUG)
 		return nil
 	end
 	local filetype = vim.bo[bufnr].filetype
 	if not filetype then
-		print("No filetype detected for buffer " .. bufnr)
+		vim.notify("Aider.nvim failed to detect filetype for buffer " .. bufnr, vim.log.levels.DEBUG)
 		return nil
 	end
 	local query_string = [[
@@ -83,7 +83,7 @@ function M.get_comments(bufnr)
 ]]
 	local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
 	if not ok then
-		print("Failed to parse query for filetype: " .. filetype)
+		vim.notify("Aider.nvim failed to parse query for filetype " .. filetype, vim.log.levels.DEBUG)
 		return nil
 	end
 	local comments = {}
