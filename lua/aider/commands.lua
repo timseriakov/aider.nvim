@@ -1,5 +1,6 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
+local utils = require("aider.utils")
 
 local M = {}
 
@@ -146,99 +147,37 @@ function M.setup(opts)
 		end)
 	end
 
-	local function get_comments(bufnr)
-		local success, parser = pcall(vim.treesitter.get_parser, bufnr)
-		if not success or not parser then
-			print("No Tree-sitter parser found for buffer " .. bufnr)
-			return nil
-		end
-		local tree = parser:parse()[1]
-		if not tree then
-			print("Failed to parse buffer " .. bufnr)
-			return nil
-		end
-		local filetype = vim.bo[bufnr].filetype
-		if not filetype then
-			print("No filetype detected for buffer " .. bufnr)
-			return nil
-		end
-		local query_string = [[
-(comment) @comment
-]]
-		local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
-		if not ok then
-			print("Failed to parse query for filetype: " .. filetype)
-			return nil
-		end
-		local comments = {}
-		for _, captures, _ in query:iter_matches(tree:root(), bufnr) do
-			if captures[1] then -- captures[1] corresponds to @comment
-				local node = captures[1]
-				local start_row, start_col, end_row, end_col = node:range()
+	if opts.spawn_on_comment then
+		vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
+		vim.api.nvim_create_autocmd("BufWritePost", {
+			group = "ReadCommentsTSTree",
+			pattern = "*",
+			callback = function()
+				local bufnr = vim.fn.bufnr("%")
+				local matches = utils.get_comment_matches(bufnr)
 
-				-- Get all lines of the comment
-				local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row + 1, false)
+				if matches then
+					if not terminal.is_running() then
+						terminal.spawn()
 
-				-- Process each line to remove delimiter and trim
-				local comment_lines = {}
-				for i, line in ipairs(lines) do
-					if i == 1 then
-						-- Find and remove the comment delimiter only on the first line
-						line = line:gsub("^%s*([%-%-/%#]+%s*)", "")
+						vim.defer_fn(function()
+							vim.api.nvim_buf_call(bufnr, function()
+								vim.cmd("silent w")
+							end)
+						end, 2000)
 					end
-					-- Trim leading and trailing whitespace
-					line = line:match("^%s*(.-)%s*$")
-					table.insert(comment_lines, line)
-				end
 
-				-- Join the processed lines
-				local text = table.concat(comment_lines, "\n")
-				table.insert(comments, text)
-			end
-		end
-		return comments
+					if matches["ai?"] then
+						local term = terminal.terminal()
+						if not term:is_open() then
+							terminal.toggle_window(nil, nil)
+						end
+						-- remove this comment ai!
+						-- term:focus()
+					end
+				end
+			end,
+		})
 	end
-
-	vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
-	vim.api.nvim_create_autocmd("BufWritePost", {
-		group = "ReadCommentsTSTree",
-		pattern = "*",
-		callback = function()
-			local bufnr = vim.fn.bufnr("%")
-			local comments = get_comments(bufnr)
-			if comments and #comments > 0 then
-				for _, comment in ipairs(comments) do
-					local lowered = comment:lower()
-
-					-- Check for ai/ai!/ai? at start OR end
-					local commentMatch = lowered:match("^%s*ai!?%??%s*$") -- standalone "ai/ai!/ai?"
-						or lowered:match("^%s*ai%?%s+") -- starts with "ai? "
-						or lowered:match("^%s*ai%s+") -- starts with "ai "
-						or lowered:match("%s+ai%?%s*$") -- ends with " ai?"
-						or lowered:match("%s+ai%s*$") -- ends with " ai"
-
-					if commentMatch then
-						if not terminal.is_running() then
-							terminal.spawn()
-
-							vim.defer_fn(function()
-								vim.api.nvim_buf_call(bufnr, function()
-									vim.cmd("silent w")
-								end)
-							end, 2000)
-						end
-
-						if lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then
-							local term = terminal.terminal()
-							if not term:is_open() then
-								terminal.toggle_window(nil, nil)
-							end
-							term:focus()
-						end
-					end
-				end
-			end
-		end,
-	})
 end
 return M
