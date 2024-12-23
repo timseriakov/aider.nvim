@@ -4,7 +4,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## Features
 
-- Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
+- When using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files) feature (default)
   - Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
   - Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
   - When comment is a question (`ai?`) aider will automatically show the terminal
