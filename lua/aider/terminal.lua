@@ -39,12 +39,12 @@ function Aider.terminal()
 	local term = Terminal:new({
 		cmd = Aider.command(),
 		hidden = true,
-		float_opts = config.float_opts,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = config.auto_scroll,
 		direction = config.win.direction,
 		size = config.win.size,
+		float_opts = config.win.float_opts,
 		on_exit = function()
 			Aider.__term[cwd] = nil
 		end,

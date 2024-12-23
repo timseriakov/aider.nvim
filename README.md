@@ -6,13 +6,13 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## Features
 
-- Optionally start Aider automatically in the background
-- When in background mode (default):
-  - Get live streamed notifications as Aider is processing
-  - The terminal will automatically be brought to the foreground if Aider prompts for input
-  - Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
-    - So that all open files will get added to Aider automatically
-    - Aider will auto-detect `AI`, `AI!` and `AI?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+- Defaults to using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files)
+  - Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
+  - Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+  - When comment is a question (`ai?`) aider will automatically show the terminal
+  - All files with AI comments will get added to aider automatically
+- Get live streamed notifications as Aider is processing
+- The terminal will automatically be brought to the foreground if Aider prompts for input
 - Auto reload all files changed by Aider
 - Add configurable hooks to run when Aider finishes updating a file
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
@@ -73,10 +73,6 @@ return {
       -- Auto trigger diffview after Aider's file changes
       after_update_hook = function()
         require("diffview").open({ "HEAD^" })
-      end,
-      -- Customize how Aider output is viewed
-      notify = function(...)
-        require("fidget").notify(...)
       end,
     },
     keys = {
@@ -150,10 +146,6 @@ require('packer').startup(function(use)
         after_update_hook = function()
           require("diffview").open({ "HEAD^" })
         end,
-        -- Customize how Aider output is viewed
-        notify = function(...)
-          require("fidget").notify(...)
-        end,
       })
 
       -- Add keymaps
@@ -186,10 +178,6 @@ require('aider').setup({
   -- Auto trigger diffview after Aider's file changes
   after_update_hook = function()
     require("diffview").open({ "HEAD^" })
-  end,
-  -- Customize how Aider output is viewed
-  notify = function(...)
-    require("fidget").notify(...)
   end,
 })
 
@@ -245,110 +233,91 @@ The plugin can be configured during setup:
 
 ```lua
 require('aider').setup({
-  -- Enable the `--watch-files` feature so Aider will auto respond to AI/AI! comments
-  watch_files = true,
+ -- start aider when ai comment is written (e.x. `ai!|ai?|ai`)
+ spawn_on_comment = true,
 
-  -- for snacks progress notifications
-  progress_notifier = {
-    style = "minimal",
-  },
+ -- auto show aider terminal when trigging /ask with `ai?` comment
+ auto_show_on_ask = true,
 
-  -- print logs of Aider's output in the right corner, requires fidget.nvim
-  log_notifier = true,
+ -- function to run when aider updates file/s, useful for triggering git diffs
+ after_update_hook = nil,
 
-  -- code theme to use for markdown blocks when in dark mode
-  code_theme_dark = "monokai",
-  -- code theme to use for markdown blocks when in light mode
-  code_theme_light = "default",
+ -- action key for adding files to aider from fzf-lua file pickers
+ fzf_action_key = "ctrl-l",
 
-  -- Always start Aider so it's ready to react to your comments.
-  -- Alternatively run `AiderSpawn` manually to start on-demand
-  spawn_on_startup = false,
+ -- action key for adding files to aider from Telescope file pickers
+ telescope_action_key = "<C-l>",
 
-  -- Editor command to run when triggered via `/editor`.
-  -- Defaults to using flatten plugin to trigger a none-nested neovim session
-  editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
+ -- filter `Telescope model_picker` model picker
+ model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
 
-  -- Trigger key to run when in fzf-lua to `/add` selected file/s to Aider.
-  fzf_action_key = "ctrl-l",
+ -- enable the --watch-files flag for Aider
+ -- Aider will automatically start when valid comments are created
+ watch_files = true,
 
-  -- Trigger key to run when in telescope to `/add` selected file/s to Aider.
-  telescope_action_key = "<C-l>",
-
-  -- Command used to notify on Aider activity.
-  -- For a low-intrusive option that works great with Aider.nvim, try [fidget](https://github.com/j-hui/fidget.nvim)
-  -- e.x. `notify = require("fidget").notify
-  -- notify = vim.notify, -- this is the default and will work fine, but fidget is recommended
-
-  -- Add additional args to aider as a table of strings
-  -- e.x. `aider_args = {"--no-auto-commit"}` to disable auto git commits.
-  aider_args = {},
-
-  -- Add additional commands to run after Aider updates file/s.
-  -- E.x. you can auto trigger diffs with the diffview plugin:
-  -- `after_update_hook = function() require("diffview").open({'HEAD^'}) end`
-  after_update_hook = nil,
-
-  -- Specify which models to use for `Telescope model_picker` (should be valid lua regex)
-  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
-
-  -- Always open terminal in insert mode
-  auto_insert = true,
-
-  -- When CWD changes, restart aider
-  -- Each terminal in indexed to current working director, so this is not required for multiple project support
-  restart_on_chdir = false,
-
-  -- Auto scroll the terminal on new output
-  auto_scroll = true,
-
- -- Whether to use dark themes for tokyonight and catppuccin.
- -- If those themes aren't enabled will determine whether to use `--dark-mode`
- dark_mode = function()
-   return vim.o.background == "dark"
- end,
-
-  -- Function to run when term is initially opened
- on_term_open = function()
-   local function tmap(key, val)
-    local opt = { buffer = 0 }
-    vim.keymap.set("t", key, val, opt)
-   end
-   -- exit insert mode
-   tmap("<Esc>", "<C-\\><C-n>")
-   tmap("jj", "<C-\\><C-n>")
-   -- enter command mode
-   tmap(":", "<C-\\><C-n>:")
-   -- scrolling up/down
-   tmap("<C-u>", "<C-\\><C-n><C-u>")
-   tmap("<C-d>", "<C-\\><C-n><C-d>")
-   -- remove line numbers
-   vim.wo.number = false
-   vim.wo.relativenumber = false
- end,
-
- float_opts = {
-   border = "none",
-   width = function()
-     return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
-   end,
-   height = function()
-     return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
-   end,
+ -- for snacks progress notifications
+ progress_notifier = {
+  style = "minimal",
  },
 
- win = {
-   -- default direction when none specified, can be 'vertical' | 'horizontal' | 'tab' | 'float'
-   direction = "float",
+ -- print logs of Aider's output in the right corner, requires fidget.nvim
+ log_notifier = true,
 
-   -- specify a size for the horizontal or vertical
-   size = function(term)
-    if term.direction == "horizontal" then
-     return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-    elseif term.direction == "vertical" then
-     return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-    end
+ -- code theme to use for markdown blocks when in dark mode
+ code_theme_dark = "monokai",
+
+ -- code theme to use for markdown blocks when in light mode
+ code_theme_light = "default",
+
+ -- command to run for opening nested editor when invoking `/editor` from Aider terminal
+ -- requires flatten.nvim to work
+ editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
+
+ -- auto insert mode
+ auto_insert = true,
+
+ -- additional arguments for aider CLI
+ aider_args = {},
+
+ -- always start aider on startup
+ spawn_on_startup = false,
+
+ -- restart aider when directory changes
+ -- aider.nvim will keep separate terminal for each directory so restarting isn't typically necessary
+ restart_on_chdir = false,
+
+ -- function to run (e.x. for term mappings) when terminal is opened
+ on_term_open = nil,
+
+ -- used to determine whether to use dark themes for code blocks and whether to use `--dark-mode`
+ -- if supported theme is not available
+ dark_mode = function()
+  return vim.o.background == "dark"
+ end,
+ -- auto scroll terminal on output
+ auto_scroll = true,
+ -- window layout settings
+ win = {
+  -- type of window layout to use
+  direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
+  -- size function for terminal
+  size = function(term)
+   if term.direction == "horizontal" then
+    return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+   elseif term.direction == "vertical" then
+    return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+   end
+  end,
+  -- flat config options, see toggleterm.nvim for valid options
+  float_opts = {
+   border = "none",
+   width = function()
+    return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
    end,
+   height = function()
+    return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
+   end,
+  },
  },
  -- theme colors for aider
  theme = nil,

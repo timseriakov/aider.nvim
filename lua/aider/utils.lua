@@ -59,4 +59,101 @@ function M.truncate_message(msg, max_length)
 	end
 	return msg
 end
+
+--- Get code comment text from a buffer
+---@param bufnr
+---@return nil|string[]
+function M.get_comments(bufnr)
+	local success, parser = pcall(vim.treesitter.get_parser, bufnr)
+	if not success or not parser then
+		return nil
+	end
+	local tree = parser:parse()[1]
+	if not tree then
+		print("Failed to parse buffer " .. bufnr)
+		return nil
+	end
+	local filetype = vim.bo[bufnr].filetype
+	if not filetype then
+		print("No filetype detected for buffer " .. bufnr)
+		return nil
+	end
+	local query_string = [[
+(comment) @comment
+]]
+	local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
+	if not ok then
+		print("Failed to parse query for filetype: " .. filetype)
+		return nil
+	end
+	local comments = {}
+	for _, captures, _ in query:iter_matches(tree:root(), bufnr) do
+		if captures[1] then -- captures[1] corresponds to @comment
+			local node = captures[1]
+			local start_row, start_col, end_row, end_col = node:range()
+
+			-- Get all lines of the comment
+			local lines = vim.api.nvim_buf_get_lines(bufnr, start_row, end_row + 1, false)
+
+			-- Process each line to remove delimiter and trim
+			local comment_lines = {}
+			for i, line in ipairs(lines) do
+				if i == 1 then
+					-- Find and remove the comment delimiter only on the first line
+					line = line:gsub("^%s*([%-%-/%#]+%s*)", "")
+				end
+				-- Trim leading and trailing whitespace
+				line = line:match("^%s*(.-)%s*$")
+				table.insert(comment_lines, line)
+			end
+
+			-- Join the processed lines
+			local text = table.concat(comment_lines, "\n")
+			table.insert(comments, text)
+		end
+	end
+	return comments
+end
+
+---@param bufnr
+---@return table<string, boolean>|nil
+function M.get_comment_matches(bufnr)
+	local matches = {
+		["ai?"] = false,
+		["ai!"] = false,
+		["ai"] = false,
+	}
+
+	local comments = M.get_comments(bufnr)
+	if not comments then
+		return nil
+	end
+	for _, comment in ipairs(comments) do
+		local lowered = comment:lower()
+
+		if
+			lowered:match("^%s*ai%?%s+") -- starts with "ai? "
+			or lowered:match("%s+ai%?%s*$") -- ends with " ai?"
+		then
+			matches["ai?"] = true
+		end
+		if
+			lowered:match("^%s*ai!%s+") -- starts with "ai! "
+			or lowered:match("%s+ai!%s*$") -- ends with " ai!"
+		then
+			matches["ai!"] = true
+		end
+		if
+			lowered:match("^%s*ai%s+") -- starts with "ai "
+			or lowered:match("%s+ai%s*$") -- ends with " ai"
+		then
+			matches["ai"] = true
+		end
+	end
+	if next(matches) ~= nil then
+		return matches
+	end
+	return nil
+end
+
 return M

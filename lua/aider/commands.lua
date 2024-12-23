@@ -167,12 +167,13 @@ function M.setup(opts)
 						end, 2000)
 					end
 
-					if matches["ai?"] then
-						local term = terminal.terminal()
-						if not term:is_open() then
-							terminal.toggle_window(nil, nil)
+					if config.auto_open_on_ask then
+						if matches["ai?"] then
+							local term = terminal.terminal()
+							if not term:is_open() then
+								terminal.toggle_window(nil, nil)
+							end
 						end
-						-- term:focus()
 					end
 				end
 			end,
