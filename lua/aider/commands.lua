@@ -38,6 +38,57 @@ local function handle_ai_comments()
 	})
 end
 
+local function handle_aider_send(opt)
+	if opt.range == 0 then
+		if not opt.args or opt.args == "" then
+			vim.notify("Empty input provided", vim.log.levels.WARN)
+			return
+		end
+		terminal.send_command(opt.args)
+		return
+	end
+
+	-- Get the selected text
+	local selected = selection.get_visual_selection_with_header()
+	if not selected then
+		vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
+		return
+	end
+
+	-- Combine selection with any additional arguments
+	local input = opt.args and opt.args ~= "" and string.format("%s\n%s", opt.args, selected) or selected
+
+	terminal.send_command(input)
+end
+
+local function process_prompt(input)
+	if not input or input == "" then
+		vim.notify("Empty input provided", vim.log.levels.WARN)
+		return
+	end
+
+	local selected = selection.get_visual_selection_with_header()
+	if not selected then
+		vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
+		return
+	end
+
+	terminal.ask(input, selected)
+end
+
+---@param opt table Command options containing arguments
+local function handle_aider_ask(opt)
+	if #opt.args > 0 then
+		process_prompt(opt.args)
+	else
+		vim.schedule(function()
+			vim.ui.input({ prompt = "Prompt: " }, function(input)
+				process_prompt(input)
+			end)
+		end)
+	end
+end
+
 ---Create user commands for aider functionality
 ---@param opts AiderConfig
 function M.setup(opts)
@@ -68,66 +119,12 @@ function M.setup(opts)
 		complete = "file",
 	})
 
-	-- move this fuction outside for the stup func ai
-	local function handle_aider_send(opt)
-		if opt.range == 0 then
-			if not opt.args or opt.args == "" then
-				vim.notify("Empty input provided", vim.log.levels.WARN)
-				return
-			end
-			terminal.send_command(opt.args)
-			return
-		end
-
-		-- Get the selected text
-		local selected = selection.get_visual_selection_with_header()
-		if not selected then
-			vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
-			return
-		end
-
-		-- Combine selection with any additional arguments
-		local input = opt.args and opt.args ~= "" and string.format("%s\n%s", opt.args, selected) or selected
-
-		terminal.send_command(input)
-	end
-
 	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
 		nargs = "*",
 		range = true, -- This enables the command to work with selections
 		desc = "Send command to Aider",
 		bang = true,
 	})
-
-	-- move this function outside for the stup func ai
-	local function process_prompt(input)
-		if not input or input == "" then
-			vim.notify("Empty input provided", vim.log.levels.WARN)
-			return
-		end
-
-		local selected = selection.get_visual_selection_with_header()
-		if not selected then
-			vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
-			return
-		end
-
-		terminal.ask(input, selected)
-	end
-
-	-- move this fuction outside for the stup func ai!
-	---@param opt table Command options containing arguments
-	local function handle_aider_ask(opt)
-		if #opt.args > 0 then
-			process_prompt(opt.args)
-		else
-			vim.schedule(function()
-				vim.ui.input({ prompt = "Prompt: " }, function(input)
-					process_prompt(input)
-				end)
-			end)
-		end
-	enkkkkkkkkkkd
 
 	vim.api.nvim_create_user_command("AiderAsk", handle_aider_ask, {
 		range = true,
