@@ -48,11 +48,6 @@ function Aider.terminal()
 		on_exit = function()
 			Aider.__term[cwd] = nil
 		end,
-		on_open = function(term)
-			if config.auto_insert then
-				term:set_mode("i")
-			end
-		end,
 		on_stdout = function(term, _, data, _)
 			notify.on_stdout(term, data)
 		end,

@@ -116,9 +116,10 @@ function M.get_comments(bufnr)
 end
 
 ---@param bufnr
----@return table<string, boolean>|nil
+---@return table<string, boolean>
 function M.get_comment_matches(bufnr)
 	local matches = {
+		any = false,
 		["ai?"] = false,
 		["ai!"] = false,
 		["ai"] = false,
@@ -126,7 +127,7 @@ function M.get_comment_matches(bufnr)
 
 	local comments = M.get_comments(bufnr)
 	if not comments then
-		return nil
+		return matches
 	end
 	for _, comment in ipairs(comments) do
 		local lowered = comment:lower()
@@ -150,10 +151,12 @@ function M.get_comment_matches(bufnr)
 			matches["ai"] = true
 		end
 	end
-	if next(matches) ~= nil then
-		return matches
+	for _, v in pairs(matches) do
+		if v then
+			matches.any = true
+		end
 	end
-	return nil
+	return matches
 end
 
 return M
