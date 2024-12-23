@@ -172,7 +172,6 @@ function M.setup(opts)
 						if not term:is_open() then
 							terminal.toggle_window(nil, nil)
 						end
-						-- remove this comment ai!
 						-- term:focus()
 					end
 				end
