@@ -57,21 +57,21 @@ local function handle_aider_send(opt)
 	terminal.send_command(input)
 end
 
-local function process_prompt(input)
-	if not input or input == "" then
-		vim.notify("Empty input provided", vim.log.levels.WARN)
-		return
-	end
-	local selected = selection.get_visual_selection_with_header()
-	if not selected then
-		vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
-		return
-	end
-	terminal.ask(input, selected)
-end
-
 ---@param opt table Command options containing arguments
 local function handle_aider_ask(opt)
+	local function process_prompt(input)
+		if not input or input == "" then
+			vim.notify("Empty input provided", vim.log.levels.WARN)
+			return
+		end
+		local selected = selection.get_visual_selection_with_header()
+		if not selected then
+			vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
+			return
+		end
+		terminal.ask(input, selected)
+	end
+
 	if #opt.args > 0 then
 		process_prompt(opt.args)
 	else
