@@ -1,49 +1,49 @@
-# aider.nvim
+# 🤝 aider.nvim
 
 A Neovim plugin for seamless integration with [Aider](https://github.com/paul-gauthier/aider), an AI pair programming tool.
 
-## Features
+## ✨ Features
 
-- When using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files) (default)
-  - Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
-  - Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
-  - When comment is a question (`ai?`) aider will automatically show the terminal
-  - All files with AI comments will get added to aider automatically
-- Get live streamed notifications as Aider is processing
-- The terminal will automatically be brought to the foreground if Aider prompts for input
-- Auto reload all files changed by Aider
-- Add configurable hooks to run when Aider finishes updating a file
-  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
-- Send commands to Aider explicitly with `AiderSend <cmd>`
-  - Can be used to create custom prompts
-- Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats
-- Load files into Aider session
-  - You can use fzf-lua or telescope to select files (multi-select supported) with multiple file viewers:
-    - For Telescope the custom action as been added to `git_files`, `find_files`, `buffers` and `oldfiles`
-    - For fzf-lua any file finder that follows standard conventions for passing file params
-  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args
-- Ask questions about code with visual selection support
-  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
-- For diff viewing, accepting or rejecting changes:
-  - Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below).
-  - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
-- Supports switching to different repos and will maintain context per repo
-- Telescope picker for selecting models `:Telescope model_picker`
-  - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
-- Integration with tokyonight and catppuccin themes
+-   When using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files) (default)
+    -   Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
+    -   Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
+    -   When comment is a question (`ai?`) aider will automatically show the terminal
+    -   All files with AI comments will get added to aider automatically
+-   Get live streamed notifications as Aider is processing ⚡️
+-   The terminal will automatically be brought to the foreground if Aider prompts for input 💬
+-   Auto reload all files changed by Aider 🔄
+-   Add configurable hooks to run when Aider finishes updating a file 🪝
+    -   For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
+-   Send commands to Aider explicitly with `AiderSend <cmd>`  প্রেরণ
+    -   Can be used to create custom prompts
+-   Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats 💻
+-   Load files into Aider session
+    -   You can use fzf-lua or telescope to select files (multi-select supported) with multiple file viewers:
+        -   For Telescope the custom action as been added to `git_files`, `find_files`, `buffers` and `oldfiles`
+        -   For fzf-lua any file finder that follows standard conventions for passing file params
+    -   When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args
+-   Ask questions about code with visual selection support ❓
+    -   `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
+-   For diff viewing, accepting or rejecting changes:
+    -   Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below).
+    -   Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
+-   Supports switching to different repos and will maintain context per repo 🔀
+-   Telescope picker for selecting models `:Telescope model_picker`
+    -   Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
+-   Integration with tokyonight and catppuccin themes 🌈
 
-## Prerequisites
+## 🛠️ Prerequisites
 
-- Neovim 0.5+
-- [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`)
-- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management
-- [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration below
-- [snacks](https://github.com/folke/snacks.nvim) is optional but will show spinner whenever aider is active
-- [fidget](https://github.com/j-hui/fidget.nvim) is optional but it will show aider log notifications in a none-intrusive way
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
-- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
+-   Neovim 0.5+
+-   [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`)
+-   [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management
+-   [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration below
+-   [snacks](https://github.com/folke/snacks.nvim) is optional but will show spinner whenever aider is active
+-   [fidget](https://github.com/j-hui/fidget.nvim) is optional but it will show aider log notifications in a none-intrusive way
+-   [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
+-   [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
 
-## Installation
+## 📦 Installation
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
@@ -199,41 +199,39 @@ EOF
 call plug#end()
 ```
 
-## Commands
+## ⌨️ Commands
 
-- `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
+-   `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
+    -   `vertical` - Switch to vertical split ↔️
+    -   `horizontal` - Switch to horizontal split ↕️
+    -   `float` - Switch to floating window (default) 🪟
+    -   `tab` - Switch to new tab 📑
+    -   When called without a direction argument, it opens in the to the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
+-   `:AiderLoad [files...]` - Load files into Aider session, defaults to the current file when no args are specified 📂
+-   `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt. 🙋
+-   `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command. 📨
 
-  - `vertical` - Switch to vertical split
-  - `horizontal` - Switch to horizontal split
-  - `float` - Switch to floating window (default)
-  - `tab` - Switch to new tab
-  - When called without a direction argument, it opens in the to the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
-
-- `:AiderLoad [files...]` - Load files into Aider session, defaults to the current file when no args are specified
-- `:AiderAsk [prompt]` - Ask a question about code using the /ask command. If no prompt is provided, it will open an input popup. In visual mode, the selected text is appended to the prompt.
-- `:AiderSend [command]` - Send any command to Aider. In visual mode, the selected text is appended to the command.
-
-## FZF-lua Integration
+## 🤝 FZF-lua Integration
 
 When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files into Aider:
 
-- Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
-- Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
-- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
-  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
-- FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
+-   Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
+-   Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
+-   The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
+    -   If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
+-   FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
 
-## Telescope Integration
+## 🔭 Telescope Integration
 
 When Telescope is installed, you can use `<C-l>` load files into Aider:
 
-- Current pickers with this registered action include: find_files, git_files, buffers and oldfiles
-- Single file: Navigate to a file and press `<C-l>` to load it into Aider.
-- Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files.
-- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
-  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
+-   Current pickers with this registered action include: find_files, git_files, buffers and oldfiles
+-   Single file: Navigate to a file and press `<C-l>` to load it into Aider.
+-   Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files.
+-   The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
+    -   If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
 
-## Configuration
+## ⚙️ Configuration
 
 The plugin can be configured during setup:
 
@@ -333,10 +331,10 @@ require('aider').setup({
 })
 ```
 
-### Auto Dark Mode Detection
+### 🕶️ Auto Dark Mode Detection
 
 The plugin automatically sets the `--dark-mode` flag when Neovim's `background` option is set to "dark". This ensures aider's UI matches your Neovim theme.
 
-## License
+## 🪪 License
 
 MIT
