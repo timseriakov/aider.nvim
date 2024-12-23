@@ -25,7 +25,7 @@ local function handle_ai_comments()
 					end, 2000)
 				end
 
-				if config.auto_open_on_ask then
+				if config.auto_show_on_ask then
 					if matches["ai?"] then
 						local term = terminal.terminal()
 						if not term:is_open() then
@@ -47,17 +47,14 @@ local function handle_aider_send(opt)
 		terminal.send_command(opt.args)
 		return
 	end
-
 	-- Get the selected text
 	local selected = selection.get_visual_selection_with_header()
 	if not selected then
 		vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
 		return
 	end
-
 	-- Combine selection with any additional arguments
 	local input = opt.args and opt.args ~= "" and string.format("%s\n%s", opt.args, selected) or selected
-
 	terminal.send_command(input)
 end
 
@@ -66,13 +63,11 @@ local function process_prompt(input)
 		vim.notify("Empty input provided", vim.log.levels.WARN)
 		return
 	end
-
 	local selected = selection.get_visual_selection_with_header()
 	if not selected then
 		vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
 		return
 	end
-
 	terminal.ask(input, selected)
 end
 
