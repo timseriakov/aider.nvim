@@ -1,8 +1,42 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
+local config = require("aider.config")
 local utils = require("aider.utils")
 
 local M = {}
+
+local function handle_ai_comments()
+	vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
+	vim.api.nvim_create_autocmd("BufWritePost", {
+		group = "ReadCommentsTSTree",
+		pattern = "*",
+		callback = function()
+			local bufnr = vim.fn.bufnr("%")
+			local matches = utils.get_comment_matches(bufnr)
+
+			if matches then
+				if not terminal.is_running() then
+					terminal.spawn()
+
+					vim.defer_fn(function()
+						vim.api.nvim_buf_call(bufnr, function()
+							vim.cmd("silent w")
+						end)
+					end, 2000)
+				end
+
+				if config.auto_open_on_ask then
+					if matches["ai?"] then
+						local term = terminal.terminal()
+						if not term:is_open() then
+							terminal.toggle_window(nil, nil)
+						end
+					end
+				end
+			end
+		end,
+	})
+end
 
 ---Create user commands for aider functionality
 ---@param opts AiderConfig
@@ -148,37 +182,7 @@ function M.setup(opts)
 	end
 
 	if opts.spawn_on_comment then
-		-- extract this into a function ai!
-		vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
-		vim.api.nvim_create_autocmd("BufWritePost", {
-			group = "ReadCommentsTSTree",
-			pattern = "*",
-			callback = function()
-				local bufnr = vim.fn.bufnr("%")
-				local matches = utils.get_comment_matches(bufnr)
-
-				if matches then
-					if not terminal.is_running() then
-						terminal.spawn()
-
-						vim.defer_fn(function()
-							vim.api.nvim_buf_call(bufnr, function()
-								vim.cmd("silent w")
-							end)
-						end, 2000)
-					end
-
-					if config.auto_open_on_ask then
-						if matches["ai?"] then
-							local term = terminal.terminal()
-							if not term:is_open() then
-								terminal.toggle_window(nil, nil)
-							end
-						end
-					end
-				end
-			end,
-		})
+		handle_ai_comments()
 	end
 end
 return M
