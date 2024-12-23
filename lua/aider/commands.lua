@@ -1,6 +1,6 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
-local config = require("aider.config")
+local config = require("aider").config
 local utils = require("aider.utils")
 
 local M = {}
@@ -68,6 +68,7 @@ function M.setup(opts)
 		complete = "file",
 	})
 
+	-- move this fuction outside for the stup func ai
 	local function handle_aider_send(opt)
 		if opt.range == 0 then
 			if not opt.args or opt.args == "" then
@@ -98,6 +99,7 @@ function M.setup(opts)
 		bang = true,
 	})
 
+	-- move this function outside for the stup func ai
 	local function process_prompt(input)
 		if not input or input == "" then
 			vim.notify("Empty input provided", vim.log.levels.WARN)
@@ -113,6 +115,7 @@ function M.setup(opts)
 		terminal.ask(input, selected)
 	end
 
+	-- move this fuction outside for the stup func ai!
 	---@param opt table Command options containing arguments
 	local function handle_aider_ask(opt)
 		if #opt.args > 0 then
@@ -124,7 +127,7 @@ function M.setup(opts)
 				end)
 			end)
 		end
-	end
+	enkkkkkkkkkkd
 
 	vim.api.nvim_create_user_command("AiderAsk", handle_aider_ask, {
 		range = true,
