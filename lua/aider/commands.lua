@@ -148,6 +148,7 @@ function M.setup(opts)
 	end
 
 	if opts.spawn_on_comment then
+		-- extract this into a function ai!
 		vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
 		vim.api.nvim_create_autocmd("BufWritePost", {
 			group = "ReadCommentsTSTree",
