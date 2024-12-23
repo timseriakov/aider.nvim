@@ -38,6 +38,10 @@ function Aider.terminal()
 	end
 	local term = Terminal:new({
 		cmd = Aider.command(),
+		env = {
+			AIDER_EDITOR = config.editor_command,
+			GIT_PAGER = config.git_pager,
+		},
 		hidden = true,
 		display_name = "Aider.nvim",
 		close_on_exit = true,

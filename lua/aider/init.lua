@@ -25,6 +25,7 @@
 ---@field progress_notifier table|nil
 ---@field log_notifier boolean
 ---@field auto_show_on_ask boolean
+---@field git_pager string
 
 local M = {}
 
@@ -205,9 +206,6 @@ function M.setup(opts)
 	if theme then
 		M.config.theme = theme
 	end
-
-	vim.env.AIDER_EDITOR = M.editor_command
-	vim.env.GIT_PAGER = M.git_pager
 
 	-- Setup fzf-lua integration if available
 	local ok, fzf_config = pcall(require, "fzf-lua.config")
