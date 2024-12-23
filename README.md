@@ -236,7 +236,6 @@ When Telescope is installed, you can use `<C-l>` load files into Aider:
 The plugin can be configured during setup:
 
 ```lua
--- add the missing git_pager feild here ai!
 require('aider').setup({
  -- start aider when ai comment is written (e.x. `ai!|ai?|ai`)
  spawn_on_comment = true,
@@ -329,6 +328,9 @@ require('aider').setup({
  },
  -- theme colors for aider
  theme = nil,
+
+ -- git pager to use, defaults to 'cat' to prevent blocking after_update_hook
+ git_pager = "cat",
 })
 ```
 
