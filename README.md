@@ -4,44 +4,44 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## ✨ Features
 
-- When using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files) (default)
-  - Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
-  - Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files)
-  - When comment is a question (`ai?`) aider will automatically show the terminal
-  - All files with AI comments will get added to aider automatically
+- When using the `--watch-file` [feature](https://aider.chat/docs/config/options.html#--watch-files) (default) 📂
+  - Aider will automatically startup when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written ✍️
+  - Aider will auto-detect `ai`, `ai!` and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files) 🤖
+  - When comment is a question (`ai?`) aider will automatically show the terminal ❓
+  - All files with AI comments will get added to aider automatically ➕
 - Get live streamed notifications as Aider is processing ⚡️
 - The terminal will automatically be brought to the foreground if Aider prompts for input 💬
 - Auto reload all files changed by Aider 🔄
 - Add configurable hooks to run when Aider finishes updating a file 🪝
-  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
-- Send commands to Aider explicitly with `AiderSend <cmd>` প্রেরণ
-  - Can be used to create custom prompts
+  - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff 🤩
+- Send commands to Aider explicitly with `AiderSend <cmd>`  প্রেরণ
+  - Can be used to create custom prompts 🎨
 - Toggle Aider terminal window and bring to background/foreground at any time, with multiple window formats 💻
-- Load files into Aider session
-  - You can use fzf-lua or telescope to select files (multi-select supported) with multiple file viewers:
-    - For Telescope the custom action as been added to `git_files`, `find_files`, `buffers` and `oldfiles`
-    - For fzf-lua any file finder that follows standard conventions for passing file params
-  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args
+- Load files into Aider session 📂
+  - You can use fzf-lua or telescope to select files (multi-select supported) with multiple file viewers: 🔭
+    - For Telescope the custom action as been added to `git_files`, `find_files`, `buffers` and `oldfiles` 📄
+    - For fzf-lua any file finder that follows standard conventions for passing file params 🔍
+  - When not it watch mode `AiderLoad` without args can be used to `/add` the current file, or specify file args ➕
 - Ask questions about code with visual selection support ❓
-  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt
-- For diff viewing, accepting or rejecting changes:
-  - Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below).
-  - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks
+  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt 🙋
+- For diff viewing, accepting or rejecting changes: 🔍
+  - Use [diffview](https://github.com/sindrets/diffview.nvim) which can auto trigger after Aider makes changes (see below). ✅
+  - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks 🧑‍💻
 - Supports switching to different repos and will maintain context per repo 🔀
-- Telescope picker for selecting models `:Telescope model_picker`
-  - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for
+- Telescope picker for selecting models `:Telescope model_picker` 🔭
+  - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for 🔎
 - Integration with tokyonight and catppuccin themes 🌈
 
 ## 🛠️ Prerequisites
 
 - Neovim 0.5+
-- [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`)
-- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management
-- [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration below
-- [snacks](https://github.com/folke/snacks.nvim) is optional but will show spinner whenever aider is active
-- [fidget](https://github.com/j-hui/fidget.nvim) is optional but it will show aider log notifications in a none-intrusive way
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection)
-- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command)
+- [Aider](https://github.com/paul-gauthier/aider) required bo to be installed and available in `PATH` (`pip install aider-chat`) 💻
+- [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management 🧑‍💻
+- [diffview](https://github.com/sindrets/diffview.nvim)is optional but it is a great way to view Aider's changes, revert or undo them, see integration below 🔍
+- [snacks](https://github.com/folke/snacks.nvim) is optional but will show spinner whenever aider is active 🔄
+- [fidget](https://github.com/j-hui/fidget.nvim) is optional but it will show aider log notifications in a none-intrusive way 🔔
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) (optional, for enhanced file selection) 🔍
+- [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command) 🧑‍💻
 
 ## 📦 Installation
 
@@ -201,7 +201,7 @@ call plug#end()
 
 ## ⌨️ Commands
 
-- `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
+- `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be: 🧑‍💻
   - `vertical` - Switch to vertical split ↔️
   - `horizontal` - Switch to horizontal split ↕️
   - `float` - Switch to floating window (default) 🪟
@@ -213,27 +213,27 @@ call plug#end()
 
 ## 🤝 FZF-lua Integration
 
-When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files into Aider:
+When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files into Aider: 🔍
 
-- Single file: Navigate to a file and press `Ctrl-l` to load it into Aider
-- Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files
-- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active
-  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
-- FZF also support a select-all behavior, which can be used to load all files matching a suffix for example
+- Single file: Navigate to a file and press `Ctrl-l` to load it into Aider 📄
+- Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
+- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
+  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
+- FZF also support a select-all behavior, which can be used to load all files matching a suffix for example 💯
 
 ## 🔭 Telescope Integration
 
 When Telescope is installed, you can use `<C-l>` load files into Aider:
 
-- Current pickers with this registered action include: find_files, git_files, buffers and oldfiles
-- Single file: Navigate to a file and press `<C-l>` to load it into Aider.
-- Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files.
-- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active.
-  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground
+- Current pickers with this registered action include: find_files, git_files, buffers and oldfiles 🔭
+- Single file: Navigate to a file and press `<C-l>` to load it into Aider. 📄
+- Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files. ➕
+- The files will be automatically added to your current Aider session if one exists, or start a new session if none is active. 🧑‍💻
+  - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
 
 ## ⚙️ Configuration
 
-The plugin can be configured during setup:
+The plugin can be configured during setup: 🧑‍💻
 
 ```lua
 require('aider').setup({
@@ -334,17 +334,17 @@ require('aider').setup({
 })
 ```
 
-## Git Tips & Integration
+## Git Tips & Integration 🧑‍💻
 
-### Philosophy
+### Philosophy 🧑‍🏫
 
 To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope`. Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Aider experience.
 
-### Simple Git Mode (Using `--no-auto-commits`)
+### Simple Git Mode (Using `--no-auto-commits`) 😌
 
 If you're not yet comfortable with advanced Git concepts like `git reset`, you can still benefit from a simplified workflow by using the `--no-auto-commits` option. You can set this option via `aider_args` in your `aider.nvim` configuration or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes.
 
-#### Viewing Diffs Without Auto-commits
+#### Viewing Diffs Without Auto-commits 🔍
 
 In this mode, Aider won't automatically commit changes. Instead, it will leave the changes uncommitted in your working directory. You can then use the `after_update_hook` to view the diffs using either `diffview` or `telescope`:
 
@@ -362,7 +362,7 @@ end
 
 These hooks will display the diffs containing changes made by Aider, along with any other uncommitted changes in your working directory. After reviewing the diffs, you can commit everything to accept the changes or use `gitsigns` to selectively stage, unstage, or revert individual hunks or entire files.
 
-#### Useful `gitsigns` Mappings
+#### Useful `gitsigns` Mappings 🧑‍💻
 
 Here are some useful `gitsigns` mappings (adapted from LazyVim) that can help you manage changes when using this simplified workflow:
 
@@ -399,11 +399,11 @@ map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
 
 The downside of this approach is that you won't have a detailed history of changes made by Aider, only the most recent changes. If you want to maintain a comprehensive history, consider using the advanced Git mode.
 
-#### Advanced Git Mode (Using Auto-commits)
+#### Advanced Git Mode (Using Auto-commits) 🧑‍💻
 
 This approach enables deeper integration between Aider and Git by allowing Aider to use its default commit settings. Aider will create a Git commit for each change it makes, including the prompts you use. This allows you to see the entire history of changes made by Aider and use Git tools to manage those changes effectively. This is the recommended approach for advanced users but requires familiarity with different types of `git reset` commands. Using a feature branch is a great way to experiment with this approach.
 
-#### Viewing Diffs with Auto-commits
+#### Viewing Diffs with Auto-commits 🔍
 
 With auto-commits enabled, you can use the `after_update_hook` to view the diff of the last change made by Aider or the entire history of changes:
 
@@ -433,4 +433,3 @@ Note that while `gitsigns` is useful for working with hunks after reverting Aide
 ## 🪪 License
 
 MIT
-
