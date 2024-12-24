@@ -52,10 +52,10 @@ return {
   {
     "aweis89/aider.nvim",
     dependencies = {
-       -- required for core functionality
+      -- required for core functionality
       "akinsho/toggleterm.nvim",
 
-       -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
+      -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
       "nvim-telescope/telescope.nvim",
 
       -- Optional, but great for diff viewing and after_update_hook integration
@@ -237,100 +237,100 @@ The plugin can be configured during setup: 🧑‍💻
 
 ```lua
 require('aider').setup({
- -- start aider when ai comment is written (e.x. `ai!|ai?|ai`)
- spawn_on_comment = true,
+  -- start aider when ai comment is written (e.x. `ai!|ai?|ai`)
+  spawn_on_comment = true,
 
- -- auto show aider terminal when trigging /ask with `ai?` comment
- auto_show_on_ask = true,
+  -- auto show aider terminal when trigging /ask with `ai?` comment
+  auto_show_on_ask = true,
 
- -- function to run when aider updates file/s, useful for triggering git diffs
- after_update_hook = nil,
+  -- function to run when aider updates file/s, useful for triggering git diffs
+  after_update_hook = nil,
 
- -- action key for adding files to aider from fzf-lua file pickers
- fzf_action_key = "ctrl-l",
+  -- action key for adding files to aider from fzf-lua file pickers
+  fzf_action_key = "ctrl-l",
 
- -- action key for adding files to aider from Telescope file pickers
- telescope_action_key = "<C-l>",
+  -- action key for adding files to aider from Telescope file pickers
+  telescope_action_key = "<C-l>",
 
- -- filter `Telescope model_picker` model picker
- model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+  -- filter `Telescope model_picker` model picker
+  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
 
- -- enable the --watch-files flag for Aider
- -- Aider will automatically start when valid comments are created
- watch_files = true,
+  -- enable the --watch-files flag for Aider
+  -- Aider will automatically start when valid comments are created
+  watch_files = true,
 
- -- for snacks progress notifications
- progress_notifier = {
-  style = "compact",
-  -- * compact: use border for icon and title
-  -- * minimal: no border, only icon and message
-  -- * fancy: similar to the default nvim-notify style
- },
-
- -- print logs of Aider's output in the right corner, requires fidget.nvim
- log_notifier = true,
-
- -- code theme to use for markdown blocks when in dark mode
- code_theme_dark = "monokai",
-
- -- code theme to use for markdown blocks when in light mode
- code_theme_light = "default",
-
- -- command to run for opening nested editor when invoking `/editor` from Aider terminal
- -- requires flatten.nvim to work
- editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
-
- -- auto insert mode
- auto_insert = true,
-
- -- additional arguments for aider CLI
- aider_args = {},
-
- -- always start aider on startup
- spawn_on_startup = false,
-
- -- restart aider when directory changes
- -- aider.nvim will keep separate terminal for each directory so restarting isn't typically necessary
- restart_on_chdir = false,
-
- -- function to run (e.x. for term mappings) when terminal is opened
- on_term_open = nil,
-
- -- used to determine whether to use dark themes for code blocks and whether to use `--dark-mode`
- -- if supported theme is not available
- dark_mode = function()
-  return vim.o.background == "dark"
- end,
- -- auto scroll terminal on output
- auto_scroll = true,
- -- window layout settings
- win = {
-  -- type of window layout to use
-  direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
-  -- size function for terminal
-  size = function(term)
-   if term.direction == "horizontal" then
-    return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
-   elseif term.direction == "vertical" then
-    return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
-   end
-  end,
-  -- flat config options, see toggleterm.nvim for valid options
-  float_opts = {
-   border = "none",
-   width = function()
-    return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
-   end,
-   height = function()
-    return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
-   end,
+  -- for snacks progress notifications
+  progress_notifier = {
+    style = "compact",
+    -- * compact: use border for icon and title
+    -- * minimal: no border, only icon and message
+    -- * fancy: similar to the default nvim-notify style
   },
- },
- -- theme colors for aider
- theme = nil,
 
- -- git pager to use, defaults to 'cat' to prevent blocking after_update_hook
- git_pager = "cat",
+  -- print logs of Aider's output in the right corner, requires fidget.nvim
+  log_notifier = true,
+
+  -- code theme to use for markdown blocks when in dark mode
+  code_theme_dark = "monokai",
+
+  -- code theme to use for markdown blocks when in light mode
+  code_theme_light = "default",
+
+  -- command to run for opening nested editor when invoking `/editor` from Aider terminal
+  -- requires flatten.nvim to work
+  editor_command = "nvim --cmd 'let g:flatten_wait=1' --cmd 'cnoremap wq write<bar>bdelete<bar>startinsert'",
+
+  -- auto insert mode
+  auto_insert = true,
+
+  -- additional arguments for aider CLI
+  aider_args = {},
+
+  -- always start aider on startup
+  spawn_on_startup = false,
+
+  -- restart aider when directory changes
+  -- aider.nvim will keep separate terminal for each directory so restarting isn't typically necessary
+  restart_on_chdir = false,
+
+  -- function to run (e.x. for term mappings) when terminal is opened
+  on_term_open = nil,
+
+  -- used to determine whether to use dark themes for code blocks and whether to use `--dark-mode`
+  -- if supported theme is not available
+  dark_mode = function()
+    return vim.o.background == "dark"
+  end,
+  -- auto scroll terminal on output
+  auto_scroll = true,
+  -- window layout settings
+  win = {
+    -- type of window layout to use
+    direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
+    -- size function for terminal
+    size = function(term)
+      if term.direction == "horizontal" then
+        return math.floor(vim.api.nvim_win_get_height(0) * 0.4)
+      elseif term.direction == "vertical" then
+        return math.floor(vim.api.nvim_win_get_width(0) * 0.4)
+      end
+    end,
+    -- flat config options, see toggleterm.nvim for valid options
+    float_opts = {
+      border = "none",
+      width = function()
+        return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
+      end,
+      height = function()
+        return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
+      end,
+    },
+  },
+  -- theme colors for aider
+  theme = nil,
+
+  -- git pager to use, defaults to 'cat' to prevent blocking after_update_hook
+  git_pager = "cat",
 })
 ```
 
