@@ -104,7 +104,7 @@ M.defaults = {
 	-- window layout settings
 	win = {
 		-- type of window layout to use
-		direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
+		direction = "float", -- can be 'float', 'vertical', 'horizontal', 'tab'
 		-- size function for terminal
 		size = function(term)
 			if term.direction == "horizontal" then
