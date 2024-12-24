@@ -414,7 +414,7 @@ after_update_hook = function()
 end
 
 -- Using telescope, show the entire history of changes made by Aider:
-after_update_hook = function()
+after_update_hook = function(j)
   vim.cmd("Telescope git_commits")
 end
 ```
@@ -425,9 +425,10 @@ By default when selecting a commit in telescope, it will just do a `git checkout
 
 Note, while gitigns can be useful for working with hunks after reverting Aider's changes using the above techniques, you can also use it directly by running `Gitsigns change_base HEAD^`. Then all the mappings from the previous section will work as expected only to revert/inspect the last applied Aider commit rather than uncommited changes.
 
-```lua
-
 ## 🪪 License
 
 MIT
+
+```
+
 ```
