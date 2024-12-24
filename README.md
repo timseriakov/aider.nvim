@@ -433,4 +433,4 @@ Note that while `gitsigns` is useful for working with hunks after reverting Aide
 ## 🪪 License
 
 MIT
-```
+
