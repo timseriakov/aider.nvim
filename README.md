@@ -338,32 +338,35 @@ require('aider').setup({
 
 ### Philosophy
 
-Aider says to get the most out of Aider, you should get comfortable using git. Git is the primary tool for managing and viewing changes made by aider. Luckily Neovim has lots of great tools for working with git, including my top 3 favorite diffview, gitsigns, and telescope. To get the most out of this plugin, getting familiar with those tools and using them with Aider.nvim will transform your Aider experience.
+To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope`. Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Aider experience.
 
-### Recipes mappings (simple git mode)
+### Simple Git Mode (Using `--no-auto-commits`)
 
-If you're not yet comfortable utilizing git concepts like `git reset` you can still get quite a bit of benefit by using `--no-auto-commits` (e.x. using `aider_args` or the `~/.aider.conf.yml` config file) to simplify the git actions you'd need to take to manage it's changes. When using this mode, this is some useful mappings and tips:
+If you're not yet comfortable with advanced Git concepts like `git reset`, you can still benefit from a simplified workflow by using the `--no-auto-commits` option. You can set this option via `aider_args` in your `aider.nvim` configuration or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes.
 
-#### Auto show diffs after Aider updates without auto-commit
+#### Viewing Diffs Without Auto-commits
+
+In this mode, Aider won't automatically commit changes. Instead, it will leave the changes uncommitted in your working directory. You can then use the `after_update_hook` to view the diffs using either `diffview` or `telescope`:
 
 ```lua
--- Using the diffview plugin, show diff:
+-- Using diffview to show the diff:
 after_update_hook = function()
   vim.cmd("DiffviewOpen")
 end
 
--- Using telelscope, show diffs
+-- Using telescope to show the diffs:
 after_update_hook = function()
   vim.cmd("Telescope git_status")
 end
 ```
 
-In both cases, you'll see the diffs that will include changes made by Aider (in addition to any other uncommited changes you've made)
-after Aider makes any file changes. After using those integration points to view the diffs, you can just commit and push to accept everything. Or you should use gitsigns if you want to accept, reject or view individual hunks. Gitsigns can also be used to restore entire files. These are useful mappings for working with Aider and gitsigns:
+These hooks will display the diffs containing changes made by Aider, along with any other uncommitted changes in your working directory. After reviewing the diffs, you can commit everything to accept the changes or use `gitsigns` to selectively stage, unstage, or revert individual hunks or entire files.
+
+#### Useful `gitsigns` Mappings
+
+Here are some useful `gitsigns` mappings (adapted from LazyVim) that can help you manage changes when using this simplified workflow:
 
 ```lua
-
--- E.x. useful gitsigns mappings taken from LazyVim
 local function map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, opts)
 end
@@ -394,41 +397,40 @@ map("n", "<leader>ghd", gs.diffthis, "Diff This")
 map("n", "<leader>ghD", function() gs.diffthis("~") end, "Diff This ~")
 ```
 
-The downside of this approach is that you won't have a nice history of changes made by Aider to view, only the last changes made. If you want to keep a history of changes made by Aider, you can use the advanced git mode.
+The downside of this approach is that you won't have a detailed history of changes made by Aider, only the most recent changes. If you want to maintain a comprehensive history, consider using the advanced Git mode.
 
-#### Advanced git mode
+#### Advanced Git Mode (Using Auto-commits)
 
-This approach will enabled more integration from Aider with git by allowing it to use the default commit settings, thereby creating a git commit for each change made (including the comment prompts!). This will allow you to see the entire history of changes made by Aider and to use git tooling to manage all those changes. This is the recommended approach for advanced users but also requires getting comfortable with doing different types of `git reset` commands (using a feature branch is a great to get comfortable using this approach).
+This approach enables deeper integration between Aider and Git by allowing Aider to use its default commit settings. Aider will create a Git commit for each change it makes, including the prompts you use. This allows you to see the entire history of changes made by Aider and use Git tools to manage those changes effectively. This is the recommended approach for advanced users but requires familiarity with different types of `git reset` commands. Using a feature branch is a great way to experiment with this approach.
 
-#### Auto show diffs after Aider updates with auto-commit
+#### Viewing Diffs with Auto-commits
+
+With auto-commits enabled, you can use the `after_update_hook` to view the diff of the last change made by Aider or the entire history of changes:
 
 ```lua
--- Using the diffview plugin, show the last diff:
+-- Using diffview to show the diff of the last change made by Aider:
 after_update_hook = function()
   vim.cmd("DiffviewOpen HEAD^")
 end
 
--- Or show the entire history of changes made by Aider:
+-- Using diffview to show the entire history of changes made by Aider:
 after_update_hook = function()
   vim.cmd("DiffviewFileHistory")
 end
 
--- Using telescope, show the entire history of changes made by Aider:
-after_update_hook = function(j)
+-- Using telescope to show the entire history of changes made by Aider:
+after_update_hook = function()
   vim.cmd("Telescope git_commits")
 end
 ```
 
-Using diffview, is more visual (although you can customize to Telescope to use `delta` pager for nicer diff previews). When using diffview, checkout the `actions.restore_entry` mapping to restore files to a previous state locally. After restoring gitsigns can be useful if you want to accept individual hunks or preview specific hunk diffs made by the previous Aider commit.
+`diffview` provides a more visual way to review changes, although you can customize `telescope` to use the `delta` pager for enhanced diff previews. When using `diffview`, the `actions.restore_entry` mapping allows you to restore files to a previous state locally. After restoring, you can use `gitsigns` to accept individual hunks or preview specific hunk diffs from the previous Aider commit.
 
-By default when selecting a commit in telescope, it will just do a `git checkout <commit>`, you can then do a `git branch -f <branch> HEAD` to change the HEAD of your branch to that commit, effectively reversing Aider's last change. However Telescope also makes it easy to create custom actions to do more advanced git operations. Personally I like to do a `git reset --soft` on the selected commit if I want to make some changes on top of Aider's changes. That will reverse Aider's commits but keep it's changes in your working files for further modifications, leading to a more compact history. When doing this, gitsigns is also useful if you want to revert individual hunks or files or preview specific hunk diffs. Checkout [these](https://github.com/aweis89/dotfiles/blob/main/.config/nvim/lua/plugins/telescope.lua) telescope customizations for examples on creating those custom actions and integrating with `delta` pager for nicer diffs.
+By default, selecting a commit in `telescope` will perform a `git checkout <commit>`. You can then use `git branch -f <branch> HEAD` to move the HEAD of your branch to that commit, effectively reversing Aider's last change. However, `telescope` also allows you to create custom actions for more advanced Git operations. For example, you could create an action to perform a `git reset --soft` on the selected commit, allowing you to modify Aider's changes further while maintaining a more compact history. When using `git reset --soft`, `gitsigns` can be helpful for reverting individual hunks or files or previewing specific hunk diffs. Check out [these](https://github.com/aweis89/dotfiles/blob/main/.config/nvim/lua/plugins/telescope.lua) telescope customizations for examples of creating custom actions and integrating with the `delta` pager for improved diffs.
 
-Note, while gitigns can be useful for working with hunks after reverting Aider's changes using the above techniques, you can also use it directly by running `Gitsigns change_base HEAD^`. Then all the mappings from the previous section will work as expected only to revert/inspect the last applied Aider commit rather than uncommited changes.
+Note that while `gitsigns` is useful for working with hunks after reverting Aider's changes, you can also use it directly by running `Gitsigns change_base HEAD^`. This will make the `gitsigns` mappings from the previous section operate on the last Aider commit instead of uncommitted changes.
 
 ## 🪪 License
 
 MIT
-
-```
-
 ```
