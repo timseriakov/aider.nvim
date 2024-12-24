@@ -79,20 +79,43 @@ return {
     },
     keys = {
       {
-        "<C-x>",
+        "<leader>ghh",
+        "<cmd>Gitsigns change_base HEAD^<CR>",
+        desc = "Gitsigns pick reversals",
+      },
+      {
+        "<leader>dvh",
+        "<cmd>DiffviewOpen HEAD^<CR>",
+        desc = "Diffview HEAD^",
+      },
+      {
+        "<leader>dvo",
+        "<cmd>DiffviewOpen<CR>",
+        desc = "Diffview",
+      },
+      {
+        "<leader>dvc",
+        "<cmd>DiffviewClose!<CR>",
+        desc = "Diffview close",
+      },
+      {
+        "<leader>a<space>",
         "<cmd>AiderToggle<CR>",
         desc = "Toggle Aider",
-        mode = { "i", "t", "n" },
       },
       {
-        "<leader>as",
-        "<cmd>AiderSpawn<CR>",
-        desc = "Toggle Aidper (default)",
+        "<leader>af",
+        "<cmd>AiderToggle float<CR>",
+        desc = "Toggle Aider Float",
       },
       {
-        "<leader>au",
-        "<cmd>AiderSend /undo<CR>",
-        desc = "Aider undo",
+        "<leader>av",
+        "<cmd>AiderToggle vertical<CR>",
+        desc = "Toggle Aider Float",
+      },
+      {
+        "<leader>am",
+        desc = "Change model",
       },
       {
         "<leader>ams",
@@ -103,6 +126,22 @@ return {
         "<leader>amh",
         "<cmd>AiderSend /model haiku<CR>",
         desc = "Switch to haiku",
+      },
+      {
+        "<leader>amg",
+        "<cmd>AiderSend /model gemini/gemini-exp-1206<CR>",
+        desc = "Switch to haiku",
+      },
+      {
+        "<C-x>",
+        "<cmd>AiderToggle<CR>",
+        desc = "Toggle Aider",
+        mode = { "i", "t", "n" },
+      },
+      {
+        "<leader>as",
+        "<cmd>AiderSpawn<CR>",
+        desc = "Toggle Aidper (default)",
       },
       {
         "<leader>al",
@@ -162,6 +201,15 @@ require('packer').startup(function(use)
       vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Ask with selection' }))
       vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to sonnet' }))
       vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to haiku' }))
+      vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Gitsigns pick reversals' }))
+      vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview HEAD^' }))
+      vim.keymap.set('n', '<leader>dvo', '<cmd>DiffviewOpen<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview' }))
+      vim.keymap.set('n', '<leader>dvc', '<cmd>DiffviewClose!<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview close' }))
+      vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
+      vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Float' }))
+      vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Vertical' }))
+      vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', vim.tbl_extend('force', opts, { desc = 'Change model' }))
+      vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to Gemini' }))
     end
   }
 end)
@@ -195,6 +243,15 @@ vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { noremap = true, silent
 vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', { noremap = true, silent = true, desc = 'Ask with selection' })
 vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', { noremap = true, silent = true, desc = 'Switch to sonnet' })
 vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', { noremap = true, silent = true, desc = 'Switch to haiku' })
+vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', { noremap = true, silent = true, desc = 'Gitsigns pick reversals' })
+vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', { noremap = true, silent = true, desc = 'Diffview HEAD^' })
+vim.keymap.set('n', '<leader>dvo', '<cmd>DiffviewOpen<CR>', { noremap = true, silent = true, desc = 'Diffview' })
+vim.keymap.set('n', '<leader>dvc', '<cmd>DiffviewClose!<CR>', { noremap = true, silent = true, desc = 'Diffview close' })
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Float' })
+vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Vertical' })
+vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', { noremap = true, silent = true, desc = 'Change model' })
+vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', { noremap = true, silent = true, desc = 'Switch to Gemini' })
 EOF
 call plug#end()
 ```
@@ -429,6 +486,26 @@ end
 By default, selecting a commit in `telescope` will perform a `git checkout <commit>`. You can then use `git branch -f <branch> HEAD` to move the HEAD of your branch to that commit, effectively reversing Aider's last change. However, `telescope` also allows you to create custom actions for more advanced Git operations. For example, you could create an action to perform a `git reset --soft` on the selected commit, allowing you to modify Aider's changes further while maintaining a more compact history. When using `git reset --soft`, `gitsigns` can be helpful for reverting individual hunks or files or previewing specific hunk diffs. Check out [these](https://github.com/aweis89/dotfiles/blob/main/.config/nvim/lua/plugins/telescope.lua) telescope customizations for examples of creating custom actions and integrating with the `delta` pager for improved diffs.
 
 Note that while `gitsigns` is useful for working with hunks after reverting Aider's changes, you can also use it directly by running `Gitsigns change_base HEAD^`. This will make the `gitsigns` mappings from the previous section operate on the last Aider commit instead of uncommitted changes.
+
+#### Useful Key Mappings for Advanced Git Mode 🧑‍💻
+
+Here are some useful key mappings that can enhance your workflow when using the advanced Git mode:
+
+```lua
+-- View the diff of the last change made by Aider
+vim.keymap.set("n", "<leader>dvh", ":DiffviewOpen HEAD^<CR>", { desc = "Diffview HEAD^" })
+
+-- View the diff of all uncommitted changes
+vim.keymap.set("n", "<leader>dvo", ":DiffviewOpen<CR>", { desc = "Diffview" })
+
+-- Close Diffview
+vim.keymap.set("n", "<leader>dvc", ":DiffviewClose!<CR>", { desc = "Diffview close" })
+
+-- Use Gitsigns to operate on the last Aider commit
+vim.keymap.set("n", "<leader>ghh", ":Gitsigns change_base HEAD^<CR>", { desc = "Gitsigns pick reversals" })
+```
+
+These mappings allow you to quickly view the diff of the last change made by Aider (`<leader>dvh`), view the diff of all uncommitted changes (`<leader>dvo`), close `Diffview` (`<leader>dvc`), and use `Gitsigns` to operate on the last Aider commit (`<leader>ghh`).
 
 ## 🪪 License
 
