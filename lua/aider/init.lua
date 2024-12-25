@@ -91,9 +91,6 @@ M.defaults = {
 	-- aider.nvim will keep separate terminal for each directory so restarting isn't typically necessary
 	restart_on_chdir = false,
 
-	-- function to run (e.x. for term mappings) when terminal is opened
-	on_term_open = nil,
-
 	-- used to determine whether to use dark themes for code blocks and whether to use `--dark-mode`
 	-- if supported theme is not available
 	dark_mode = function()
@@ -106,7 +103,7 @@ M.defaults = {
 	-- window layout settings
 	win = {
 		-- type of window layout to use
-		direction = "float", -- can be 'float', 'vertical', 'horizontal', 'tab'
+		direction = "tab", -- can be 'float', 'vertical', 'horizontal', 'tab'
 		-- size function for terminal
 		size = function(term)
 			if term.direction == "horizontal" then
@@ -131,6 +128,22 @@ M.defaults = {
 
 	-- git pager to use, defaults to 'cat' to prevent blocking after_update_hook
 	git_pager = "cat",
+
+	-- function to run (e.x. for term mappings) when terminal is opened
+	on_term_open = function()
+		local function tmap(key, val)
+			local opt = { buffer = 0 }
+			vim.keymap.set("t", key, val, opt)
+		end
+		-- exit insert mode
+		tmap("<Esc>", "<C-\\><C-n>")
+		tmap("jj", "<C-\\><C-n>")
+		-- enter command mode
+		tmap(":", "<C-\\><C-n>:")
+		-- scrolling up/down
+		tmap("<C-u>", "<C-\\><C-n><C-u>")
+		tmap("<C-d>", "<C-\\><C-n><C-d>")
+	end,
 }
 
 ---@class AiderConfig
