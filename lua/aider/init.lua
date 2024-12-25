@@ -99,8 +99,10 @@ M.defaults = {
 	dark_mode = function()
 		return vim.o.background == "dark"
 	end,
+
 	-- auto scroll terminal on output
-	auto_scroll = true,
+	auto_scroll = false,
+
 	-- window layout settings
 	win = {
 		-- type of window layout to use
