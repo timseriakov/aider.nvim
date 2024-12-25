@@ -26,8 +26,8 @@ local function handle_ai_comments()
 
 				if config.auto_show_on_ask then
 					if matches["ai?"] then
-						local term = terminal.terminal()
-						if not term:is_open() then
+						terminal.ensure_running()
+						if not terminal.is_open() then
 							terminal.toggle_window(nil, nil)
 						end
 					end
@@ -93,6 +93,16 @@ function M.setup(opts)
 			return
 		end
 		terminal.toggle_window(nil, opt.args)
+	end, {
+		desc = "Toggle Aider window",
+		nargs = "?",
+		complete = function()
+			return { "vertical", "horizontal", "tab", "float" }
+		end,
+	})
+
+	vim.api.nvim_create_user_command("AiderTogglet", function(opt)
+		require("aider.tmux").toggle_window()
 	end, {
 		desc = "Toggle Aider window",
 		nargs = "?",
