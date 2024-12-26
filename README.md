@@ -299,12 +299,12 @@ require('aider').setup({
   -- Automatically start Aider when an AI comment (`ai!`, `ai?`, or `ai`) is written
   spawn_on_comment = true,
 
- -- Automatically show aider terminal window
- auto_show = {
-   on_ask = true, -- e.x. `ai? comment`
-   on_change_req = false, -- e.x. `ai! comment`
-   on_file_add = false, -- e.x. when using Telescope or `AiderLoad` to add files
- },
+  -- Automatically show aider terminal window
+  auto_show = {
+    on_ask = true, -- e.x. `ai? comment`
+    on_change_req = false, -- e.x. `ai! comment`
+    on_file_add = false, -- e.x. when using Telescope or `AiderLoad` to add files
+  },
 
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = nil,
