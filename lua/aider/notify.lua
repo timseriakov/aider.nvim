@@ -35,7 +35,7 @@ local function progress_notifier()
 		vim.notify("snacks.nvim is required for progress notifications", vim.log.levels.WARN)
 	end
 	local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-	local msg = "Aider Working ..."
+	local msg = "Aider Processing Request ..."
 	snotifier.notify(msg, "info", {
 		id = "aider_progress",
 		title = "Aider",
@@ -69,16 +69,14 @@ end
 
 local Terminal = require("toggleterm.terminal").Terminal
 
----@param term Terminal
----@param data table
-function M.on_stdout(term, data)
+function M.on_stdout(terminal, data)
 	for _, line in ipairs(data) do
-		if term:is_open() then
+		if terminal.is_open() then
 			return
 		end
 
 		if line:match(CONSTANTS.YES_NO_PATTERN) then
-			term:open()
+			terminal.toggle_window()
 			return
 		end
 
