@@ -275,8 +275,15 @@ call plug#end()
 
 ## 🤝 FZF-lua Integration
 
-Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file picker. When fzf-lua is installed, you can use `Ctrl-l` in the file picker to load files into Aider: 🔍
+Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file picker. When fzf-lua is installed, you can use `Ctrl-l` in the following fzf-lua pickers to load files into Aider:
 
+- **Files**: Regular file picker (`:FzfLua files`)
+- **Git Files**: Files tracked by Git (`:FzfLua git_files`)
+- **Oldfiles**: Recently opened files (`:FzfLua oldfiles`)
+- **Buffers**: Open buffers (`:FzfLua buffers`)
+- **Git Status**: Modified/untracked files (`:FzfLua git_status`)
+
+Usage:
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider 📄
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
