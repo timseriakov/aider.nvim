@@ -14,7 +14,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Auto reload all files changed by Aider 🔄
 - Add configurable hooks to run when Aider finishes updating a file 🪝
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff 🤩
-- Explicitly send commands to Aider using `AiderSend <cmd>`  প্রেরণ
+- Explicitly send commands to Aider using `AiderSend <cmd>` প্রেরণ
   - Can be used to create custom prompts 🎨
 - Toggle the Aider terminal and switch between background/foreground with various window formats 💻
 - Load files into the current Aider session 📂
@@ -299,12 +299,12 @@ require('aider').setup({
   -- Automatically start Aider when an AI comment (`ai!`, `ai?`, or `ai`) is written
   spawn_on_comment = true,
 
-  -- Automatically display the Aider terminal when triggering `/ask` with an `ai?` comment
-  auto_show = {
-    on_ask = true,
-    on_change_req = false,
-    on_file_add = false,
-  },
+ -- Automatically show aider terminal window
+ auto_show = {
+   on_ask = true, -- e.x. `ai? comment`
+   on_change_req = false, -- e.x. `ai! comment`
+   on_file_add = false, -- e.x. when using Telescope or `AiderLoad` to add files
+ },
 
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = nil,
