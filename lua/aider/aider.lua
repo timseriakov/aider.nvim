@@ -1,8 +1,17 @@
 local config = require("aider").config
 
-local Aider = {}
+local M = {}
 
-function Aider.command()
+function M.dark_mode()
+	if type(config.dark_mode) == "function" then
+		return config.dark_mode()
+	elseif type(config.dark_mode) == "boolean" then
+		return config.dark_mode
+	end
+	return false
+end
+
+function M.command()
 	local cmd = { "aider" }
 
 	if config.aider_args then
@@ -12,7 +21,7 @@ function Aider.command()
 	end
 
 	if not config.theme then
-		if Aider.dark_mode() then
+		if M.dark_mode() then
 			table.insert(cmd, "--dark-mode")
 		else
 			table.insert(cmd, "--light-mode")
@@ -20,7 +29,7 @@ function Aider.command()
 	end
 
 	table.insert(cmd, "--code-theme")
-	if Aider.dark_mode() then
+	if M.dark_mode() then
 		table.insert(cmd, config.code_theme_dark)
 	else
 		table.insert(cmd, config.code_theme_light)
@@ -63,4 +72,4 @@ _G.AiderUpdateHook = function()
 	end
 end
 
-return Aider
+return M
