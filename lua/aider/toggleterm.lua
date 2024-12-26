@@ -58,6 +58,7 @@ function M.terminal()
 		size = config.win.size,
 		float_opts = config.win.float_opts,
 		on_open = function(term)
+			term:scroll_bottom()
 			if config.auto_insert then
 				term:set_mode("i")
 			end
