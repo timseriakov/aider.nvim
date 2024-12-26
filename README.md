@@ -81,24 +81,9 @@ return {
     },
     keys = {
       {
-        "<leader>ghh",
-        "<cmd>Gitsigns change_base HEAD^<CR>",
-        desc = "Gitsigns pick reversals",
-      },
-      {
-        "<leader>dvh",
-        "<cmd>DiffviewOpen HEAD^<CR>",
-        desc = "Diffview HEAD^",
-      },
-      {
-        "<leader>dvo",
-        "<cmd>DiffviewOpen<CR>",
-        desc = "Diffview",
-      },
-      {
-        "<leader>dvc",
-        "<cmd>DiffviewClose!<CR>",
-        desc = "Diffview close",
+        "<leader>as",
+        "<cmd>AiderSpawn<CR>",
+        desc = "Toggle Aidper (default)",
       },
       {
         "<leader>a<space>",
@@ -114,6 +99,17 @@ return {
         "<leader>av",
         "<cmd>AiderToggle vertical<CR>",
         desc = "Toggle Aider Float",
+      },
+      {
+        "<leader>al",
+        "<cmd>AiderLoad<CR>",
+        desc = "Add file to aider",
+      },
+      {
+        "<leader>ad",
+        "<cmd>AiderAsk<CR>",
+        desc = "Ask with selection",
+        mode = { "v", "n" },
       },
       {
         "<leader>am",
@@ -140,21 +136,26 @@ return {
         desc = "Toggle Aider",
         mode = { "i", "t", "n" },
       },
+      -- Helpful mappings to utilize to manage aider changes
       {
-        "<leader>as",
-        "<cmd>AiderSpawn<CR>",
-        desc = "Toggle Aidper (default)",
+        "<leader>ghh",
+        "<cmd>Gitsigns change_base HEAD^<CR>",
+        desc = "Gitsigns pick reversals",
       },
       {
-        "<leader>al",
-        "<cmd>AiderLoad<CR>",
-        desc = "Add file to aider",
+        "<leader>dvh",
+        "<cmd>DiffviewOpen HEAD^<CR>",
+        desc = "Diffview HEAD^",
       },
       {
-        "<leader>ad",
-        "<cmd>AiderAsk<CR>",
-        desc = "Ask with selection",
-        mode = { "v", "n" },
+        "<leader>dvo",
+        "<cmd>DiffviewOpen<CR>",
+        desc = "Diffview",
+      },
+      {
+        "<leader>dvc",
+        "<cmd>DiffviewClose!<CR>",
+        desc = "Diffview close",
       },
     },
   },
@@ -197,21 +198,22 @@ require('packer').startup(function(use)
       -- Add keymaps
       local opts = { noremap = true, silent = true }
       vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider (default)' }))
-      vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', vim.tbl_extend('force', opts, { desc = 'Aider undo' }))
-      vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
+      vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
+      vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Float' }))
+      vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Vertical' }))
       vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
       vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Ask with selection' }))
+      vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', vim.tbl_extend('force', opts, { desc = 'Change model' }))
       vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to sonnet' }))
       vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to haiku' }))
+      vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to Gemini' }))
+      vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
+      vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', vim.tbl_extend('force', opts, { desc = 'Aider undo' }))
+      -- Helpful mappings to utilize to manage aider changes
       vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Gitsigns pick reversals' }))
       vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview HEAD^' }))
       vim.keymap.set('n', '<leader>dvo', '<cmd>DiffviewOpen<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview' }))
       vim.keymap.set('n', '<leader>dvc', '<cmd>DiffviewClose!<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview close' }))
-      vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
-      vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Float' }))
-      vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Vertical' }))
-      vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', vim.tbl_extend('force', opts, { desc = 'Change model' }))
-      vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to Gemini' }))
     end
   }
 end)
@@ -239,21 +241,22 @@ require('aider').setup({
 
 -- Add keymaps
 vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', { noremap = true, silent = true, desc = 'Toggle Aider (default)' })
-vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', { noremap = true, silent = true, desc = 'Aider undo' })
-vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Float' })
+vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Vertical' })
 vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
 vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', { noremap = true, silent = true, desc = 'Ask with selection' })
+vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', { noremap = true, silent = true, desc = 'Change model' })
 vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', { noremap = true, silent = true, desc = 'Switch to sonnet' })
 vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', { noremap = true, silent = true, desc = 'Switch to haiku' })
+vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', { noremap = true, silent = true, desc = 'Switch to Gemini' })
+vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
+vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', { noremap = true, silent = true, desc = 'Aider undo' })
+-- Helpful mappings to utilize to manage aider changes
 vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', { noremap = true, silent = true, desc = 'Gitsigns pick reversals' })
 vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', { noremap = true, silent = true, desc = 'Diffview HEAD^' })
 vim.keymap.set('n', '<leader>dvo', '<cmd>DiffviewOpen<CR>', { noremap = true, silent = true, desc = 'Diffview' })
 vim.keymap.set('n', '<leader>dvc', '<cmd>DiffviewClose!<CR>', { noremap = true, silent = true, desc = 'Diffview close' })
-vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
-vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Float' })
-vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Vertical' })
-vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', { noremap = true, silent = true, desc = 'Change model' })
-vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', { noremap = true, silent = true, desc = 'Switch to Gemini' })
 EOF
 call plug#end()
 ```
