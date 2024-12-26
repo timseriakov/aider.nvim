@@ -300,7 +300,11 @@ require('aider').setup({
   spawn_on_comment = true,
 
   -- Automatically display the Aider terminal when triggering `/ask` with an `ai?` comment
-  auto_show_on_ask = true,
+  auto_show = {
+    on_ask = true,
+    on_change_req = false,
+    on_file_add = false,
+  },
 
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = nil,
@@ -362,7 +366,7 @@ require('aider').setup({
   -- Window layout settings for the Aider terminal
   win = {
     -- type of window layout to use
-    direction = "vertical", -- can be 'float', 'vertical', 'horizontal', 'tab'
+    direction = "float", -- can be 'float', 'vertical', 'horizontal', 'tab'
     -- size function for terminal
     size = function(term)
       if term.direction == "horizontal" then
@@ -373,7 +377,7 @@ require('aider').setup({
     end,
     -- Flat configuration options (see `toggleterm.nvim` for valid options)
     float_opts = {
-      border = "none",
+      border = "single",
       width = function()
         return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
       end,
@@ -387,6 +391,9 @@ require('aider').setup({
 
   -- The Git pager to use. Defaults to `cat` to prevent blocking the `after_update_hook`
   git_pager = "cat",
+
+  -- Enable experimental tmux support
+  use_tmux = false,
 })
 ```
 
