@@ -15,22 +15,31 @@ local function handle_ai_comments()
 			local matches = utils.get_comment_matches(bufnr)
 
 			if matches.any then
+				local path = vim.api.nvim_buf_get_name(bufnr)
 				if not terminal.is_running() then
+					if config.use_tmux then
+						-- Needs to run outside of neovim's event loop duo to tmux suspension
+						local cmd = string.format("/bin/sh -c 'sleep 2 && touch %s'", path)
+						vim.fn.jobstart(cmd, { detach = true })
+					else
+						vim.defer_fn(function()
+							vim.api.nvim_buf_call(bufnr, function()
+								vim.cmd("silent w")
+							end)
+						end, 2000)
+					end
 					terminal.spawn()
-					vim.defer_fn(function()
-						vim.api.nvim_buf_call(bufnr, function()
-							vim.cmd("silent w")
-						end)
-					end, 2000)
 				end
 
-				if config.auto_show_on_ask then
-					if matches["ai?"] then
-						terminal.ensure_running()
-						if not terminal.is_open() then
-							terminal.toggle_window(nil, nil)
-						end
-					end
+				local show_window = false
+				if config.auto_show.on_ask and matches["ai?"] then
+					show_window = true
+				end
+				if config.auto_show.on_change_req and matches["ai!"] then
+					show_window = true
+				end
+				if show_window and not terminal.is_open() then
+					terminal.toggle_window(nil, nil)
 				end
 			end
 		end,
@@ -93,16 +102,6 @@ function M.setup(opts)
 			return
 		end
 		terminal.toggle_window(nil, opt.args)
-	end, {
-		desc = "Toggle Aider window",
-		nargs = "?",
-		complete = function()
-			return { "vertical", "horizontal", "tab", "float" }
-		end,
-	})
-
-	vim.api.nvim_create_user_command("AiderTogglet", function(opt)
-		require("aider.tmux").toggle_window()
 	end, {
 		desc = "Toggle Aider window",
 		nargs = "?",

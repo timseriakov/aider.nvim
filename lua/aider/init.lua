@@ -24,8 +24,9 @@
 ---@field code_theme_light string
 ---@field progress_notifier table|nil
 ---@field log_notifier boolean
----@field auto_show_on_ask boolean
 ---@field git_pager string
+---@field use_tmux boolean
+---@field auto_show table
 
 local M = {}
 
@@ -38,8 +39,12 @@ M.defaults = {
 	-- start aider when ai comment is written (e.x. `ai!|ai?|ai`)
 	spawn_on_comment = true,
 
-	-- auto show aider terminal when trigging /ask with `ai?` comment
-	auto_show_on_ask = true,
+	-- auto show aider terminal window
+	auto_show = {
+		on_ask = true, -- e.x. `ai? comment`
+		on_change_req = false, -- e.x. `ai! comment`
+		on_file_add = false, -- e.x. when using Telescope or `AiderLoad` to add files
+	},
 
 	-- function to run when aider updates file/s, useful for triggering git diffs
 	after_update_hook = nil,
@@ -98,12 +103,12 @@ M.defaults = {
 	end,
 
 	-- auto scroll terminal on output
-	auto_scroll = false,
+	auto_scroll = true,
 
 	-- window layout settings
 	win = {
 		-- type of window layout to use
-		direction = "tab", -- can be 'float', 'vertical', 'horizontal', 'tab'
+		direction = "float", -- can be 'float', 'vertical', 'horizontal', 'tab'
 		-- size function for terminal
 		size = function(term)
 			if term.direction == "horizontal" then
@@ -114,12 +119,12 @@ M.defaults = {
 		end,
 		-- flat config options, see toggleterm.nvim for valid options
 		float_opts = {
-			border = "none",
+			border = "single",
 			width = function()
-				return math.floor(vim.api.nvim_win_get_width(0) * 0.95)
+				return vim.api.nvim_win_get_width(0)
 			end,
 			height = function()
-				return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
+				return vim.api.nvim_win_get_height(0)
 			end,
 		},
 	},
@@ -144,6 +149,9 @@ M.defaults = {
 		tmap("<C-u>", "<C-\\><C-n><C-u>")
 		tmap("<C-d>", "<C-\\><C-n><C-d>")
 	end,
+
+	-- enable tmux mode (highly experimental!)
+	use_tmux = false,
 }
 
 ---@class AiderConfig
@@ -208,7 +216,6 @@ local function setup_catppuccin()
 		local colors = require("catppuccin.palettes").get_palette()
 		return set_catppuccin_colors(colors)
 	end
-	return
 end
 
 ---Initialize configuration with user options

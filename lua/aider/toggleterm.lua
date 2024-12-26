@@ -4,47 +4,48 @@ local utils = require("aider.utils")
 local notify = require("aider.notify")
 local aider = require("aider.aider")
 
--- this that
-local Aider = {
+local M = {
 	__term = {},
 }
 
 ---@return boolean
-function Aider.is_running()
-	return Aider.__term[utils.cwd()] ~= nil
+function M.is_running()
+	return M.__term[utils.cwd()] ~= nil
 end
 
-function Aider.clear()
-	local term = Aider.__term[utils.cwd()]
+function M.clear()
+	local term = M.__term[utils.cwd()]
 	if term then
 		term:close()
 	end
-	Aider.__term[utils.cwd()] = nil
+	M.__term[utils.cwd()] = nil
 end
 
-function Aider.clear_all()
-	for _, term in pairs(Aider.__term) do
+function M.clear_all()
+	for _, term in pairs(M.__term) do
 		if term then
 			term:close()
 		end
 	end
-	Aider.__term = {}
+	M.__term = {}
 end
 
-function Aider.is_open()
-	local term = Aider.ensure_running()
+function M.is_open()
+	local term = M.terminal()
 	return term:is_open()
 end
 
 --- Get or generate a terminal object for Aider
 ---@return Terminal
-function Aider.ensure_running()
+function M.terminal()
 	local cwd = utils.cwd()
-	if Aider.__term[cwd] then
-		return Aider.__term[cwd]
+	if M.__term[cwd] then
+		local term = M.__term[cwd]
+		return term
 	end
 	local term = Terminal:new({
-		cmd = aider.command(),
+		-- requires delay so aider can detect size correctly
+		cmd = "sleep 0.3; " .. aider.command(),
 		env = {
 			AIDER_EDITOR = config.editor_command,
 			GIT_PAGER = config.git_pager,
@@ -56,53 +57,51 @@ function Aider.ensure_running()
 		direction = config.win.direction,
 		size = config.win.size,
 		float_opts = config.win.float_opts,
-		on_exit = function()
-			Aider.__term[cwd] = nil
+		on_open = function(term)
+			if config.auto_insert then
+				term:set_mode("i")
+			end
 		end,
-		on_stdout = function(term, _, data, _)
-			notify.on_stdout(term, data)
+		on_exit = function()
+			M.__term[cwd] = nil
 		end,
 	})
+	term.on_stdout = function(_, _, data, _)
+		notify.on_stdout(M, data)
+	end
 	term:spawn()
-	Aider.__term[cwd] = term
+	M.__term[cwd] = term
 	return term
 end
 
 ---Load files into aider session
 ---@param files table|nil Files or path
-function Aider.load_files(files)
+function M.load_files(files)
 	files = files or {}
-	local term = Aider.ensure_running()
-
 	if #files > 0 then
 		local add_paths = "/add " .. table.concat(files, " ")
-		term:send(add_paths)
+		M.send_command(add_paths)
 	end
-
-	if not config.watch_files then
-		term:open(config.win.size(term), config.win.direction)
+	if config.auto_show.on_file_add then
+		M.open()
 	end
 end
 
-function Aider.dark_mode()
-	if type(config.dark_mode) == "function" then
-		return config.dark_mode()
-	elseif type(config.dark_mode) == "boolean" then
-		return config.dark_mode
+function M.open()
+	local term = M.terminal()
+	if not term:is_open() then
+		M.toggle_window(nil, nil)
 	end
-	return false
 end
 
-function Aider.spawn()
-	local term = Aider.ensure_running()
-	term:open()
-	term:close()
+function M.spawn()
+	M.terminal()
 end
 
 ---@param size? number
 ---@param direction? string
-function Aider.toggle_window(size, direction)
-	local term = Aider.ensure_running()
+function M.toggle_window(size, direction)
+	local term = M.terminal()
 	if size then
 		config.win.size = function()
 			return size(term)
@@ -124,8 +123,8 @@ end
 --- Send a command to the active Aider terminal session
 --- If no terminal is currently open, it will first create a new terminal
 --- @param command string The command to send to the Aider session
-function Aider.send_command(command)
-	local term = Aider.ensure_running()
+function M.send_command(command)
+	local term = M.terminal()
 	local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
 	term:send(multi_line_command)
 end
@@ -133,7 +132,7 @@ end
 --- Send an AI query to the Aider session
 --- @param prompt string The query or instruction to send
 --- @param selection string? Optional selected text to include with the prompt
-function Aider.ask(prompt, selection)
+function M.ask(prompt, selection)
 	if not prompt or #vim.trim(prompt) == 0 then
 		vim.notify("No input provided", vim.log.levels.WARN)
 		return
@@ -145,12 +144,8 @@ function Aider.ask(prompt, selection)
 	end
 
 	command = "/ask " .. prompt
-	Aider.send_command(command)
-
-	local term = Aider.ensure_running()
-	if not term:is_open() then
-		Aider.toggle_window(nil, nil)
-	end
+	M.send_command(command)
+	M.open()
 end
 
-return Aider
+return M
