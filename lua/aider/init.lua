@@ -103,7 +103,7 @@ M.defaults = {
 	end,
 
 	-- auto scroll terminal on output
-	auto_scroll = true,
+	auto_scroll = false,
 
 	-- window layout settings
 	win = {
