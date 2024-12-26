@@ -232,7 +232,9 @@ function M.setup(opts)
 	-- Setup fzf-lua integration if available
 	local function setup_fzf_integration()
 		local ok, fzf_config = pcall(require, "fzf-lua.config")
-		if not ok then return end
+		if not ok then
+			return
+		end
 
 		local function fzf_load_in_aider(selected, fopts)
 			local cleaned_paths = {}
@@ -254,7 +256,8 @@ function M.setup(opts)
 			fzf_config.defaults.files,
 			fzf_config.defaults.git.files,
 			fzf_config.defaults.oldfiles,
-			fzf_config.defaults.buffers
+			fzf_config.defaults.buffers,
+			fzf_config.defaults.git.status,
 		}
 
 		for _, section in ipairs(sections) do
