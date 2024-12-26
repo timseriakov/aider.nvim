@@ -242,8 +242,19 @@ function M.setup(opts)
 			require("aider.terminal").load_files(cleaned_paths)
 		end
 
-		---@type { [string]: function|table }
 		local actions = fzf_config.defaults.files.actions
+		actions[M.config.fzf_action_key] = fzf_load_in_aider
+
+		fzf_config.defaults.git.files.actions = fzf_config.defaults.files.actions or {}
+		local actions = fzf_config.defaults.git.files.actions
+		actions[M.config.fzf_action_key] = fzf_load_in_aider
+
+		fzf_config.defaults.oldfiles.actions = fzf_config.defaults.oldfiles.actions or {}
+		local actions = fzf_config.defaults.oldfiles.actions
+		actions[M.config.fzf_action_key] = fzf_load_in_aider
+
+		fzf_config.defaults.buffers.actions = fzf_config.defaults.buffers.actions or {}
+		local actions = fzf_config.defaults.buffers.actions
 		actions[M.config.fzf_action_key] = fzf_load_in_aider
 	end
 
