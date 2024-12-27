@@ -3,7 +3,7 @@ local M = {}
 ---Load selected files into aider
 ---@param selected table List of selected files
 ---@param fopts table Fzf options
-function M.load_in_aider(selected, fopts)
+function M.add(selected, fopts)
 	local cleaned_paths = {}
 	for _, entry in ipairs(selected) do
 		local file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
@@ -23,7 +23,7 @@ function M.setup(config)
 	-- Helper to add action to fzf section
 	local function add_action_to_section(section)
 		section.actions = section.actions or {}
-		section.actions[config.fzf_action_key] = M.load_in_aider
+		section.actions[config.fzf_action_key] = M.add
 	end
 
 	-- Setup actions for different fzf sections
