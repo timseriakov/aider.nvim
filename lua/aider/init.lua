@@ -57,20 +57,20 @@ M.defaults = {
 
 	-- deprecated: use telescope.add and telescope.read_only instead
 	telescope_action_key = nil,
-  telescope = {
-    -- Runs `/add <files>` for selected entries (with multi-select supported)
-    add = "<C-l>",
-    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
-    read_only = "<c-r>"
-  },
+	telescope = {
+		-- Runs `/add <files>` for selected entries (with multi-select supported)
+		add = "<C-l>",
+		-- Runs `/read-only <files>` for selected entries (with multi-select supported)
+		read_only = "<c-r>",
+	},
 	-- deprecated: use fzf.add and fzf.read_only instead
 	fzf_action_key = nil,
-  fzf = {
-    -- Runs `/add <files>` for selected entries (with multi-select supported)
-    add = "ctrl-l",
-    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
-    read_only = "ctrl-r"
-  }
+	fzf = {
+		-- Runs `/add <files>` for selected entries (with multi-select supported)
+		add = "ctrl-l",
+		-- Runs `/read-only <files>` for selected entries (with multi-select supported)
+		read_only = "ctrl-r",
+	},
 
 	-- filter `Telescope model_picker` model picker
 	model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
