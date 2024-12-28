@@ -287,10 +287,12 @@ Integrating with fzf-lua allows for quick and efficient loading of files into Ai
 - **Git Status**: Modified/untracked files (`:FzfLua git_status`)
 
 Usage:
-
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider 📄
+- Single file (read-only): Navigate to a file and press `Ctrl-r` to load it in read-only mode 📄
+- Remove file: Navigate to a file and press `Ctrl-z` to remove it from Aider 🗑️
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
+  - Use `Ctrl-r` to add files in read-only mode and `Ctrl-z` to remove files from the session
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
   - Note: `AiderLoad` is deprecated - use `AiderAdd` instead
 - fzf-lua also supports a select-all behavior, useful for loading all files matching a specific suffix, for example 💯
@@ -301,7 +303,10 @@ Telescope integration enables seamless file loading into Aider from various Tele
 
 - Current pickers with this registered action include: find_files, git_files, buffers and oldfiles 🔭
 - Single file: Navigate to a file and press `<C-l>` to load it into Aider. 📄
+- Single file (read-only): Navigate to a file and press `<C-r>` to load it in read-only mode. 📄
+- Remove file: Navigate to a file and press `<C-z>` to remove it from Aider. 🗑️
 - Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files. ➕
+- Multiple files: Use multi-select to choose files, then press `<C-r>` to load all selected files in read-only mode. ➕
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active. 🧑‍💻
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
 
@@ -323,12 +328,6 @@ require('aider').setup({
 
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = nil,
-
-  -- The keybinding for adding files to Aider from fzf-lua file pickers
-  fzf_action_key = "ctrl-l",
-
-  -- The keybinding for adding files to Aider from Telescope file pickers
-  telescope_action_key = "<C-l>",
 
   -- Filters for the `Telescope model_picker`
   model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
@@ -399,6 +398,25 @@ require('aider').setup({
       height = function()
         return math.floor(vim.api.nvim_win_get_height(0) * 0.95)
       end,
+    },
+  },
+  -- Telescope key mappings
+  telescope = {
+    -- Runs `/add <files>` for selected entries (with multi-select supported)
+    add = "<C-l>",
+    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
+    read_only = "<C-r>",
+    -- Runs `/drop <files>` for selected entries (with multi-select supported)
+    drop = "<C-z>",
+  },
+  -- fzf-lua key mappings
+  fzf = {
+    -- Runs `/add <files>` for selected entries (with multi-select supported)
+    add = "ctrl-l",
+    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
+    read_only = "ctrl-r",
+    -- Runs `/drop <files>` for selected entries (with multi-select supported)
+    drop = "ctrl-z",
     },
   },
   -- theme colors for aider
