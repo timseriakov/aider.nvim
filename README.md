@@ -21,7 +21,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Use fzf-lua or Telescope for file selection (multi-select supported), with multiple file viewer options 🔭
     - For Telescope, the custom file-loading action is available in `git_files`, `find_files`, `buffers`, and `oldfiles` 📄
     - For fzf-lua, any file finder following standard file parameter conventions is supported 🔍
-  - Outside of watch mode, use `AiderAdd` without arguments to add the current file (`/add`), or specify file arguments ➕
+  - Use `AiderAdd` without arguments to add the current file (`/add`), or specify file arguments ➕
 - Ask questions about your code, with support for visual selections ❓
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt 🙋
 - For diff viewing, accepting or rejecting changes: 🔍
@@ -286,6 +286,7 @@ Integrating with fzf-lua allows for quick and efficient loading of files into Ai
 - **Git Status**: Modified/untracked files (`:FzfLua git_status`)
 
 Usage:
+
 - Single file: Navigate to a file and press `Ctrl-l` to load it into Aider 📄
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
