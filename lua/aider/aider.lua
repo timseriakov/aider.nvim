@@ -28,11 +28,13 @@ function M.command()
 		end
 	end
 
-	table.insert(cmd, "--code-theme")
-	if M.dark_mode() then
-		table.insert(cmd, config.code_theme_dark)
-	else
-		table.insert(cmd, config.code_theme_light)
+	if not config.theme.code_theme then
+		table.insert(cmd, "--code-theme")
+		if M.dark_mode() then
+			table.insert(cmd, config.code_theme_dark)
+		else
+			table.insert(cmd, config.code_theme_light)
+		end
 	end
 
 	local hook_command = "/bin/sh -c "
