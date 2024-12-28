@@ -111,6 +111,7 @@ function M.setup(opts)
 	})
 
 	vim.api.nvim_create_user_command("AiderLoad", function(opt)
+		vim.notify("Deprecated: AiderLoad is deprecated. Use AiderAdd instead.", vim.log.levels.WARN)
 		local files = opt.fargs
 		if #files == 0 then
 			files = { vim.api.nvim_buf_get_name(0) }

@@ -43,6 +43,7 @@ function M.setup(config)
 	-- Helper to add action to fzf section
 	local function add_action_to_section(section)
 		if config.fzf_action_key then
+			vim.notify("Deprecated: fzf_action_key is deprecated. Use fzf.add instead.", vim.log.levels.WARN)
 			config.fzf.add = config.fzf_action_key
 		end
 
