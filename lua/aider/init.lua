@@ -148,6 +148,8 @@ M.defaults = {
 		-- scrolling up/down
 		tmap("<C-u>", "<C-\\><C-n><C-u>")
 		tmap("<C-d>", "<C-\\><C-n><C-d>")
+		vim.opt.number = false
+		vim.opt.wrap = true
 	end,
 
 	-- enable tmux mode (highly experimental!)
