@@ -2,7 +2,7 @@ local M = {}
 
 ---@param selected table List of selected files
 ---@param fopts table Fzf options
-local function get_paths(selected, opts)
+local function get_paths(selected, fopts)
 	local cleaned_paths = {}
 	for _, entry in ipairs(selected) do
 		local file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
@@ -27,6 +27,11 @@ function M.read_only(selected, fopts)
 	require("aider.terminal").read_only(cleaned_paths)
 end
 
+function M.drop(selected, fopts)
+	local cleaned_paths = get_paths(selected, fopts)
+	require("aider.terminal").drop(cleaned_paths)
+end
+
 ---Setup fzf-lua integration
 ---@param config AiderConfig Configuration options
 function M.setup(config)
@@ -46,6 +51,9 @@ function M.setup(config)
 
 		section.actions = section.actions or {}
 		section.actions[config.fzf.read_only] = M.read_only
+
+		section.actions = section.actions or {}
+		section.actions[config.fzf.drop] = M.drop
 	end
 
 	-- Setup actions for different fzf sections
