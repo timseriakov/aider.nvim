@@ -21,7 +21,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Use fzf-lua or Telescope for file selection (multi-select supported), with multiple file viewer options 🔭
     - For Telescope, the custom file-loading action is available in `git_files`, `find_files`, `buffers`, and `oldfiles` 📄
     - For fzf-lua, any file finder following standard file parameter conventions is supported 🔍
-  - Outside of watch mode, use `AiderLoad` without arguments to add the current file (`/add`), or specify file arguments ➕
+  - Outside of watch mode, use `AiderAdd` without arguments to add the current file (`/add`), or specify file arguments ➕
 - Ask questions about your code, with support for visual selections ❓
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt 🙋
 - For diff viewing, accepting or rejecting changes: 🔍
@@ -103,7 +103,7 @@ return {
       },
       {
         "<leader>al",
-        "<cmd>AiderLoad<CR>",
+        "<cmd>AiderAdd<CR>",
         desc = "Add file to aider",
       },
       {
@@ -202,7 +202,7 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
       vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Float' }))
       vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Vertical' }))
-      vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
+      vim.keymap.set('n', '<leader>al', '<cmd>AiderAdd<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
       vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Ask with selection' }))
       vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', vim.tbl_extend('force', opts, { desc = 'Change model' }))
       vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to sonnet' }))
@@ -245,7 +245,7 @@ vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', { noremap = true, silen
 vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
 vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Float' })
 vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Vertical' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderAdd<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
 vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', { noremap = true, silent = true, desc = 'Ask with selection' })
 vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', { noremap = true, silent = true, desc = 'Change model' })
 vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', { noremap = true, silent = true, desc = 'Switch to sonnet' })
@@ -270,7 +270,8 @@ call plug#end()
   - `float` - Switch to floating window (default) 🪟
   - `tab` - Switch to new tab 📑
   - Without a direction argument, it opens in the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
-- `:AiderLoad [files...]` - Load files into the Aider session. If no files are specified, the current file is loaded 📂
+- `:AiderAdd [files...]` - Add files to the Aider session. If no files are specified, the current file is added 📂
+  - `:AiderLoad` is deprecated and will be removed in a future version - use `:AiderAdd` instead
 - `:AiderAsk [prompt]` - Ask a question using the `/ask` command. Without a prompt, an input popup will appear. In visual mode, the selected text is added to the prompt 🙋
 - `:AiderSend [command]` - Send a command to Aider. In visual mode, the selected text is added to the command 📨
 
@@ -289,6 +290,7 @@ Usage:
 - Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
+  - Note: `AiderLoad` is deprecated - use `AiderAdd` instead
 - fzf-lua also supports a select-all behavior, useful for loading all files matching a specific suffix, for example 💯
 
 ## 🔭 Telescope Integration
