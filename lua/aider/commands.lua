@@ -178,6 +178,15 @@ function M.setup(opts)
 		})
 	end
 
+	if opts.auto_insert then
+		vim.api.nvim_create_autocmd("BufEnter", {
+			pattern = "term://*",
+			callback = function()
+				vim.cmd("startinsert")
+			end,
+		})
+	end
+
 	if opts.spawn_on_startup then
 		vim.schedule(function()
 			vim.cmd("AiderSpawn")
