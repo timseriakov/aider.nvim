@@ -169,9 +169,10 @@ function M.setup(opts)
 	opts = opts or {}
 	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
-	local theme = require("aider.theme").tokyonight_theme()
-		or require("aider.theme").catppuccin_theme()
-		or require("aider.theme").gruvbox_theme()
+	local theme_mod = require("aider.theme")
+	local theme = theme_mod.tokyonight_theme()
+		or theme_mod.catppuccin_theme()
+		or theme_mod.gruvbox_theme()
 	if theme then
 		M.config.theme = theme
 	end
