@@ -76,8 +76,8 @@ end
 function M.add(files)
 	files = files or {}
 	if #files > 0 then
-		local add_paths = "/add " .. table.concat(files, " ")
-		M.send_command(add_paths)
+		local cmd = "/add " .. table.concat(files, " ")
+		M.send_command(cmd)
 	end
 	if config.auto_show.on_file_add then
 		M.open()
@@ -89,11 +89,20 @@ end
 function M.read_only(files)
 	files = files or {}
 	if #files > 0 then
-		local add_paths = "/read-only " .. table.concat(files, " ")
-		M.send_command(add_paths)
+		local cmd = "/read-only " .. table.concat(files, " ")
+		M.send_command(cmd)
 	end
 	if config.auto_show.on_file_add then
 		M.open()
+	end
+end
+
+function M.drop(files)
+	files = files or {}
+	if #files > 0 then
+		local cmd = "/drop " .. table.concat(files, " ")
+		vim.notify(cmd)
+		M.send_command(cmd)
 	end
 end
 

@@ -44,6 +44,11 @@ local function aider_read_only(prompt_bufnr)
 	terminal.read_only(paths)
 end
 
+local function aider_drop(prompt_bufnr)
+	local paths = get_paths(prompt_bufnr)
+	terminal.read_only(paths)
+end
+
 return telescope.register_extension({
 	setup = function()
 		-- Add mappings only to file pickers
@@ -56,6 +61,9 @@ return telescope.register_extension({
 
 			map("i", config.telescope.read_only, aider_read_only)
 			map("n", config.telescope.read_only, aider_read_only)
+
+			map("i", config.telescope.drop, aider_drop)
+			map("n", config.telescope.drop, aider_drop)
 			return true
 		end
 

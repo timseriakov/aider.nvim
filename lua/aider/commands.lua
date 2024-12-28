@@ -146,6 +146,18 @@ function M.setup(opts)
 		complete = "file",
 	})
 
+	vim.api.nvim_create_user_command("AiderDrop", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.drop(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
 	vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
 		nargs = "*",
 		range = true, -- This enables the command to work with selections

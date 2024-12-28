@@ -6,6 +6,7 @@
 ---@class FuzzyFinderMappings
 ---@field add string
 ---@field read_only string
+---@field drop string
 
 ---@class AiderConfig
 ---@field spawn_on_comment boolean
@@ -62,6 +63,8 @@ M.defaults = {
 		add = "<C-l>",
 		-- Runs `/read-only <files>` for selected entries (with multi-select supported)
 		read_only = "<c-r>",
+		-- Runs `/drop`` <files> for selected entries (with multi-select supported)
+		drop = "<c-z>",
 	},
 	-- deprecated: use fzf.add and fzf.read_only instead
 	fzf_action_key = nil,
@@ -70,6 +73,8 @@ M.defaults = {
 		add = "ctrl-l",
 		-- Runs `/read-only <files>` for selected entries (with multi-select supported)
 		read_only = "ctrl-r",
+		-- Runs `/drop`` <files> for selected entries (with multi-select supported)
+		drop = "ctrl-z",
 	},
 
 	-- filter `Telescope model_picker` model picker
