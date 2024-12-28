@@ -31,7 +31,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Use the Telescope model picker (`:Telescope model_picker`) to select different AI models 🔭
   - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for 🔎
 - Integration with tokyonight and catppuccin themes 🌈
-- **NEW:** Integration with gruvbox theme 🌈
+- **NEW:** Integration with gruvbox theme, with matching themes for code-blocks as well (which is unavailable with other supported themes) 🌈
 
 ## 🛠️ Prerequisites
 
