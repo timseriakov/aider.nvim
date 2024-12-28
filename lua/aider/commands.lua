@@ -115,7 +115,31 @@ function M.setup(opts)
 		if #files == 0 then
 			files = { vim.api.nvim_buf_get_name(0) }
 		end
-		terminal.load_files(files)
+		terminal.add(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
+	vim.api.nvim_create_user_command("AiderAdd", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.add(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
+	vim.api.nvim_create_user_command("AiderReadOnly", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.read_only(files)
 	end, {
 		nargs = "*",
 		desc = "Load files into Aider",

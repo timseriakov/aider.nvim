@@ -9,7 +9,7 @@ function M.add(selected, fopts)
 		local file_info = require("fzf-lua.path").entry_to_file(entry, fopts)
 		table.insert(cleaned_paths, file_info.path)
 	end
-	require("aider.terminal").load_files(cleaned_paths)
+	require("aider.terminal").add(cleaned_paths)
 end
 
 ---Setup fzf-lua integration
