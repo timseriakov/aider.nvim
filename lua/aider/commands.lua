@@ -190,6 +190,7 @@ function M.setup(opts)
 			pattern = "term://*",
 			callback = function()
 				vim.cmd("startinsert")
+				vim.opt.list = false
 			end,
 		})
 	end
