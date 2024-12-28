@@ -8,7 +8,7 @@ local action_state = require("telescope.actions.state")
 local terminal = require("aider.terminal")
 local config = require("aider").config
 
-local function aider_action(prompt_bufnr)
+local function get_paths(prompt_bufnr)
 	local picker = action_state.get_current_picker(prompt_bufnr)
 	local paths = {}
 
@@ -30,17 +30,32 @@ local function aider_action(prompt_bufnr)
 			end
 		end
 	end
-
 	actions.close(prompt_bufnr)
+	return paths
+end
+
+local function aider_add(prompt_bufnr)
+	local paths = get_paths(prompt_bufnr)
 	terminal.add(paths)
+end
+
+local function aider_read_only(prompt_bufnr)
+	local paths = get_paths(prompt_bufnr)
+	terminal.read_only(paths)
 end
 
 return telescope.register_extension({
 	setup = function()
 		-- Add mappings only to file pickers
+		if config.telescope_action_key then
+			config.telescope.add = config.telescope_action_key
+		end
 		local files_attach_mappings = function(_, map)
-			map("i", config.telescope_action_key, aider_action)
-			map("n", config.telescope_action_key, aider_action)
+			map("i", config.telescope.add, aider_add)
+			map("n", config.telescope.add, aider_add)
+
+			map("i", config.telescope.read_only, aider_read_only)
+			map("n", config.telescope.read_only, aider_read_only)
 			return true
 		end
 
