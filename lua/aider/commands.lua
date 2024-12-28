@@ -18,7 +18,7 @@ local function handle_ai_comments()
 				local path = vim.api.nvim_buf_get_name(bufnr)
 				if not terminal.is_running() then
 					if config.use_tmux then
-						-- Needs to run outside of neovim's event loop duo to tmux suspension
+						-- Needs to run outside of neovim's event loop duo to tmux asuspension
 						local cmd = string.format("/bin/sh -c 'sleep 3 && touch %s'", path)
 						vim.fn.jobstart(cmd, { detach = true })
 					else
@@ -172,11 +172,18 @@ function M.setup(opts)
 		})
 	end
 
-	if opts.on_term_open then
-		vim.api.nvim_create_autocmd("TermOpen", {
-			callback = opts.on_term_open,
-		})
-	end
+	vim.api.nvim_create_autocmd("TermOpen", {
+		callback = function()
+			if opts.on_term_open then
+				opts.on_term_open()
+			end
+			if config.win.direction == "vertical" or config.win.direction == "float" then
+				vim.defer_fn(function()
+					vim.cmd("vertical resize +3")
+				end, 2000)
+			end
+		end,
+	})
 
 	if opts.auto_insert then
 		vim.api.nvim_create_autocmd("BufEnter", {
