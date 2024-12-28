@@ -51,8 +51,11 @@ end
 
 return telescope.register_extension({
 	setup = function()
-		-- Add mappings only to file pickers
 		if config.telescope_action_key then
+			vim.notify(
+				"Deprecated: telescope_action_key is deprecated. Use telescope.add instead.",
+				vim.log.levels.WARN
+			)
 			config.telescope.add = config.telescope_action_key
 		end
 		local files_attach_mappings = function(_, map)
