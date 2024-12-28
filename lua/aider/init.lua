@@ -162,7 +162,6 @@ M.defaults = {
 ---@class AiderConfig
 M.config = {}
 
-
 ---Initialize configuration with user options
 ---@param opts AiderConfig|nil User configuration options
 function M.setup(opts)
@@ -170,9 +169,7 @@ function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", {}, M.defaults, opts)
 
 	local theme_mod = require("aider.theme")
-	local theme = theme_mod.tokyonight_theme()
-		or theme_mod.catppuccin_theme()
-		or theme_mod.gruvbox_theme()
+	local theme = theme_mod.tokyonight_theme() or theme_mod.catppuccin_theme() or theme_mod.gruvbox_theme()
 	if theme then
 		M.config.theme = theme
 	end
