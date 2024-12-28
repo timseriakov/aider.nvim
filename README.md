@@ -272,6 +272,7 @@ call plug#end()
   - Without a direction argument, it opens in the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
 - `:AiderAdd [files...]` - Add files to the Aider session. If no files are specified, the current file is added 📂
   - `:AiderLoad` is deprecated and will be removed in a future version - use `:AiderAdd` instead
+- `:AiderReadOnly [files...]` - Add files to the Aider session in read-only mode. If no files are specified, the current file is added 📂
 - `:AiderAsk [prompt]` - Ask a question using the `/ask` command. Without a prompt, an input popup will appear. In visual mode, the selected text is added to the prompt 🙋
 - `:AiderSend [command]` - Send a command to Aider. In visual mode, the selected text is added to the command 📨
 
