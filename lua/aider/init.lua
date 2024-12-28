@@ -74,9 +74,11 @@ M.defaults = {
 	log_notifier = true,
 
 	-- code theme to use for markdown blocks when in dark mode
+	-- code_theme_dark = "gruvbox-dark",
 	code_theme_dark = "monokai",
 
 	-- code theme to use for markdown blocks when in light mode
+	-- code_theme_light = "gruvbox-light",
 	code_theme_light = "default",
 
 	-- command to run for opening nested editor when invoking `/editor` from Aider terminal
@@ -258,6 +260,7 @@ local function gruvbox_theme()
 			dark_green = p.dark_green,
 			dark_aqua = p.dark_aqua,
 			gray = p.gray,
+			code_theme = "gruvbox-dark",
 		},
 		light = {
 			bg0 = p.light0,
@@ -287,6 +290,7 @@ local function gruvbox_theme()
 			dark_green = p.light_green,
 			dark_aqua = p.light_aqua,
 			gray = p.gray,
+			code_theme = "gruvbox-light",
 		},
 	}
 	local colors = color_groups[vim.o.background or "dark"]
@@ -301,6 +305,7 @@ local function gruvbox_theme()
 		completion_menu_bg_color = colors.bg1,
 		completion_menu_current_color = colors.fg4,
 		completion_menu_current_bg_color = colors.bg4,
+		code_theme = colors.code_theme,
 	}
 end
 
