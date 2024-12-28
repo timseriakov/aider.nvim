@@ -50,7 +50,6 @@ function M.terminal()
 			AIDER_EDITOR = config.editor_command,
 			GIT_PAGER = config.git_pager,
 		},
-		hidden = true,
 		display_name = "Aider.nvim",
 		close_on_exit = true,
 		auto_scroll = config.auto_scroll,

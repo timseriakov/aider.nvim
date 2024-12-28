@@ -19,14 +19,14 @@ local function handle_ai_comments()
 				if not terminal.is_running() then
 					if config.use_tmux then
 						-- Needs to run outside of neovim's event loop duo to tmux suspension
-						local cmd = string.format("/bin/sh -c 'sleep 2 && touch %s'", path)
+						local cmd = string.format("/bin/sh -c 'sleep 3 && touch %s'", path)
 						vim.fn.jobstart(cmd, { detach = true })
 					else
 						vim.defer_fn(function()
 							vim.api.nvim_buf_call(bufnr, function()
 								vim.cmd("silent w")
 							end)
-						end, 2000)
+						end, 3000)
 					end
 					terminal.spawn()
 				end
