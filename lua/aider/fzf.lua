@@ -57,7 +57,7 @@ function M.setup(config)
 		)
 
 		if section.header then
-			header = header .. " " .. section.header
+			header = header .. "; " .. section.header
 		end
 		section.header = header
 
