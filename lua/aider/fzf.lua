@@ -49,7 +49,6 @@ function M.setup(config)
 		local function map_str(mapping)
 			return mapping:gsub("ctrl", "C")
 		end
-
 		local header = string.format(
 			"Aider: %s: /add, %s: /drop, %s: /read-only",
 			map_str(config.fzf.add),
@@ -61,13 +60,10 @@ function M.setup(config)
 			header = header .. " " .. section.header
 		end
 		section.header = header
+
 		section.actions = section.actions or {}
 		section.actions[config.fzf.add] = M.add
-
-		section.actions = section.actions or {}
 		section.actions[config.fzf.read_only] = M.read_only
-
-		section.actions = section.actions or {}
 		section.actions[config.fzf.drop] = M.drop
 	end
 
