@@ -21,7 +21,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
   - Use fzf-lua or Telescope for file selection (multi-select supported), with multiple file viewer options 🔭
     - For Telescope, the custom file-loading action is available in `git_files`, `find_files`, `buffers`, and `oldfiles` 📄
     - For fzf-lua, any file finder following standard file parameter conventions is supported 🔍
-  - Outside of watch mode, use `AiderLoad` without arguments to add the current file (`/add`), or specify file arguments ➕
+  - Use `AiderAdd` without arguments to add the current file (`/add`), or specify file arguments ➕
 - Ask questions about your code, with support for visual selections ❓
   - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt 🙋
 - For diff viewing, accepting or rejecting changes: 🔍
@@ -103,7 +103,7 @@ return {
       },
       {
         "<leader>al",
-        "<cmd>AiderLoad<CR>",
+        "<cmd>AiderAdd<CR>",
         desc = "Add file to aider",
       },
       {
@@ -202,7 +202,7 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
       vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Float' }))
       vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider Vertical' }))
-      vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
+      vim.keymap.set('n', '<leader>al', '<cmd>AiderAdd<CR>', vim.tbl_extend('force', opts, { desc = 'Add file to aider' }))
       vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Ask with selection' }))
       vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', vim.tbl_extend('force', opts, { desc = 'Change model' }))
       vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to sonnet' }))
@@ -245,7 +245,7 @@ vim.keymap.set('n', '<leader>as', '<cmd>AiderSpawn<CR>', { noremap = true, silen
 vim.keymap.set('n', '<leader>a<space>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
 vim.keymap.set('n', '<leader>af', '<cmd>AiderToggle float<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Float' })
 vim.keymap.set('n', '<leader>av', '<cmd>AiderToggle vertical<CR>', { noremap = true, silent = true, desc = 'Toggle Aider Vertical' })
-vim.keymap.set('n', '<leader>al', '<cmd>AiderLoad<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
+vim.keymap.set('n', '<leader>al', '<cmd>AiderAdd<CR>', { noremap = true, silent = true, desc = 'Add file to aider' })
 vim.keymap.set({ 'v', 'n' }, '<leader>ad', '<cmd>AiderAsk<CR>', { noremap = true, silent = true, desc = 'Ask with selection' })
 vim.keymap.set('n', '<leader>am', '<cmd>Telescope model_picker<CR>', { noremap = true, silent = true, desc = 'Change model' })
 vim.keymap.set('n', '<leader>ams', '<cmd>AiderSend /model sonnet<CR>', { noremap = true, silent = true, desc = 'Switch to sonnet' })
@@ -267,16 +267,18 @@ call plug#end()
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be: 🧑‍💻
   - `vertical` - Switch to vertical split ↔️
   - `horizontal` - Switch to horizontal split ↕️
-  - `float` - Switch to floating window (default) 🪟
-  - `tab` - Switch to new tab 📑
+  - `float` - Switch to floating window 🪟
+  - `tab` - Switch to new tab 📑 (best for fullscreen toggle)
   - Without a direction argument, it opens in the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
-- `:AiderLoad [files...]` - Load files into the Aider session. If no files are specified, the current file is loaded 📂
+- `:AiderAdd [files...]` - Add files to the Aider session. If no files are specified, the current file is added 📂
+  - `:AiderLoad` is deprecated and will be removed in a future version - use `:AiderAdd` instead
+- `:AiderReadOnly [files...]` - Add files to the Aider session in read-only mode. If no files are specified, the current file is added 📂
 - `:AiderAsk [prompt]` - Ask a question using the `/ask` command. Without a prompt, an input popup will appear. In visual mode, the selected text is added to the prompt 🙋
 - `:AiderSend [command]` - Send a command to Aider. In visual mode, the selected text is added to the command 📨
 
 ## 🤝 FZF-lua Integration
 
-Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file picker. When fzf-lua is installed, you can use `Ctrl-l` in the following fzf-lua pickers to load files into Aider:
+Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file pickers. When fzf-lua is installed, you can use mappings in the following native pickers:
 
 - **Files**: Regular file picker (`:FzfLua files`)
 - **Git Files**: Files tracked by Git (`:FzfLua git_files`)
@@ -285,19 +287,22 @@ Integrating with fzf-lua allows for quick and efficient loading of files into Ai
 - **Git Status**: Modified/untracked files (`:FzfLua git_status`)
 
 Usage:
-- Single file: Navigate to a file and press `Ctrl-l` to load it into Aider 📄
-- Multiple files: Use `Shift-Tab` to select multiple files, then press `Ctrl-l` to load all selected files ➕
+
+- Load files: Navigate to files and press `Ctrl-l` to load them into Aider (supports multi-select) 📄
+- Load read-only: Press `Ctrl-r` to load files in read-only mode (supports multi-select) 📄
+- Remove files: Press `Ctrl-z` to remove files from Aider (supports multi-select) 🗑️
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
-- fzf-lua also supports a select-all behavior, useful for loading all files matching a specific suffix, for example 💯
+  - Note: `AiderLoad` is deprecated - use `AiderAdd` instead
 
 ## 🔭 Telescope Integration
 
 Telescope integration enables seamless file loading into Aider from various Telescope pickers. When Telescope is installed, you can use `<C-l>` load files into Aider:
 
 - Current pickers with this registered action include: find_files, git_files, buffers and oldfiles 🔭
-- Single file: Navigate to a file and press `<C-l>` to load it into Aider. 📄
-- Multiple files: Use multi-select to choose files (default <tab>), then press `<C-l>` to load all selected files. ➕
+- Load files: Navigate to files and press `<C-l>` to load them into Aider (supports multi-select) 📄
+- Load read-only: Press `<C-r>` to load files in read-only mode (supports multi-select) 📄
+- Remove files: Press `<C-z>` to remove files from Aider (supports multi-select) 🗑️
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active. 🧑‍💻
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
 
@@ -320,14 +325,8 @@ require('aider').setup({
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = nil,
 
-  -- The keybinding for adding files to Aider from fzf-lua file pickers
-  fzf_action_key = "ctrl-l",
-
-  -- The keybinding for adding files to Aider from Telescope file pickers
-  telescope_action_key = "<C-l>",
-
   -- Filters for the `Telescope model_picker`
-  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" "^deepseek/" },
 
   -- Enable the `--watch-files` flag for Aider, enabling automatic startup on valid comment creation
   watch_files = true,
@@ -397,6 +396,25 @@ require('aider').setup({
       end,
     },
   },
+  -- Telescope key mappings
+  telescope = {
+    -- Runs `/add <files>` for selected entries (with multi-select supported)
+    add = "<C-l>",
+    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
+    read_only = "<C-r>",
+    -- Runs `/drop <files>` for selected entries (with multi-select supported)
+    drop = "<C-z>",
+  },
+  -- fzf-lua key mappings
+  fzf = {
+    -- Runs `/add <files>` for selected entries (with multi-select supported)
+    add = "ctrl-l",
+    -- Runs `/read-only <files>` for selected entries (with multi-select supported)
+    read_only = "ctrl-r",
+    -- Runs `/drop <files>` for selected entries (with multi-select supported)
+    drop = "ctrl-z",
+    },
+  },
   -- theme colors for aider
   theme = nil,
 
@@ -412,11 +430,11 @@ require('aider').setup({
 
 ### Recommended Git Practices 🧑‍🏫
 
-To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope`. Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Aider experience.
+To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope` (or fzf-lua). Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Neovim Aider experience.
 
 ### Simplified Git Workflow (`--no-auto-commits`) 😌
 
-For users less familiar with advanced Git commands like `git reset`, a simplified workflow is available using the `--no-auto-commits` option. You can set this option via `aider_args` in your `aider.nvim` configuration or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes.
+For users less familiar with Git commands like `git reset`, a simplified workflow is available using the `--no-auto-commits` option. You can set this option via `aider_args` or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes, however, it reduces your ability to view prior changes that were overridden.
 
 #### Visualizing Changes Without Auto-commits 🔍
 
@@ -432,9 +450,14 @@ end
 after_update_hook = function()
   vim.cmd("Telescope git_status")
 end
+
+-- Using fzf-lua to show the diffs:
+after_update_hook = function()
+  vim.cmd("FzfLua git_status")
+end
 ```
 
-These hooks display diffs of Aider's changes alongside other uncommitted modifications in your working directory. After reviewing, commit all changes to accept them, or use `gitsigns` for selective staging, unstaging, or reverting of hunks or files.
+These hooks display diffs of Aider's changes alongside other uncommitted modifications in your working directory. After reviewing, commit all changes to accept them, or use `gitsigns` for selective staging, unstaging, or reverting individual hunks or files.
 
 #### Useful `gitsigns` Mappings 🧑‍💻
 

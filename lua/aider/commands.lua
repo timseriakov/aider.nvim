@@ -111,11 +111,48 @@ function M.setup(opts)
 	})
 
 	vim.api.nvim_create_user_command("AiderLoad", function(opt)
+		vim.notify("Deprecated: AiderLoad is deprecated. Use AiderAdd instead.", vim.log.levels.WARN)
 		local files = opt.fargs
 		if #files == 0 then
 			files = { vim.api.nvim_buf_get_name(0) }
 		end
-		terminal.load_files(files)
+		terminal.add(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
+	vim.api.nvim_create_user_command("AiderAdd", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.add(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
+	vim.api.nvim_create_user_command("AiderReadOnly", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.read_only(files)
+	end, {
+		nargs = "*",
+		desc = "Load files into Aider",
+		complete = "file",
+	})
+
+	vim.api.nvim_create_user_command("AiderDrop", function(opt)
+		local files = opt.fargs
+		if #files == 0 then
+			files = { vim.api.nvim_buf_get_name(0) }
+		end
+		terminal.drop(files)
 	end, {
 		nargs = "*",
 		desc = "Load files into Aider",
