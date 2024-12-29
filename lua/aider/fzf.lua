@@ -46,7 +46,21 @@ function M.setup(config)
 			vim.notify("Deprecated: fzf_action_key is deprecated. Use fzf.add instead.", vim.log.levels.WARN)
 			config.fzf.add = config.fzf_action_key
 		end
+		local function map_str(mapping)
+			return mapping:gsub("ctrl", "C")
+		end
 
+		local header = string.format(
+			"Aider: %s: /add, %s: /drop, %s: /read-only",
+			map_str(config.fzf.add),
+			map_str(config.fzf.drop),
+			map_str(config.fzf.read_only)
+		)
+
+		if section.header then
+			header = header .. " " .. section.header
+		end
+		section.header = header
 		section.actions = section.actions or {}
 		section.actions[config.fzf.add] = M.add
 
