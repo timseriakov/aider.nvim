@@ -267,8 +267,8 @@ call plug#end()
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be: 🧑‍💻
   - `vertical` - Switch to vertical split ↔️
   - `horizontal` - Switch to horizontal split ↕️
-  - `float` - Switch to floating window (default) 🪟
-  - `tab` - Switch to new tab 📑
+  - `float` - Switch to floating window 🪟
+  - `tab` - Switch to new tab 📑 (best for fullscreen toggle)
   - Without a direction argument, it opens in the last specified direction (or the toggleterm specified default). With a direction argument, it will switch the terminal to that layout (even if already open).
 - `:AiderAdd [files...]` - Add files to the Aider session. If no files are specified, the current file is added 📂
   - `:AiderLoad` is deprecated and will be removed in a future version - use `:AiderAdd` instead
@@ -278,7 +278,7 @@ call plug#end()
 
 ## 🤝 FZF-lua Integration
 
-Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file picker. When fzf-lua is installed, you can use `Ctrl-l` in the following fzf-lua pickers to load files into Aider:
+Integrating with fzf-lua allows for quick and efficient loading of files into Aider directly from the fzf-lua file pickers. When fzf-lua is installed, you can use mappings in the following native pickers:
 
 - **Files**: Regular file picker (`:FzfLua files`)
 - **Git Files**: Files tracked by Git (`:FzfLua git_files`)
@@ -287,14 +287,13 @@ Integrating with fzf-lua allows for quick and efficient loading of files into Ai
 - **Git Status**: Modified/untracked files (`:FzfLua git_status`)
 
 Usage:
+
 - Load files: Navigate to files and press `Ctrl-l` to load them into Aider (supports multi-select) 📄
 - Load read-only: Press `Ctrl-r` to load files in read-only mode (supports multi-select) 📄
 - Remove files: Press `Ctrl-z` to remove files from Aider (supports multi-select) 🗑️
 - The files will be automatically added to your current Aider session if one exists, or start a new session if none is active 🧑‍💻
-  - Use `Ctrl-r` to add files in read-only mode and `Ctrl-z` to remove files from the session
   - If `watch_mode` is set (as per the default), the file will be added in the background, otherwise Aider will be brought to the foreground 📂
   - Note: `AiderLoad` is deprecated - use `AiderAdd` instead
-- fzf-lua also supports a select-all behavior, useful for loading all files matching a specific suffix, for example 💯
 
 ## 🔭 Telescope Integration
 
@@ -327,7 +326,7 @@ require('aider').setup({
   after_update_hook = nil,
 
   -- Filters for the `Telescope model_picker`
-  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" },
+  model_picker_search = { "^anthropic/", "^openai/", "^gemini/" "^deepseek/" },
 
   -- Enable the `--watch-files` flag for Aider, enabling automatic startup on valid comment creation
   watch_files = true,
@@ -431,11 +430,11 @@ require('aider').setup({
 
 ### Recommended Git Practices 🧑‍🏫
 
-To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope`. Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Aider experience.
+To get the most out of `aider.nvim`, it's essential to use Git effectively. Git is the primary tool for managing and viewing changes made by Aider. Fortunately, Neovim offers excellent tools for Git integration, including `diffview`, `gitsigns`, and `telescope` (or fzf-lua). Familiarizing yourself with these tools and using them alongside `aider.nvim` will significantly enhance your Neovim Aider experience.
 
 ### Simplified Git Workflow (`--no-auto-commits`) 😌
 
-For users less familiar with advanced Git commands like `git reset`, a simplified workflow is available using the `--no-auto-commits` option. You can set this option via `aider_args` in your `aider.nvim` configuration or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes.
+For users less familiar with Git commands like `git reset`, a simplified workflow is available using the `--no-auto-commits` option. You can set this option via `aider_args` or in the `~/.aider.conf.yml` file. This approach simplifies the Git actions needed to manage Aider's changes, however, it reduces your ability to view prior changes that were overridden.
 
 #### Visualizing Changes Without Auto-commits 🔍
 
@@ -451,9 +450,14 @@ end
 after_update_hook = function()
   vim.cmd("Telescope git_status")
 end
+
+-- Using fzf-lua to show the diffs:
+after_update_hook = function()
+  vim.cmd("FzfLua git_status")
+end
 ```
 
-These hooks display diffs of Aider's changes alongside other uncommitted modifications in your working directory. After reviewing, commit all changes to accept them, or use `gitsigns` for selective staging, unstaging, or reverting of hunks or files.
+These hooks display diffs of Aider's changes alongside other uncommitted modifications in your working directory. After reviewing, commit all changes to accept them, or use `gitsigns` for selective staging, unstaging, or reverting individual hunks or files.
 
 #### Useful `gitsigns` Mappings 🧑‍💻
 
