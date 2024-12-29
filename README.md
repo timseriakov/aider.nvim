@@ -4,26 +4,23 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## ✨ Features
 
-- With the default `--watch-files` option enabled, Aider will:
-  - Automatically start when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written ✍️
-  - Automatically detect `ai`, `ai!`, and `ai?` [comments](https://aider.chat/docs/config/options.html#--watch-files) 🤖
-  - For `ai?` (question) comments, Aider automatically displays the terminal ❓
-  - Files containing AI comments are automatically added to Aider ➕
-- Get live streamed notifications as Aider is processing ⚡️
-- Aider automatically brings the terminal to the foreground when input is required 💬
-- Auto reload all files changed by Aider 🔄
+- Automatically start Aider with `--watch-files` when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written ✍️
+- For `ai?` (question) comments, Aider.nvim automatically shows the terminal ❓
+- Get live streamed notifications as Aider is processing (both a spinner and logs via fidget.nvim) ⚡️
+- Aider.nvim automatically brings the terminal to the foreground when Aider prompts for user confirmation (e.x. asking to scrape a URL) 💬
 - Add configurable hooks to run when Aider finishes updating a file 🪝
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff 🤩
 - Explicitly send commands to Aider using `AiderSend <cmd>` প্রেরণ
-  - Can be used to create custom prompts 🎨
-- Toggle the Aider terminal and switch between background/foreground with various window formats 💻
+  - Can be used to create custom prompts or custom keymaps to any Aider command 🎨
+- Toggle the Aider terminal to different window formats (defaults to vertical split) and background/foreground 💻
 - Load files into the current Aider session 📂
-  - Use fzf-lua or Telescope for file selection (multi-select supported), with multiple file viewer options 🔭
-    - For Telescope, the custom file-loading action is available in `git_files`, `find_files`, `buffers`, and `oldfiles` 📄
-    - For fzf-lua, any file finder following standard file parameter conventions is supported 🔍
+  - For both Telescope and fzf-lua, custom file actions (with multi-select support) are added to `git_files`, `find_files`, `buffers`, and `oldfiles` for 📄
+    - Adding files `/add <selection>`
+    - Adding files for read-only `/read-only <selection>`
+    - Dropping files `/drop <selection>`
   - Use `AiderAdd` without arguments to add the current file (`/add`), or specify file arguments ➕
 - Ask questions about your code, with support for visual selections ❓
-  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt 🙋
+  - `AiderAsk` with a visual selection will prompt you for input and add the selected code to the prompt (with metadata about it's source) 🙋
 - For diff viewing, accepting or rejecting changes: 🔍
   - Optionally, use [diffview](https://github.com/sindrets/diffview.nvim) to automatically display diffs after Aider modifies files (see integration details below) ✅
   - Use [gitsigns](https://github.com/lewis6991/gitsigns.nvim) to stage/view/undo/navigate hunks 🧑‍💻
