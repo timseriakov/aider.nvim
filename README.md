@@ -64,8 +64,6 @@ return {
       -- Optional but will show aider spinner whenever active
       "folke/snacks.nvim"
 
-      -- Optional but great option for viewing Aider output
-      "j-hui/fidget.nvim",
 
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
@@ -179,8 +177,6 @@ require('packer').startup(function(use)
       -- Optional but will show aider spinner whenever active
       "folke/snacks.nvim"
 
-      -- Optional but great option for viewing Aider output
-      "j-hui/fidget.nvim",
 
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
@@ -336,8 +332,8 @@ require('aider').setup({
     -- * fancy: similar to the default nvim-notify style
   },
 
-  -- Display Aider's logs in the right corner using `fidget.nvim`
-  log_notifier = true,
+  -- Display Aider's logs in the right corner using `fidget.nvim` (requires fidget.nvim)
+  log_notifier = false,
 
   -- code theme to use for markdown blocks when in dark mode
   code_theme_dark = "monokai",
