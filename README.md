@@ -6,7 +6,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 - Automatically start Aider with `--watch-files` when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written ✍️
 - For `ai?` (question) comments, Aider.nvim automatically shows the terminal ❓
-- Get live streamed notifications as Aider is processing (both a spinner and logs via fidget.nvim) ⚡️
+- Get live streamed notifications as Aider is processing (both a spinner and logs) ⚡️
 - Aider.nvim automatically brings the terminal to the foreground when Aider prompts for user confirmation (e.x. asking to scrape a URL) 💬
 - Add configurable hooks to run when Aider finishes updating a file 🪝
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff 🤩
@@ -37,7 +37,6 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - [akinsho/toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) is required for terminal management 🧑‍💻
 - [diffview](https://github.com/sindrets/diffview.nvim) is optional but highly recommended for visualizing, reverting, or undoing Aider's changes 🔍
 - [snacks](https://github.com/folke/snacks.nvim) is optional but displays a spinner while Aider is active 🔄
-- [fidget](https://github.com/j-hui/fidget.nvim) is optional but provides non-intrusive notifications for Aider's logs 🔔
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua) or [Telescope](https://github.com/nvim-telescope/telescope.nvim) are optional but enhance file selection 🔍
 - [willothy/flatten.nvim](https://github.com/willothy/flatten.nvim) (only if you want to use `/editor` command) 🧑‍💻
 
@@ -62,8 +61,7 @@ return {
       "sindrets/diffview.nvim",
 
       -- Optional but will show aider spinner whenever active
-      "folke/snacks.nvim"
-
+      "folke/snacks.nvim",
 
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
@@ -175,8 +173,7 @@ require('packer').startup(function(use)
       "sindrets/diffview.nvim",
 
       -- Optional but will show aider spinner whenever active
-      "folke/snacks.nvim"
-
+      "folke/snacks.nvim",
 
       -- Only if you care about using the /editor command
       "willothy/flatten.nvim",
@@ -221,7 +218,6 @@ Plug 'aweis89/aider.nvim'
 Plug 'akinsho/toggleterm.nvim'
 Plug 'nvim-telescope/telescope.nvim' -- for fuzzy file `/add`ing functionality
 Plug 'sindrets/diffview.nvim' -- Optional, but great for diff viewing
-Plug 'j-hui/fidget.nvim' -- Optional but great option for viewing Aider output
 Plug 'folke/snacks.nvim' -- Optional but will show aider spinner whenever active
 Plug 'willothy/flatten.nvim' -- Only if you care about using /editor command
 
@@ -332,7 +328,7 @@ require('aider').setup({
     -- * fancy: similar to the default nvim-notify style
   },
 
-  -- Display Aider's logs in the right corner using `fidget.nvim` (requires fidget.nvim)
+  -- Display Aider's logs using fidget.nvim (requires fidget.nvim)
   log_notifier = false,
 
   -- code theme to use for markdown blocks when in dark mode
