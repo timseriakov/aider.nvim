@@ -34,11 +34,9 @@
 ---@field auto_show table
 ---@field telescope FuzzyFinderMappings
 ---@field fzf FuzzyFinderMappings
+---@field test_command string|nil
 
 local M = {}
-
--- Table to store temporary file names
-vim.g.aider_temp_files = {}
 
 ---Default configuration values
 ---@type AiderConfig
@@ -176,6 +174,8 @@ M.defaults = {
     vim.opt.wrap = true
     vim.opt.showbreak = ""
   end,
+
+  test_command = nil,
 
   -- enable tmux mode (highly experimental!)
   use_tmux = false,
