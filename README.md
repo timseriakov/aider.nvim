@@ -30,6 +30,11 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Integration with tokyonight and catppuccin themes 🌈
 - **NEW:** Integration with gruvbox theme, with matching themes for code-blocks as well (which is unavailable with other supported themes) 🌈
 
+## 🆕 What's New
+
+- Added full theme support for gruvbox when using [isonleao/gruvbox.nvim](https://github.com/isonleao/gruvbox.nvim), including matching code-block themes 🌈
+- Defaulted `log_notifier` to `false` for a cleaner notification system that relies on the snacks progress spinner ⚡️
+
 ## 🛠️ Prerequisites
 
 - Neovim 0.5+
