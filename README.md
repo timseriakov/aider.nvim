@@ -32,6 +32,9 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## 🆕 What's New
 
+- Use `AiderFixDiagnostics` to send neovim diagnostics to Aider for fixing 🛠️
+  - This typically includes both LSP and linting diagnostics
+  - Additionally other plugins often integrate with neovim's diagnostics, so this can be a powerful tool for fixing issues in your codebase. For example [Neotest](https://github.com/nvim-neotest/neotest) has an option `neotest.diagnostic = true` which adds failing tests to diagnostics, which can then be sent to Aider for fixing using this command 💡
 - Added full theme support for gruvbox when using [isonleao/gruvbox.nvim](https://github.com/isonleao/gruvbox.nvim), including matching code-block themes 🌈
 - Defaulted `log_notifier` to `false` for a cleaner notification system that relies on the snacks progress spinner ⚡️
 
@@ -269,6 +272,7 @@ call plug#end()
 - `:AiderReadOnly [files...]` - Add files to the Aider session in read-only mode. If no files are specified, the current file is added 📂
 - `:AiderAsk [prompt]` - Ask a question using the `/ask` command. Without a prompt, an input popup will appear. In visual mode, the selected text is added to the prompt 🙋
 - `:AiderSend [command]` - Send a command to Aider. In visual mode, the selected text is added to the command 📨
+- `:AiderFixDiagnostics` Send neovim diagnostics to Aider for fixing. Either visual mode to send diagnostics for the selected text, or normal mode to send all of current files diagnostics
 
 ## 🤝 FZF-lua Integration
 
