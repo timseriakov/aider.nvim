@@ -1,7 +1,7 @@
 local terminal = require("aider.terminal")
 local selection = require("aider.selection")
 local config = require("aider").config
-local utils = require("aider.utils")
+local comments = require("aider.comments")
 
 local M = {}
 
@@ -12,7 +12,7 @@ local function handle_ai_comments()
     pattern = "*",
     callback = function()
       local bufnr = vim.fn.bufnr("%")
-      local matches = utils.get_comment_matches(bufnr)
+      local matches = comments.buf_comment_matches(bufnr)
 
       if matches.any then
         local path = vim.api.nvim_buf_get_name(bufnr)
