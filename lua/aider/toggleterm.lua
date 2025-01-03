@@ -49,7 +49,6 @@ function M.terminal()
     env = aider.env(),
     display_name = "Aider.nvim",
     close_on_exit = true,
-    auto_scroll = config.auto_scroll,
     direction = config.win.direction,
     size = config.win.size,
     float_opts = config.win.float_opts,

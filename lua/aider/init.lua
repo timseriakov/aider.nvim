@@ -23,7 +23,6 @@
 ---@field model_picker_search table
 ---@field on_term_open function|nil
 ---@field restart_on_chdir boolean
----@field auto_scroll boolean
 ---@field theme table|nil
 ---@field code_theme_dark string
 ---@field code_theme_light string
@@ -123,9 +122,6 @@ M.defaults = {
   dark_mode = function()
     return vim.o.background == "dark"
   end,
-
-  -- auto scroll terminal on output
-  auto_scroll = false,
 
   -- window layout settings
   win = {
