@@ -60,6 +60,50 @@ function M.truncate_message(msg, max_length)
   return msg
 end
 
+local function remove_comment_chars(comment)
+  return comment:gsub("^%s*([%-%-/%#]+%s*)", "")
+end
+
+-- ai! create table tests for this function
+---@param comments table|nil
+---@return table<string, boolean>
+local function comment_matches(comments)
+  local matches = {
+    any = false,
+    ["ai?"] = false,
+    ["ai!"] = false,
+    ["ai"] = false,
+  }
+
+  if not comments then
+    return matches
+  end
+
+  for _, comment in ipairs(comments) do
+    local lowered = comment:lower()
+
+    if lowered:match("^%s*ai%?%s*$") then                                    -- Matches "ai?" exactly or with leading/trailing spaces
+      matches["ai?"] = true
+    elseif lowered:match("^%s*ai!%s*$") then                                 -- Matches "ai!" exactly or with leading/trailing spaces
+      matches["ai!"] = true
+    elseif lowered:match("^%s*ai%s*$") then                                  -- Matches "ai" exactly or with leading/trailing spaces
+      matches["ai"] = true
+    elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then -- Starts or ends with "ai?"
+      matches["ai?"] = true
+    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then   -- Starts or ends with "ai!"
+      matches["ai!"] = true
+    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then     -- Starts or ends with "ai"
+      matches["ai"] = true
+    end
+  end
+  for _, v in pairs(matches) do
+    if v then
+      matches.any = true
+    end
+  end
+  return matches
+end
+
 --- Get code comment text from a buffer
 ---@param bufnr
 ---@return nil|string[]
@@ -100,7 +144,7 @@ function M.get_comments(bufnr)
       for i, line in ipairs(lines) do
         if i == 1 then
           -- Find and remove the comment delimiter only on the first line
-          line = line:gsub("^%s*([%-%-/%#]+%s*)", "")
+          line = remove_comment_chars(line)
         end
         -- Trim leading and trailing whitespace
         line = line:match("^%s*(.-)%s*$")
@@ -117,41 +161,9 @@ end
 
 ---@param bufnr
 ---@return table<string, boolean>
-function M.get_comment_matches(bufnr)
-  local matches = {
-    any = false,
-    ["ai?"] = false,
-    ["ai!"] = false,
-    ["ai"] = false,
-  }
-
+function M.buf_comment_matches(bufnr)
   local comments = M.get_comments(bufnr)
-  if not comments then
-    return matches
-  end
-  for _, comment in ipairs(comments) do
-    local lowered = comment:lower()
-
-    if lowered:match("^%s*ai%?%s*$") then                                    -- Matches "ai?" exactly or with leading/trailing spaces
-      matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s*$") then                                 -- Matches "ai!" exactly or with leading/trailing spaces
-      matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s*$") then                                  -- Matches "ai" exactly or with leading/trailing spaces
-      matches["ai"] = true
-    elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then -- Starts or ends with "ai?"
-      matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then   -- Starts or ends with "ai!"
-      matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then     -- Starts or ends with "ai"
-      matches["ai"] = true
-    end
-  end
-  for _, v in pairs(matches) do
-    if v then
-      matches.any = true
-    end
-  end
-  return matches
+  return comment_matches(comments)
 end
 
 return M
