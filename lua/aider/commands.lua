@@ -195,6 +195,29 @@ function M.setup(opts)
     desc = "Clear all Aider terminals",
   })
 
+  vim.api.nvim_create_user_command("AiderFixDiagnostics", function(opt)
+    local diagnostics = {}
+    if opt.range > 0 then
+      for line = opt.line1 - 1, opt.line2 - 1 do -- Convert to 0-based indexing
+        local line_diags = vim.diagnostic.get(0, { lnum = line })
+        vim.list_extend(diagnostics, line_diags)
+      end
+    else
+      diagnostics = vim.diagnostic.get(0)
+    end
+
+    local file = vim.api.nvim_buf_get_name(0)
+    terminal.add({ file })
+
+    local aider_diag = require("aider.diagnostics")
+    local formatted = aider_diag.format(diagnostics)
+    local command = string.format("Fix these diagnostics:\nFile: %q:\n%s", file, table.concat(formatted, "\n"))
+    terminal.send_command(command)
+  end, {
+    desc = "Fix diagnostics",
+    range = true,
+  })
+
   if opts.restart_on_chdir then
     vim.api.nvim_create_autocmd("DirChanged", {
       pattern = "*",

@@ -11,6 +11,14 @@ function M.dark_mode()
   return false
 end
 
+function M.env()
+  local env = {
+    AIDER_EDITOR = config.editor_command,
+    GIT_PAGER = config.git_pager,
+  }
+  return env
+end
+
 function M.command()
   local cmd = { "aider" }
 
@@ -37,14 +45,23 @@ function M.command()
     end
   end
 
-  local hook_command = "/bin/sh -c "
+  local test_command = "/bin/sh -c "
       .. '"'
-      .. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderUpdateHook()<CR>\\"'
-      .. '"'
+      .. 'nvim --server $NVIM --remote-send \\"<C-\\\\><C-n>:lua _G.AiderTestCmd()<CR>\\"'
+
+  if config.test_command then
+    test_command = test_command .. " && " .. config.test_command
+  end
+  test_command = test_command .. '"'
 
   table.insert(cmd, "--auto-test")
   table.insert(cmd, "--test-cmd")
-  table.insert(cmd, "'" .. hook_command .. "'")
+  table.insert(cmd, "'" .. test_command .. "'")
+
+  if config.test_command then
+    test_command = test_command .. " && " .. config.test_command
+  end
+  test_command = test_command .. '"'
 
   if config.watch_files then
     table.insert(cmd, "--watch-files")
@@ -60,7 +77,7 @@ function M.command()
   return table.concat(cmd, " ")
 end
 
-_G.AiderUpdateHook = function()
+_G.AiderTestCmd = function()
   vim.notify("File updated by AI!", vim.log.levels.INFO)
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == "" then
