@@ -1,143 +1,153 @@
 local M = require("aider.utils")
 
 describe("comment_matches", function()
-  it("should handle nil comments", function()
-    local result = M.comment_matches(nil)
-    assert.same({
-      any = false,
-      ["ai?"] = false,
-      ["ai!"] = false,
-      ["ai"] = false
-    }, result)
-  end)
+  local test_cases = {
+    {
+      desc = "should handle nil comments",
+      input = nil,
+      expected = {
+        any = false,
+        ["ai?"] = false,
+        ["ai!"] = false,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect exact ai? match",
+      input = { "ai?" },
+      expected = {
+        any = true,
+        ["ai?"] = true,
+        ["ai!"] = false,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect exact ai! match",
+      input = { "ai!" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = true,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect exact ai match",
+      input = { "ai" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = false,
+        ["ai"] = true
+      }
+    },
+    {
+      desc = "should detect ai? with spaces",
+      input = { "  ai?  " },
+      expected = {
+        any = true,
+        ["ai?"] = true,
+        ["ai!"] = false,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai! with spaces",
+      input = { "  ai!  " },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = true,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai with spaces",
+      input = { "  ai  " },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = false,
+        ["ai"] = true
+      }
+    },
+    {
+      desc = "should detect ai? at start of comment",
+      input = { "ai? some text" },
+      expected = {
+        any = true,
+        ["ai?"] = true,
+        ["ai!"] = false,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai! at start of comment",
+      input = { "ai! some text" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = true,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai at start of comment",
+      input = { "ai some text" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = false,
+        ["ai"] = true
+      }
+    },
+    {
+      desc = "should detect ai? at end of comment",
+      input = { "some text ai?" },
+      expected = {
+        any = true,
+        ["ai?"] = true,
+        ["ai!"] = false,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai! at end of comment",
+      input = { "some text ai!" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = true,
+        ["ai"] = false
+      }
+    },
+    {
+      desc = "should detect ai at end of comment",
+      input = { "some text ai" },
+      expected = {
+        any = true,
+        ["ai?"] = false,
+        ["ai!"] = false,
+        ["ai"] = true
+      }
+    },
+    {
+      desc = "should handle multiple comments",
+      input = { "ai?", "some text ai!", "ai" },
+      expected = {
+        any = true,
+        ["ai?"] = true,
+        ["ai!"] = true,
+        ["ai"] = true
+      }
+    }
+  }
 
-  it("should detect exact ai? match", function()
-    local result = M.comment_matches({ "ai?" })
-    assert.same({
-      any = true,
-      ["ai?"] = true,
-      ["ai!"] = false,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect exact ai! match", function()
-    local result = M.comment_matches({ "ai!" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = true,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect exact ai match", function()
-    local result = M.comment_matches({ "ai" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = false,
-      ["ai"] = true
-    }, result)
-  end)
-
-  it("should detect ai? with spaces", function()
-    local result = M.comment_matches({ "  ai?  " })
-    assert.same({
-      any = true,
-      ["ai?"] = true,
-      ["ai!"] = false,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai! with spaces", function()
-    local result = M.comment_matches({ "  ai!  " })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = true,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai with spaces", function()
-    local result = M.comment_matches({ "  ai  " })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = false,
-      ["ai"] = true
-    }, result)
-  end)
-
-  it("should detect ai? at start of comment", function()
-    local result = M.comment_matches({ "ai? some text" })
-    assert.same({
-      any = true,
-      ["ai?"] = true,
-      ["ai!"] = false,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai! at start of comment", function()
-    local result = M.comment_matches({ "ai! some text" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = true,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai at start of comment", function()
-    local result = M.comment_matches({ "ai some text" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = false,
-      ["ai"] = true
-    }, result)
-  end)
-
-  it("should detect ai? at end of comment", function()
-    local result = M.comment_matches({ "some text ai?" })
-    assert.same({
-      any = true,
-      ["ai?"] = true,
-      ["ai!"] = false,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai! at end of comment", function()
-    local result = M.comment_matches({ "some text ai!" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = true,
-      ["ai"] = false
-    }, result)
-  end)
-
-  it("should detect ai at end of comment", function()
-    local result = M.comment_matches({ "some text ai" })
-    assert.same({
-      any = true,
-      ["ai?"] = false,
-      ["ai!"] = false,
-      ["ai"] = true
-    }, result)
-  end)
-
-  it("should handle multiple comments", function()
-    local result = M.comment_matches({ "ai?", "some text ai!", "ai" })
-    assert.same({
-      any = true,
-      ["ai?"] = true,
-      ["ai!"] = true,
-      ["ai"] = true
-    }, result)
-  end)
+  for _, case in ipairs(test_cases) do
+    it(case.desc, function()
+      local result = M.comment_matches(case.input)
+      assert.same(case.expected, result)
+    end)
+  end
 end)
