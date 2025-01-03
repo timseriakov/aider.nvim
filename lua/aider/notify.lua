@@ -35,7 +35,7 @@ local function progress_notifier()
     vim.notify("snacks.nvim is required for progress notifications", vim.log.levels.WARN)
   end
   local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-  local msg = "Aider Processing Request ..."
+  local msg = "Aider Active ..."
   snotifier.notify(msg, "info", {
     id = "aider_progress",
     title = "Aider",
