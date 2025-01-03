@@ -235,6 +235,7 @@ function M.setup(opts)
   vim.api.nvim_create_autocmd("TermOpen", {
     pattern = "term://*toggleterm*",
     callback = function()
+      vim.opt.list = false
       if opts.on_term_open then
         opts.on_term_open()
       end
@@ -249,10 +250,10 @@ function M.setup(opts)
   vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "term://*toggleterm*",
     callback = function()
+      vim.opt.list = false
       if opts.auto_insert then
         vim.cmd("startinsert")
       end
-      vim.opt.list = false
     end,
   })
 
