@@ -12,7 +12,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect exact ai? match", function()
-    local result = M.comment_matches({"ai?"})
+    local result = M.comment_matches({ "ai?" })
     assert.same({
       any = true,
       ["ai?"] = true,
@@ -22,7 +22,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect exact ai! match", function()
-    local result = M.comment_matches({"ai!"})
+    local result = M.comment_matches({ "ai!" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -32,7 +32,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect exact ai match", function()
-    local result = M.comment_matches({"ai"})
+    local result = M.comment_matches({ "ai" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -42,7 +42,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai? with spaces", function()
-    local result = M.comment_matches({"  ai?  "})
+    local result = M.comment_matches({ "  ai?  " })
     assert.same({
       any = true,
       ["ai?"] = true,
@@ -52,7 +52,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai! with spaces", function()
-    local result = M.comment_matches({"  ai!  "})
+    local result = M.comment_matches({ "  ai!  " })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -62,7 +62,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai with spaces", function()
-    local result = M.comment_matches({"  ai  "})
+    local result = M.comment_matches({ "  ai  " })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -72,7 +72,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai? at start of comment", function()
-    local result = M.comment_matches({"ai? some text"})
+    local result = M.comment_matches({ "ai? some text" })
     assert.same({
       any = true,
       ["ai?"] = true,
@@ -82,7 +82,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai! at start of comment", function()
-    local result = M.comment_matches({"ai! some text"})
+    local result = M.comment_matches({ "ai! some text" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -92,7 +92,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai at start of comment", function()
-    local result = M.comment_matches({"ai some text"})
+    local result = M.comment_matches({ "ai some text" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -102,7 +102,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai? at end of comment", function()
-    local result = M.comment_matches({"some text ai?"})
+    local result = M.comment_matches({ "some text ai?" })
     assert.same({
       any = true,
       ["ai?"] = true,
@@ -112,7 +112,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai! at end of comment", function()
-    local result = M.comment_matches({"some text ai!"})
+    local result = M.comment_matches({ "some text ai!" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -122,7 +122,7 @@ describe("comment_matches", function()
   end)
 
   it("should detect ai at end of comment", function()
-    local result = M.comment_matches({"some text ai"})
+    local result = M.comment_matches({ "some text ai" })
     assert.same({
       any = true,
       ["ai?"] = false,
@@ -132,7 +132,7 @@ describe("comment_matches", function()
   end)
 
   it("should handle multiple comments", function()
-    local result = M.comment_matches({"ai?", "some text ai!", "ai"})
+    local result = M.comment_matches({ "ai?", "some text ai!", "ai" })
     assert.same({
       any = true,
       ["ai?"] = true,
