@@ -78,6 +78,8 @@ local function handle_aider_ask(opt)
       vim.notify("Failed to get visual selection", vim.log.levels.ERROR)
       return
     end
+    local filepath = vim.api.nvim_buf_get_name(0)
+    terminal.add({ filepath })
     terminal.ask(input, selected)
   end
 
