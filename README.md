@@ -27,8 +27,9 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 - Supports switching between different Git repositories, maintaining context for each 🔀
 - Use the Telescope model picker (`:Telescope model_picker`) to select different AI models 🔭
   - Use `model_picker_search = { "^anthropic/", "^openai/" }` to specify which models to look for 🔎
-- Integration with tokyonight and catppuccin themes 🌈
-- **NEW:** Integration with gruvbox theme, with matching themes for code-blocks as well (which is unavailable with other supported themes) 🌈
+- Theme support
+  - For best theme support (inluding markdown code in Aider) use [isonleao/gruvbox.nvim](https://github.com/isonleao/gruvbox.nvim)
+  - Also supports tokyonight and catppuccin themes (albeit without matching themes for markdown code blocks)
 
 ## 🆕 What's New
 
