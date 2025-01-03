@@ -64,7 +64,6 @@ local function remove_comment_chars(comment)
   return comment:gsub("^%s*([%-%-/%#]+%s*)", "")
 end
 
--- ai! create table tests for this function
 ---@param comments table|nil
 ---@return table<string, boolean>
 local function comment_matches(comments)
