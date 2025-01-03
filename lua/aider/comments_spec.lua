@@ -1,5 +1,52 @@
 local M = require("aider.comments")
 
+describe("remove_comment_chars", function()
+  local test_cases = {
+    {
+      desc = "should remove leading comment chars and spaces",
+      input = "  -- comment",
+      expected = "comment"
+    },
+    {
+      desc = "should remove leading comment chars without spaces",
+      input = "--comment",
+      expected = "comment"
+    },
+    {
+      desc = "should handle hash comments",
+      input = "# comment",
+      expected = "comment"
+    },
+    {
+      desc = "should handle slash comments",
+      input = "// comment",
+      expected = "comment"
+    },
+    {
+      desc = "should handle multiple comment chars",
+      input = "//// comment",
+      expected = "comment"
+    },
+    {
+      desc = "should handle empty string",
+      input = "",
+      expected = ""
+    },
+    {
+      desc = "should handle only comment chars",
+      input = "//--#",
+      expected = ""
+    }
+  }
+
+  for _, case in ipairs(test_cases) do
+    it(case.desc, function()
+      local result = M.remove_comment_chars(case.input)
+      assert.same(case.expected, result)
+    end)
+  end
+end)
+
 describe("comment_matches", function()
   local test_cases = {
     {

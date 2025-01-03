@@ -1,6 +1,5 @@
 local M = {}
 
--- add tests for this function as well ai!
 function M.remove_comment_chars(comment)
   return comment:gsub("^%s*([%-%-/%#]+%s*)", "")
 end
