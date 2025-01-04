@@ -52,6 +52,7 @@ function M.terminal()
     direction = config.win.direction,
     size = config.win.size,
     float_opts = config.win.float_opts,
+    auto_scroll = false,
     ---@param term Terminal
     on_open = function(term)
       vim.api.nvim_buf_call(term.bufnr, function()
