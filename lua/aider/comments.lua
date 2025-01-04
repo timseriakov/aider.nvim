@@ -72,7 +72,6 @@ function M.get_comments(bufnr)
   local tree = parser:parse()[1]
   local filetype = vim.bo[bufnr].filetype
   if not tree or not filetype then
-    vim.notify("getting regex comments " .. bufnr, vim.log.levels.DEBUG)
     return M.get_comments_regex(bufnr)
   end
   local query_string = [[
@@ -80,7 +79,6 @@ function M.get_comments(bufnr)
 ]]
   local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
   if not ok then
-    vim.notify("getting regex comments b " .. bufnr, vim.log.levels.DEBUG)
     return M.get_comments_regex(bufnr)
   end
   local comments = {}
