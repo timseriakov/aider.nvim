@@ -62,7 +62,7 @@ function M.get_comments_regex(bufnr)
 end
 
 --- Get code comment text from a buffer
----@param bufnr
+---@param bufnr integer
 ---@return nil|string[]
 function M.get_comments(bufnr)
   local success, parser = pcall(vim.treesitter.get_parser, bufnr)
