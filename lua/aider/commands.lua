@@ -11,6 +11,21 @@ local function handle_ai_comments()
     group = "ReadCommentsTSTree",
     pattern = "*",
     callback = function()
+      if terminal.is_running() then
+        if terminal.is_open() then
+          return
+        end
+        local autoshow_any = false
+        for _, value in ipairs(config.auto_show) do
+          if value == true then
+            autoshow_any = true
+          end
+        end
+        if not autoshow_any then
+          return
+        end
+      end
+
       local bufnr = vim.fn.bufnr("%")
       local matches = comments.buf_comment_matches(bufnr)
 
