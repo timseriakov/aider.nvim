@@ -153,23 +153,7 @@ M.defaults = {
   git_pager = "cat",
 
   -- function to run (e.x. for term mappings) when terminal is opened
-  on_term_open = function()
-    local function tmap(key, val)
-      local opt = { buffer = 0 }
-      vim.keymap.set("t", key, val, opt)
-    end
-    -- exit insert mode
-    tmap("<Esc>", "<C-\\><C-n>")
-    tmap("jj", "<C-\\><C-n>")
-    -- enter command mode
-    tmap(":", "<C-\\><C-n>:")
-    -- scrolling up/down
-    tmap("<C-u>", "<C-\\><C-n><C-u>")
-    tmap("<C-d>", "<C-\\><C-n><C-d>")
-    vim.opt.number = false
-    vim.opt.wrap = true
-    vim.opt.showbreak = ""
-  end,
+  on_term_open = nil,
 
   test_command = nil,
 

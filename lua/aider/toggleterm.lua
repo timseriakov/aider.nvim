@@ -52,8 +52,16 @@ function M.terminal()
     direction = config.win.direction,
     size = config.win.size,
     float_opts = config.win.float_opts,
+    auto_scroll = false,
+    ---@param term Terminal
     on_open = function(term)
-      term:scroll_bottom()
+      vim.api.nvim_buf_call(term.bufnr, function()
+        vim.opt.number = false
+        vim.opt.wrap = true
+        vim.opt.showbreak = ""
+        vim.opt.list = false
+        term:scroll_bottom()
+      end)
     end,
     on_exit = function()
       M.__term[cwd] = nil
