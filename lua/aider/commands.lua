@@ -235,19 +235,18 @@ function M.setup(opts)
     range = true,
   })
 
-  if opts.restart_on_chdir then
-    vim.api.nvim_create_autocmd("DirChanged", {
-      pattern = "*",
-      callback = function()
-        -- restart terminal
-        vim.notify("Restarting terminal..")
-        if terminal.is_running() then
+  vim.api.nvim_create_autocmd("DirChanged", {
+    pattern = "*",
+    callback = function()
+      if terminal.is_running() then
+        if opts.restart_on_chdir then
           terminal.clear()
-          terminal.spawn()
+        else
+          terminal.close()
         end
-      end,
-    })
-  end
+      end
+    end,
+  })
 
   vim.api.nvim_create_autocmd("TermOpen", {
     pattern = "term://*toggleterm*",
