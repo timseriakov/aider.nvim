@@ -235,13 +235,23 @@ function M.setup(opts)
     range = true,
   })
 
-  -- ai? how can we check if the direcotry is changed to another git repository?
+  local function get_git_root()
+    local dot_git = vim.fn.finddir(".git", ".;")
+    return dot_git ~= "" and vim.fn.fnamemodify(dot_git, ":h") or nil
+  end
+
+  local last_git_root = get_git_root()
+
   vim.api.nvim_create_autocmd("DirChanged", {
     pattern = "*",
     callback = function()
       if terminal.is_running() then
-        if opts.restart_on_chdir then
-          terminal.clear()
+        local current_git_root = get_git_root()
+        if current_git_root ~= last_git_root then
+          if opts.restart_on_chdir then
+            terminal.clear()
+          end
+          last_git_root = current_git_root
         end
       end
     end,
