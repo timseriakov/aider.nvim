@@ -241,8 +241,6 @@ function M.setup(opts)
       if terminal.is_running() then
         if opts.restart_on_chdir then
           terminal.clear()
-        else
-          terminal.close()
         end
       end
     end,
