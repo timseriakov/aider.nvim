@@ -235,6 +235,7 @@ function M.setup(opts)
     range = true,
   })
 
+  -- ai? how can we check if the direcotry is changed to another git repository?
   vim.api.nvim_create_autocmd("DirChanged", {
     pattern = "*",
     callback = function()
@@ -246,27 +247,20 @@ function M.setup(opts)
     end,
   })
 
-  vim.api.nvim_create_autocmd("TermOpen", {
+  vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     pattern = "term://*toggleterm*",
     callback = function()
       vim.opt.list = false
       if opts.on_term_open then
         opts.on_term_open()
       end
+      if opts.auto_insert then
+        vim.cmd("startinsert")
+      end
       if config.win.direction == "vertical" or config.win.direction == "float" then
         vim.defer_fn(function()
           vim.cmd("vertical resize +3")
         end, 2000)
-      end
-    end,
-  })
-
-  vim.api.nvim_create_autocmd("BufEnter", {
-    pattern = "term://*toggleterm*",
-    callback = function()
-      vim.opt.list = false
-      if opts.auto_insert then
-        vim.cmd("startinsert")
       end
     end,
   })
