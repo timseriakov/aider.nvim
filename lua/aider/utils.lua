@@ -47,11 +47,14 @@ function M.clean_output(line)
   return line
 end
 
--- this is returning a relative path when in a git dir e.x. ".", make it return the absolute path ai!
 ---@return string|nil
 function M.get_git_root()
   local dot_git = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
-  return dot_git ~= "" and vim.fn.fnamemodify(dot_git, ":h") or nil
+  if dot_git == "" then
+    return nil
+  end
+  local relative_root = vim.fn.fnamemodify(dot_git, ":h")
+  return vim.fn.fnamemodify(relative_root, ":p")
 end
 
 ---@return string
