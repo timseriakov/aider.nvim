@@ -47,9 +47,16 @@ function M.clean_output(line)
   return line
 end
 
+-- what does this return ai?
+---@return string|nil
+function M.get_git_root()
+  local dot_git = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
+  return dot_git ~= "" and vim.fn.fnamemodify(dot_git, ":h") or nil
+end
+
 ---@return string
 function M.cwd()
-  return vim.fn.getcwd(-1, -1)
+  return M.get_git_root() or vim.fn.getcwd()
 end
 
 ---@return string
