@@ -47,7 +47,7 @@ function M.clean_output(line)
   return line
 end
 
--- what does this return ai?
+-- this is returning a relative path when in a git dir e.x. ".", make it return the absolute path ai!
 ---@return string|nil
 function M.get_git_root()
   local dot_git = vim.fn.finddir(".git", vim.fn.getcwd() .. ";")
