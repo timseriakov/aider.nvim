@@ -4,7 +4,8 @@ local utils = require("aider.utils")
 local notify = require("aider.notify")
 local aider = require("aider.aider")
 
--- add type annotations here ai!
+---@class AiderTerminal
+---@field __term table<string, Terminal> Map of CWD to Terminal instances
 local M = {
   __term = {},
 }
