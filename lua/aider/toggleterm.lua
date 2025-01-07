@@ -4,6 +4,7 @@ local utils = require("aider.utils")
 local notify = require("aider.notify")
 local aider = require("aider.aider")
 
+-- add type annotations here ai!
 local M = {
   __term = {},
 }
@@ -22,12 +23,18 @@ function M.clear()
 end
 
 function M.clear_all()
-  for _, term in pairs(M.__term) do
+  for _, term in ipairs(M.__term) do
     if term then
       term:close()
     end
   end
   M.__term = {}
+end
+
+function M.close_all()
+  for _, term in ipairs(M.__term) do
+    term:close()
+  end
 end
 
 function M.is_open()
@@ -148,8 +155,10 @@ end
 --- @param command string The command to send to the Aider session
 function M.send_command(command)
   local term = M.terminal()
-  local multi_line_command = string.format("{EOF\n%s\nEOF}", command)
-  term:send(multi_line_command)
+  local cmd_start = "\28[200~"
+  local cmd_end = "\28[201~\r"
+  command = cmd_start .. command .. cmd_end
+  term:send(command)
 end
 
 --- Send an AI query to the Aider session
