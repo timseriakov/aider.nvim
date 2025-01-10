@@ -5,14 +5,13 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 ## ✨ Features
 
 - Automatically start Aider with `--watch-files` when valid [comments](https://aider.chat/docs/config/options.html#--watch-files) are written
-- For `ai?` (question) comments, Aider.nvim automatically shows the terminal
-- Get live streamed notifications as Aider is processing (both a spinner and logs)
+- For `ai?` (question) comments, Aider.nvim automatically shows the terminal, otherwise a spinner will be shown to idicate Aider activity (configurable).
 - Aider.nvim automatically brings the terminal to the foreground when Aider prompts for user confirmation (e.x. asking to scrape a URL)
 - Add configurable hooks to run when Aider finishes updating a file
   - For example, you can use [diffview](https://github.com/sindrets/diffview.nvim) to always show a gorgeous diff
 - Explicitly send commands to Aider using `AiderSend <cmd>`
   - Can be used to create custom prompts or custom keymaps to any Aider command
-- Toggle the Aider terminal to different window formats (defaults to vertical split) and background/foreground
+- Toggle the Aider terminal to different window formats (defaults to vertical split)
 - Load files into the current Aider session
   - For both Telescope and fzf-lua, custom file actions (with multi-select support) are added to `git_files`, `find_files`, `buffers`, and `oldfiles` for
     - Adding files `/add <selection>`
