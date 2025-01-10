@@ -23,8 +23,12 @@ function M.command()
   local cmd = { "aider" }
 
   if config.aider_args then
-    for _, arg in ipairs(config.aider_args) do
-      table.insert(cmd, arg)
+    if type(config.aider_args) == "table" then
+      for _, arg in ipairs(config.aider_args) do
+        table.insert(cmd, arg)
+      end
+    else
+      vim.notify("config.aider_args must be a table", vim.log.levels.ERROR)
     end
   end
 
