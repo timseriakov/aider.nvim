@@ -68,11 +68,11 @@ local function log_notifier(line)
 end
 
 function M.on_stdout(terminal, data)
-  for _, line in ipairs(data) do
-    if terminal.is_open() then
-      return
-    end
+  if terminal.is_open() then
+    return
+  end
 
+  for _, line in ipairs(data) do
     if line:match(CONSTANTS.YES_NO_PATTERN) then
       terminal.toggle_window()
       return

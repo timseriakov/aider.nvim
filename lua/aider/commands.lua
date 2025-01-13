@@ -267,11 +267,6 @@ function M.setup(opts)
       if opts.auto_insert then
         vim.cmd("startinsert")
       end
-      if config.win.direction == "vertical" or config.win.direction == "float" then
-        vim.defer_fn(function()
-          vim.cmd("vertical resize +3")
-        end, 2000)
-      end
     end,
   })
 
