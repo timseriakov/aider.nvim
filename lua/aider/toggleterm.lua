@@ -156,9 +156,11 @@ end
 --- @param command string The command to send to the Aider session
 function M.send_command(command)
   local term = M.terminal()
-  local cmd_start = "\28[200~"
-  local cmd_end = "\28[201~\r"
-  command = cmd_start .. command .. cmd_end
+  if string.find(command, "\n") then
+    local cmd_start = "{EOL"
+    local cmd_end = "EOL}"
+    command = cmd_start .. command .. cmd_end
+  end
   term:send(command)
 end
 
