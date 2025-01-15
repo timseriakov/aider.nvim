@@ -102,7 +102,7 @@ local function handle_aider_ask(opt)
     process_prompt(opt.args)
   else
     vim.schedule(function()
-      vim.ui.input({ prompt = "Prompt: " }, function(input)
+      vim.ui.input({ prompt = "/ask: " }, function(input)
         process_prompt(input)
       end)
     end)

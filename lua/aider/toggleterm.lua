@@ -157,8 +157,8 @@ end
 function M.send_command(command)
   local term = M.terminal()
   if string.find(command, "\n") then
-    local cmd_start = "{EOL"
-    local cmd_end = "EOL}"
+    local cmd_start = "{EOL\n"
+    local cmd_end = "\nEOL}\n"
     command = cmd_start .. command .. cmd_end
   end
   term:send(command)
