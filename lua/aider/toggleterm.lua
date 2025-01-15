@@ -53,7 +53,7 @@ function M.terminal()
   end
   local term = Terminal:new({
     -- requires delay so aider can detect size correctly
-    cmd = "sleep 0.3; " .. aider.command(),
+    cmd = aider.command(),
     env = aider.env(),
     display_name = "Aider.nvim",
     close_on_exit = true,
