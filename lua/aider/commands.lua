@@ -8,14 +8,20 @@ local M = {}
 local function handle_comment_add(prefix)
   vim.ui.input({
     prompt = prefix .. ": ",
-    relative = "cursor",
-    position = { row = 1, col = 0 }
   }, function(input)
     if input and input ~= "" then
       local line = vim.api.nvim_win_get_cursor(0)[1]
       local comment_str = vim.bo.commentstring:format(prefix .. " " .. input)
       vim.api.nvim_buf_set_lines(0, line - 1, line - 1, false, { comment_str })
+      local current_lines = vim.api.nvim_buf_get_lines(0, line - 1, line, false)
       vim.cmd("silent write")
+      vim.defer_fn(function()
+        if prefix == "AI?" then
+          if current_lines[1] == comment_str then
+            vim.api.nvim_buf_set_lines(0, line - 1, line, false, {})
+          end
+        end
+      end, 5000)
     end
   end)
 end
