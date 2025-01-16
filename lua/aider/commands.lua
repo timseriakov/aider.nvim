@@ -26,13 +26,15 @@ local function handle_comment_add(prefix)
   end)
 end
 
--- AI? will this work
 local function handle_ai_comments()
   vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
   vim.api.nvim_create_autocmd("BufWritePost", {
     group = "ReadCommentsTSTree",
     pattern = "*",
     callback = function()
+      if vim.v.dying then
+        return
+      end
       if terminal.is_running() then
         if terminal.is_open() then
           return
@@ -285,6 +287,14 @@ function M.setup(opts)
     end,
   })
 
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    pattern = "*",
+    callback = function()
+      vim.notify("triggered")
+      terminal.clear_all()
+    end,
+  })
+
   vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     pattern = "term://*toggleterm*",
     callback = function()
@@ -294,6 +304,21 @@ function M.setup(opts)
       end
       if opts.auto_insert then
         vim.cmd("startinsert")
+      end
+    end,
+  })
+
+  -- see https://github.com/akinsho/toggleterm.nvim/issues/155#issuecomment-1924991123
+  vim.api.nvim_create_autocmd({ "TermEnter" }, {
+    callback = function()
+      for _, buffers in ipairs(vim.fn.getbufinfo()) do
+        local filetype = vim.api.nvim_get_option_value("filetype", { buf = buffers.bufnr })
+        if filetype == "toggleterm" then
+          vim.api.nvim_create_autocmd({ "BufWriteCmd", "FileWriteCmd", "FileAppendCmd" }, {
+            buffer = buffers.bufnr,
+            command = "q!",
+          })
+        end
       end
     end,
   })
