@@ -82,7 +82,7 @@ function M.get_comments(bufnr)
     return M.get_comments_regex(bufnr)
   end
   local comments = {}
-  for _, captures, _ in query:iter_matches(tree:root(), bufnr) do
+  for _, captures, _ in query:iter_matches(tree:root(), bufnr, nil, nil, { all = false }) do
     if captures[1] then -- captures[1] corresponds to @comment
       local node = captures[1]
       local start_row, start_col, end_row, end_col = node:range()
