@@ -146,8 +146,10 @@ function M.setup(opts)
       files = { vim.api.nvim_buf_get_name(0) }
     end
     terminal.add(files)
-    if not terminal.is_open() then
-      terminal.toggle_window(nil, nil)
+    if config.auto_show.on_file_add then
+      if not terminal.is_open() then
+        terminal.toggle_window(nil, nil)
+      end
     end
   end, {
     nargs = "*",
