@@ -5,9 +5,9 @@ local comments = require("aider.comments")
 
 local M = {}
 
-local function handle_comment_ask(prefix)
+local function handle_comment_add(prefix)
   vim.ui.input({
-    prompt = "Comment: ",
+    prompt = prefix .. ": ",
     relative = "cursor",
     position = { row = 1, col = 0 }
   }, function(input)
@@ -228,8 +228,8 @@ function M.setup(opts)
   })
 
   vim.api.nvim_create_user_command("AiderComment", function(opt)
-    local prefix = opt.bang and "ai!" or "ai?"
-    handle_comment_ask(prefix)
+    local prefix = opt.bang and "AI!" or "AI?"
+    handle_comment_add(prefix)
   end, {
     desc = "Add an AI! comment on the current line",
     bang = true,
