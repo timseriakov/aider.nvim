@@ -209,8 +209,9 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to Gemini' }))
       vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
       vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', vim.tbl_extend('force', opts, { desc = 'Aider undo' }))
-      vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI? comment' }))
+      vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI comment' }))
       vim.keymap.set('n', '<leader>aC', '<cmd>AiderComment!<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI! comment' }))
+      vim.keymap.set('n', '<leader>aq', '<cmd>AiderCommentAsk<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI? question' }))
       -- Helpful mappings to utilize to manage aider changes
       vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Gitsigns pick reversals' }))
       vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview HEAD^' }))
@@ -253,8 +254,9 @@ vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', { noremap 
 vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', { noremap = true, silent = true, desc = 'Switch to Gemini' })
 vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
 vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', { noremap = true, silent = true, desc = 'Aider undo' })
-vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', { noremap = true, silent = true, desc = 'Add AI? comment' })
+vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', { noremap = true, silent = true, desc = 'Add AI comment' })
 vim.keymap.set('n', '<leader>aC', '<cmd>AiderComment!<CR>', { noremap = true, silent = true, desc = 'Add AI! comment' })
+vim.keymap.set('n', '<leader>aq', '<cmd>AiderCommentAsk<CR>', { noremap = true, silent = true, desc = 'Add AI? question' })
 -- Helpful mappings to utilize to manage aider changes
 vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', { noremap = true, silent = true, desc = 'Gitsigns pick reversals' })
 vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', { noremap = true, silent = true, desc = 'Diffview HEAD^' })
@@ -266,7 +268,8 @@ call plug#end()
 
 ## ⌨️ Commands
 
-- `:AiderComment[!]` - Add an AI comment on the current line. With `!` adds an `AI!` comment, without adds an `AI?` comment. Automatically triggers Aider's functionality based on comment type.
+- `:AiderComment[!]` - Add an AI comment on the current line. With `!` adds an `AI!` comment, without adds an `AI` comment. Automatically triggers Aider's functionality based on comment type.
+- `:AiderCommentAsk` - Add an `AI?` comment on the current line to ask a question. Automatically triggers Aider's question functionality and removes the comment after the question is sent.
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
   - `vertical` - Switch to vertical split
   - `horizontal` - Switch to horizontal split

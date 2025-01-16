@@ -16,7 +16,7 @@ local function handle_comment_add(prefix)
       local current_lines = vim.api.nvim_buf_get_lines(0, line - 1, line, false)
       vim.cmd("silent write")
       vim.defer_fn(function()
-        if prefix == "AI?" then
+        if prefix:sub(3, 3) == "?" then
           if current_lines[1] == comment_str then
             vim.api.nvim_buf_set_lines(0, line - 1, line, false, {})
           end
@@ -234,8 +234,15 @@ function M.setup(opts)
   })
 
   vim.api.nvim_create_user_command("AiderComment", function(opt)
-    local prefix = opt.bang and "AI!" or "AI?"
+    local prefix = opt.bang and "AI!" or "AI"
     handle_comment_add(prefix)
+  end, {
+    desc = "Add an AI! comment on the current line",
+    bang = true,
+  })
+
+  vim.api.nvim_create_user_command("AiderCommentAsk", function(opt)
+    handle_comment_add("AI?")
   end, {
     desc = "Add an AI! comment on the current line",
     bang = true,
