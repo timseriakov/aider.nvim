@@ -32,6 +32,7 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## 🆕 What's New
 
+- Added `:AiderComment[!]` command to easily add AI comments (AI? or AI!) on the current line 💬
 - Use `AiderFixDiagnostics` to send neovim diagnostics to Aider for fixing 🛠️
   - This typically includes both LSP and linting diagnostics
   - Additionally other plugins often integrate with neovim's diagnostics, so this can be a powerful tool for fixing issues in your codebase. For example [Neotest](https://github.com/nvim-neotest/neotest) has an option `neotest.diagnostic = true` which adds failing tests to diagnostics, which can then be sent to Aider for fixing using this command 💡
@@ -208,6 +209,8 @@ require('packer').startup(function(use)
       vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', vim.tbl_extend('force', opts, { desc = 'Switch to Gemini' }))
       vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', vim.tbl_extend('force', opts, { desc = 'Toggle Aider' }))
       vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', vim.tbl_extend('force', opts, { desc = 'Aider undo' }))
+      vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI? comment' }))
+      vim.keymap.set('n', '<leader>aC', '<cmd>AiderComment!<CR>', vim.tbl_extend('force', opts, { desc = 'Add AI! comment' }))
       -- Helpful mappings to utilize to manage aider changes
       vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Gitsigns pick reversals' }))
       vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', vim.tbl_extend('force', opts, { desc = 'Diffview HEAD^' }))
@@ -250,6 +253,8 @@ vim.keymap.set('n', '<leader>amh', '<cmd>AiderSend /model haiku<CR>', { noremap 
 vim.keymap.set('n', '<leader>amg', '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>', { noremap = true, silent = true, desc = 'Switch to Gemini' })
 vim.keymap.set({ 'i', 't', 'n' }, '<C-x>', '<cmd>AiderToggle<CR>', { noremap = true, silent = true, desc = 'Toggle Aider' })
 vim.keymap.set('n', '<leader>au', '<cmd>AiderSend /undo<CR>', { noremap = true, silent = true, desc = 'Aider undo' })
+vim.keymap.set('n', '<leader>ac', '<cmd>AiderComment<CR>', { noremap = true, silent = true, desc = 'Add AI? comment' })
+vim.keymap.set('n', '<leader>aC', '<cmd>AiderComment!<CR>', { noremap = true, silent = true, desc = 'Add AI! comment' })
 -- Helpful mappings to utilize to manage aider changes
 vim.keymap.set('n', '<leader>ghh', '<cmd>Gitsigns change_base HEAD^<CR>', { noremap = true, silent = true, desc = 'Gitsigns pick reversals' })
 vim.keymap.set('n', '<leader>dvh', '<cmd>DiffviewOpen HEAD^<CR>', { noremap = true, silent = true, desc = 'Diffview HEAD^' })
@@ -261,6 +266,7 @@ call plug#end()
 
 ## ⌨️ Commands
 
+- `:AiderComment[!]` - Add an AI comment on the current line. With `!` adds an `AI!` comment, without adds an `AI?` comment. Automatically triggers Aider's functionality based on comment type.
 - `:AiderToggle [direction]` - Toggle the Aider terminal window. Optional direction can be:
   - `vertical` - Switch to vertical split
   - `horizontal` - Switch to horizontal split
