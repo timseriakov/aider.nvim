@@ -317,7 +317,7 @@ require('aider').setup({
   auto_show = {
     on_ask = true, -- e.x. `ai? comment`
     on_change_req = false, -- e.x. `ai! comment`
-    on_file_add = false, -- e.x. when using Telescope or `AiderLoad` to add files
+    on_file_add = true, -- e.x. when using Telescope or `AiderLoad` to add files
   },
 
   -- function to run when aider updates file/s, useful for triggering git diffs
