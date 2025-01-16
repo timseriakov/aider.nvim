@@ -5,6 +5,21 @@ local comments = require("aider.comments")
 
 local M = {}
 
+local function handle_comment_ask(prefix)
+  vim.ui.input({
+    prompt = "Comment: ",
+    relative = "cursor",
+    position = { row = 1, col = 0 }
+  }, function(input)
+    if input and input ~= "" then
+      local line = vim.api.nvim_win_get_cursor(0)[1]
+      local comment_str = vim.bo.commentstring:format(prefix .. " " .. input)
+      vim.api.nvim_buf_set_lines(0, line - 1, line - 1, false, { comment_str })
+      vim.cmd("silent write")
+    end
+  end)
+end
+
 local function handle_ai_comments()
   vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
   vim.api.nvim_create_autocmd("BufWritePost", {
@@ -210,6 +225,14 @@ function M.setup(opts)
     terminal.clear_all()
   end, {
     desc = "Clear all Aider terminals",
+  })
+
+  vim.api.nvim_create_user_command("AiderComment", function(opt)
+    local prefix = opt.bang and "ai!" or "ai?"
+    handle_comment_ask(prefix)
+  end, {
+    desc = "Add an AI! comment on the current line",
+    bang = true,
   })
 
   vim.api.nvim_create_user_command("AiderFixDiagnostics", function(opt)
