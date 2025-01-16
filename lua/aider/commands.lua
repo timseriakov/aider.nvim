@@ -287,14 +287,6 @@ function M.setup(opts)
     end,
   })
 
-  vim.api.nvim_create_autocmd("VimLeavePre", {
-    pattern = "*",
-    callback = function()
-      vim.notify("triggered")
-      terminal.clear_all()
-    end,
-  })
-
   vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     pattern = "term://*toggleterm*",
     callback = function()
