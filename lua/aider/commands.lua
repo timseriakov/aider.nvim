@@ -26,6 +26,7 @@ local function handle_comment_add(prefix)
   end)
 end
 
+-- AI? will this work
 local function handle_ai_comments()
   vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
   vim.api.nvim_create_autocmd("BufWritePost", {
@@ -34,15 +35,6 @@ local function handle_ai_comments()
     callback = function()
       if terminal.is_running() then
         if terminal.is_open() then
-          return
-        end
-        local autoshow_any = false
-        for _, value in ipairs(config.auto_show) do
-          if value == true then
-            autoshow_any = true
-          end
-        end
-        if not autoshow_any then
           return
         end
       end

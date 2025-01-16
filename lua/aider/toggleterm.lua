@@ -72,7 +72,7 @@ function M.terminal()
       end)
     end,
     on_exit = function()
-      M.__term[cwd] = nil
+      M.clear_all()
     end,
   })
   term.on_stdout = function(_, _, data, _)
