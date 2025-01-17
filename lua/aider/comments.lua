@@ -20,18 +20,23 @@ function M.comment_matches(comments)
 
   for _, comment in ipairs(comments) do
     local lowered = comment:lower()
-
-    if lowered:match("^%s*ai%?%s*$") then                                    -- Matches "ai?" exactly or with leading/trailing spaces
+    -- Matches "ai?" exactly or with leading/trailing spaces
+    if lowered:match("^%s*ai%?%s*$") then
       matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s*$") then                                 -- Matches "ai!" exactly or with leading/trailing spaces
+      -- Matches "ai!" exactly or with leading/trailing spaces
+    elseif lowered:match("^%s*ai!%s*$") then
       matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s*$") then                                  -- Matches "ai" exactly or with leading/trailing spaces
+      -- Matches "ai" exactly or with leading/trailing spaces
+    elseif lowered:match("^%s*ai%s*$") then
       matches["ai"] = true
-    elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then -- Starts or ends with "ai?"
+      -- Starts or ends with "ai?"
+    elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then
       matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then   -- Starts or ends with "ai!"
+      -- Starts or ends with "ai!"
+    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then
       matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then     -- Starts or ends with "ai"
+      -- Starts or ends with "ai"
+    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then
       matches["ai"] = true
     end
   end
