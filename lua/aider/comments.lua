@@ -67,14 +67,13 @@ end
 function M.get_comments(bufnr)
   local success, parser = pcall(vim.treesitter.get_parser, bufnr)
   if not success or not parser then
-    return nil
+    return M.get_comments_regex(bufnr)
   end
   local tree = parser:parse()[1]
   local filetype = vim.bo[bufnr].filetype
   if not tree or not filetype then
     return M.get_comments_regex(bufnr)
   end
-  -- AI? is this valid query
   local query_string = [[ (comment) @comment ]]
   local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
   if not ok then
