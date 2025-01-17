@@ -32,13 +32,8 @@ local function handle_ai_comments()
     group = "ReadCommentsTSTree",
     pattern = "*",
     callback = function()
-      if vim.v.dying then
+      if terminal.is_running() and terminal.is_open() then
         return
-      end
-      if terminal.is_running() then
-        if terminal.is_open() then
-          return
-        end
       end
 
       local bufnr = vim.fn.bufnr("%")
@@ -287,6 +282,14 @@ function M.setup(opts)
     end,
   })
 
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    pattern = "*",
+    callback = function()
+      vim.notify("triggered")
+      terminal.clear_all()
+    end,
+  })
+
   vim.api.nvim_create_autocmd({ "TermOpen", "TermEnter" }, {
     pattern = "term://*toggleterm*",
     callback = function()
@@ -304,11 +307,14 @@ function M.setup(opts)
   vim.api.nvim_create_autocmd({ "TermEnter" }, {
     callback = function()
       for _, buffers in ipairs(vim.fn.getbufinfo()) do
-        local filetype = vim.api.nvim_get_option_value("filetype", { buf = buffers.bufnr })
+        local filetype = vim.api.nvim_buf_get_option(buffers.bufnr, "filetype")
+        -- local filetype = vim.api.nvim_get_option_value("filetype", { buf = buffers.bufnr })
         if filetype == "toggleterm" then
           vim.api.nvim_create_autocmd({ "BufWriteCmd", "FileWriteCmd", "FileAppendCmd" }, {
             buffer = buffers.bufnr,
-            command = "q!",
+            callback = function()
+              terminal.clear_all()
+            end,
           })
         end
       end
@@ -324,6 +330,7 @@ function M.setup(opts)
   if opts.spawn_on_comment then
     handle_ai_comments()
   end
+  vim.cmd("set hidden")
 end
 
 return M

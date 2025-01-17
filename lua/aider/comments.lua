@@ -74,9 +74,8 @@ function M.get_comments(bufnr)
   if not tree or not filetype then
     return M.get_comments_regex(bufnr)
   end
-  local query_string = [[
-(comment) @comment
-]]
+  -- AI? is this valid query
+  local query_string = [[ (comment) @comment ]]
   local ok, query = pcall(vim.treesitter.query.parse, filetype, query_string)
   if not ok then
     return M.get_comments_regex(bufnr)
