@@ -88,7 +88,12 @@ end
 function M.add(files)
   files = files or {}
   if #files > 0 then
-    local cmd = "/add " .. table.concat(files, " ")
+    -- Convert relative paths to absolute paths
+    local abs_files = {}
+    for _, file in ipairs(files) do
+      table.insert(abs_files, vim.fn.fnamemodify(file, ":p"))
+    end
+    local cmd = "/add " .. table.concat(abs_files, " ")
     M.send_command(cmd)
   end
   if config.auto_show.on_file_add then
@@ -113,7 +118,6 @@ function M.drop(files)
   files = files or {}
   if #files > 0 then
     local cmd = "/drop " .. table.concat(files, " ")
-    vim.notify(cmd)
     M.send_command(cmd)
   end
 end
@@ -129,8 +133,8 @@ function M.spawn()
   M.terminal()
 end
 
----@param size? number
----@param direction? string
+---@param size? number|nil
+---@param direction? string|nil
 function M.toggle_window(size, direction)
   local term = M.terminal()
   if size then
