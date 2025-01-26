@@ -179,6 +179,8 @@ function M.setup(opts)
   -- Setup fzf-lua integration if available
   require("aider.fzf").setup(M.config)
 
+  require("aider.snacks_picker").setup(M.config)
+
   -- Setup telescope integration if available
   local telescope_ok, telescope = pcall(require, "telescope")
   if telescope_ok then
