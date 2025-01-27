@@ -4,14 +4,23 @@ function M.remove_comment_chars(comment)
   return comment:gsub("^%s*([%-%-/%#]+%s*)", "")
 end
 
----@param comments table|nil
+---@class CommentMatches
+---@field any boolean
+---@field ["ai?"] boolean
+---@field ["ai!"] boolean
+---@field ["ai"] boolean
+---@field comments string[]
+
+---@param comments CommentMatches|nil
 ---@return table<string, boolean>
 function M.comment_matches(comments)
+  ---@type CommentMatches
   local matches = {
     any = false,
     ["ai?"] = false,
     ["ai!"] = false,
     ["ai"] = false,
+    comments = {},
   }
 
   if not comments then
@@ -21,23 +30,30 @@ function M.comment_matches(comments)
   for _, comment in ipairs(comments) do
     local lowered = comment:lower()
 
-    if lowered:match("^%s*ai%?%s*$") then                                    -- Matches "ai?" exactly or with leading/trailing spaces
+    if lowered:match("^%s*ai%?%s*$") then -- Matches "ai?" exactly or with leading/trailing spaces
       matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s*$") then                                 -- Matches "ai!" exactly or with leading/trailing spaces
+      matches.any = true
+      table.insert(matches.comments, comment)
+    elseif lowered:match("^%s*ai!%s*$") then -- Matches "ai!" exactly or with leading/trailing spaces
       matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s*$") then                                  -- Matches "ai" exactly or with leading/trailing spaces
+      matches.any = true
+      table.insert(matches.comments, comment)
+    elseif lowered:match("^%s*ai%s*$") then -- Matches "ai" exactly or with leading/trailing spaces
       matches["ai"] = true
+      matches.any = true
+      table.insert(matches.comments, comment)
     elseif lowered:match("^%s*ai%?%s+") or lowered:match("%s+ai%?%s*$") then -- Starts or ends with "ai?"
       matches["ai?"] = true
-    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then   -- Starts or ends with "ai!"
-      matches["ai!"] = true
-    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then     -- Starts or ends with "ai"
-      matches["ai"] = true
-    end
-  end
-  for _, v in pairs(matches) do
-    if v then
       matches.any = true
+      table.insert(matches.comments, comment)
+    elseif lowered:match("^%s*ai!%s+") or lowered:match("%s+ai!%s*$") then -- Starts or ends with "ai!"
+      matches["ai!"] = true
+      matches.any = true
+      table.insert(matches.comments, comment)
+    elseif lowered:match("^%s*ai%s+") or lowered:match("%s+ai%s*$") then -- Starts or ends with "ai"
+      matches["ai"] = true
+      matches.any = true
+      table.insert(matches.comments, comment)
     end
   end
   return matches
@@ -111,7 +127,7 @@ function M.get_comments(bufnr)
 end
 
 ---@param bufnr
----@return table<string, boolean>
+---@return CommentMatches
 function M.buf_comment_matches(bufnr)
   local comments = M.get_comments(bufnr) or {}
   return M.comment_matches(comments)

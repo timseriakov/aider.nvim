@@ -90,6 +90,10 @@ _G.AiderTestCmd = function()
       end)
     end
   end
+  if config.use_git_stash then
+    local message = "Aider Generated"
+    require("aider.git").stash(message)
+  end
   if config.after_update_hook then
     config.after_update_hook()
   end

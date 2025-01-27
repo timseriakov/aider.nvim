@@ -26,7 +26,6 @@ local function handle_comment_add(prefix)
   end)
 end
 
--- AI? will this work
 local function handle_ai_comments()
   vim.api.nvim_create_augroup("ReadCommentsTSTree", { clear = true })
   vim.api.nvim_create_autocmd("BufWritePost", {
@@ -45,18 +44,17 @@ local function handle_ai_comments()
       if matches.any then
         local path = vim.api.nvim_buf_get_name(bufnr)
         if not terminal.is_running() then
-          if config.use_tmux then
-            -- Needs to run outside of neovim's event loop duo to tmux asuspension
-            local cmd = string.format("/bin/sh -c 'sleep 3 && touch %s'", path)
-            vim.fn.jobstart(cmd, { detach = true })
-          else
-            vim.defer_fn(function()
-              vim.api.nvim_buf_call(bufnr, function()
-                vim.cmd("silent w")
-              end)
-            end, 3000)
-          end
+          vim.defer_fn(function()
+            vim.api.nvim_buf_call(bufnr, function()
+              vim.cmd("silent w")
+            end)
+          end, 3000)
           terminal.spawn()
+        end
+
+        if config.use_git_stash and matches["ai!"] then
+          local message = table.concat(matches.comments, "\n")
+          require("aider.git").stash(message)
         end
 
         local show_window = false

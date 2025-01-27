@@ -29,11 +29,11 @@
 ---@field progress_notifier table|nil
 ---@field log_notifier boolean
 ---@field git_pager string
----@field use_tmux boolean
 ---@field auto_show table
 ---@field telescope FuzzyFinderMappings
 ---@field fzf FuzzyFinderMappings
 ---@field test_command string|nil
+---@field use_git_stash boolean
 
 local M = {}
 
@@ -51,7 +51,18 @@ M.defaults = {
   },
 
   -- function to run when aider updates file/s, useful for triggering git diffs
-  after_update_hook = nil,
+  after_update_hook = function()
+    local config = require("aider").config
+    if config.use_git_stash then
+      local ok, diffview = pcall(require, "diffview")
+      if ok then
+        diffview.open({ "stash@{0}..stash@{1}" })
+        return
+      end
+    end
+  end,
+
+  use_git_stash = true,
 
   -- deprecated: use telescope.add and telescope.read_only instead
   telescope_action_key = nil,
@@ -108,7 +119,7 @@ M.defaults = {
   auto_insert = true,
 
   -- additional arguments for aider CLI
-  aider_args = {},
+  aider_args = { "--no-auto-commit" },
 
   -- always start aider on startup
   spawn_on_startup = false,
@@ -156,9 +167,6 @@ M.defaults = {
   on_term_open = nil,
 
   test_command = nil,
-
-  -- enable tmux mode (highly experimental!)
-  use_tmux = false,
 }
 
 ---@class AiderConfig
