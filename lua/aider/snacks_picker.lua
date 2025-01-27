@@ -12,7 +12,10 @@ end
 ---@param opts snacks.picker.Config
 ---@type snacks.picker.finder
 function M.git_stash(opts, ctx)
-  local args = { "stash", "list" }
+  local output = vim.system({ "git", "rev-list", "--walk-reflogs", "--count", "refs/stash" }):wait()
+  local stash_count = tonumber(output.stdout) or 1
+
+  local args = { "stash", "list", "-n", stash_count - 1 }
   return require("snacks.picker.source.proc").proc({
     opts,
     {
