@@ -32,7 +32,9 @@ A Neovim plugin for seamless integration with [Aider](https://github.com/paul-ga
 
 ## 🆕 What's New
 
-- Added support for the new snacks.nvim picker for manipulating Aider files
+- Added a new git stash strategy that works regardless of auto commit flags
+- Added default diffview hook for showing latest stash change
+- Added support for the new snacks.nvim picker actions for manipulating Aider files
 - Added `:AiderComment[!]` command to easily add AI comments (AI? or AI!) on the current line 💬
 - Use `AiderFixDiagnostics` to send neovim diagnostics to Aider for fixing 🛠️
   - This typically includes both LSP and linting diagnostics

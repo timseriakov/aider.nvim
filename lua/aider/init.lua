@@ -119,7 +119,7 @@ M.defaults = {
   auto_insert = true,
 
   -- additional arguments for aider CLI
-  aider_args = { "--no-auto-commit" },
+  aider_args = {},
 
   -- always start aider on startup
   spawn_on_startup = false,
