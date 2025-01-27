@@ -10,50 +10,48 @@ local function selected_files(selected)
 end
 
 function M.create_picker()
-  local output = vim.system({ "git", "stash", "list" }, { text = true }):wait()
-  if output.code ~= 0 then
-    vim.notify("Failed to get git stash list", vim.log.levels.ERROR)
-    return
-  end
-
-  local items = {}
-  for line in vim.gsplit(output.stdout, "\n") do
-    if line ~= "" then
-      table.insert(items, {
-        text = line,
-        stash = line:match("^stash@{(%d+)}") -- Extract stash index
-      })
-    end
-  end
-
-  Snacks.picker({
+  Snacks.picker("git_stash", {
     title = "Git Stash",
-    finder = function()
-      return items
+    finder = function(config, ctx)
+      local output = vim.system({ "git", "stash", "list" }, { text = true }):wait()
+      if output.code ~= 0 then
+        vim.notify("Failed to get git stash list", vim.log.levels.ERROR)
+        return {}
+      end
+
+      local items = {}
+      for line in vim.gsplit(output.stdout, "\n") do
+        if line ~= "" then
+          table.insert(items, {
+            text = line,
+            stash = line:match("^stash@{(%d+)}") -- Extract stash index
+          })
+        end
+      end
+
+      return ctx.filter:filter(items)
     end,
-    format = function(item)
+    format = function(item, picker)
       return { { item.text, "Comment" } }
     end,
     preview = function(ctx)
-      if not ctx.item.stash then
-        return Snacks.picker.preview.none(ctx)
-      end
+      local stash = ctx.picker:current().stash
       local cmd = {
         "git",
         "-c",
         "delta." .. vim.o.background .. "=true",
-        "stash",
-        "show",
-        "-p",
-        ctx.item.stash,
+        "diff",
+        string.format("stash@{%d}", stash),
       }
       local native = ctx.picker.opts.previewers.git.native
       if not native then
         table.insert(cmd, 2, "--no-pager")
       end
+      vim.notify(table.concat(cmd, " "))
       local exec = Snacks.picker.preview.cmd
       exec(cmd, ctx, { ft = not native and "git" or nil })
-      return true
+      ctx.preview:show(ctx.picker)
+      return false
     end,
 
     actions = {
@@ -93,7 +91,7 @@ end
 
 ---@param opts AiderConfig
 function M.setup(opts)
-  -- M.create_picker()
+  M.create_picker()
   local ok, snacks_picker = pcall(require, "snacks.picker")
   if not ok then
     return
