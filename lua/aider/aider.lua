@@ -2,6 +2,8 @@ local config = require("aider").config
 
 local M = {}
 
+M.StashMsgPrefix = "Aider.nvim Changes"
+
 function M.dark_mode()
   if type(config.dark_mode) == "function" then
     return config.dark_mode()
@@ -90,12 +92,28 @@ _G.AiderTestCmd = function()
       end)
     end
   end
-  if config.use_git_stash and require("aider.commands").stashed_workdir then
-    local message = "Aider Generated"
-    require("aider.git").stash(message)
+  local stashed = false
+  local commands = require("aider.commands")
+  local stash_msg = commands.stash_msg
+  if config.use_git_stash and stash_msg then
+    commands.stash_msg = nil
+    require("aider.git").stash(M.StashMsgPrefix .. " " .. stash_msg)
+    stashed = true
   end
+
   if config.after_update_hook then
     config.after_update_hook()
+  else
+    if stashed then
+      if require("aider.snacks_picker").aider_changes() then
+        return
+      end
+      local ok, diffview = pcall(require, "diffview")
+      if ok then
+        diffview.open({ "stash@{0}..stash@{1}" })
+        return
+      end
+    end
   end
 end
 

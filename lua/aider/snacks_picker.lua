@@ -12,10 +12,12 @@ end
 ---@param opts snacks.picker.Config
 ---@type snacks.picker.finder
 function M.git_stash(opts, ctx)
-  local output = vim.system({ "git", "rev-list", "--walk-reflogs", "--count", "refs/stash" }):wait()
-  local stash_count = tonumber(output.stdout) or 1
-
-  local args = { "stash", "list", "-n", stash_count - 1 }
+  local stash_msg_prefix = require("aider.aider").StashMsgPrefix
+  local args = {
+    "stash", "list",
+    -- "-n", stash_count - 1,
+    "--grep-reflog", stash_msg_prefix,
+  }
   return require("snacks.picker.source.proc").proc({
     opts,
     {
@@ -24,7 +26,10 @@ function M.git_stash(opts, ctx)
       ---@param item snacks.picker.finder.Item
       transform = function(item)
         local stash = item.text:match("^stash@{(%d+)}")
+        local message = item.text:match("^stash@{%d+}: %s*(.+)$")
+        local prompt = string.sub(message, #stash_msg_prefix + 1)
         item.stash = stash
+        item.prompt = vim.trim(prompt)
       end,
     },
   }, ctx)
@@ -39,8 +44,7 @@ function M.aider_changes()
     title = "Aider History",
     finder = M.git_stash,
     format = function(item, picker)
-      local message = item.text:match("^stash@{%d+}: %s*(.+)$")
-      return { { string.format("#%d", item.stash + 1), "Function" }, { " " .. message, "Comment" } }
+      return { { string.format("#%d ", item.idx), "Function" }, { item.prompt, "Comment" } }
     end,
     preview = function(ctx)
       local stash = ctx.item.stash

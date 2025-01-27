@@ -53,9 +53,9 @@ local function handle_ai_comments()
         end
 
         if config.use_git_stash and matches["ai!"] then
-          M.stashed_workdir = true
           local message = table.concat(matches.comments, "\n")
-          require("aider.git").stash(message)
+          M.stash_msg = message
+          require("aider.git").stash("Aider.nvim working dir")
         end
 
         local show_window = false
