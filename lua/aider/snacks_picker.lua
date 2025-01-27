@@ -32,8 +32,8 @@ function M.aider_changes()
   if not ok then
     return nil
   end
-  return picker("git_stash", {
-    title = "Git Stash",
+  return picker("aider_history", {
+    title = "Aider History",
     finder = M.git_stash,
     format = function(item, picker)
       local message = item.text:match("^stash@{%d+}: %s*(.+)$")
