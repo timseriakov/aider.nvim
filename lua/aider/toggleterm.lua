@@ -96,9 +96,6 @@ function M.add(files)
     local cmd = "/add " .. table.concat(abs_files, " ")
     M.send_command(cmd)
   end
-  if config.auto_show.on_file_add then
-    M.open()
-  end
 end
 
 ---Load files into aider session
@@ -108,9 +105,6 @@ function M.read_only(files)
   if #files > 0 then
     local cmd = "/read-only " .. table.concat(files, " ")
     M.send_command(cmd)
-  end
-  if config.auto_show.on_file_add then
-    M.open()
   end
 end
 
@@ -166,6 +160,10 @@ function M.send_command(command)
     command = cmd_start .. command .. cmd_end
   end
   term:send(command)
+
+  if config.auto_show.on_command_send then
+    M.open()
+  end
 end
 
 --- Send an AI query to the Aider session
@@ -184,7 +182,6 @@ function M.ask(prompt, selection)
 
   command = "/ask " .. prompt
   M.send_command(command)
-  M.open()
 end
 
 return M
