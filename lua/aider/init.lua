@@ -45,9 +45,9 @@ M.defaults = {
 
   -- auto show aider terminal window
   auto_show = {
-    on_ask = true,         -- e.x. `ai? comment`
-    on_change_req = false, -- e.x. `ai! comment`
-    on_file_add = true,    -- e.x. when using Telescope or `AiderLoad` to add files
+    on_ask = true,        -- e.x. `ai? comment`
+    on_change_req = true, -- e.x. `ai! comment`
+    on_file_add = true,   -- e.x. when using Telescope or `AiderLoad` to add files
   },
 
   -- function to run when aider updates file/s, useful for triggering git diffs

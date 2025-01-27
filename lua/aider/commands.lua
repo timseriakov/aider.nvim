@@ -187,6 +187,14 @@ function M.setup(opts)
     complete = "file",
   })
 
+  vim.api.nvim_create_user_command("AiderHistorySnacks", function()
+    local ok, _ = pcall(require, "snacks.picker")
+    if not ok then
+      vim.notify("Snacks is not installed", vim.log.levels.ERROR)
+    end
+    require("aider.snacks_picker").aider_changes()
+  end, {})
+
   vim.api.nvim_create_user_command("AiderSend", handle_aider_send, {
     nargs = "*",
     range = true, -- This enables the command to work with selections
