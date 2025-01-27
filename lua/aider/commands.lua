@@ -201,13 +201,14 @@ function M.setup(opts)
     range = true, -- This enables the command to work with selections
     desc = "Send command to Aider",
     bang = true,
+    bar = true,
   })
 
   vim.api.nvim_create_user_command("AiderAsk", handle_aider_ask, {
     range = true,
     nargs = "*",
+    bar = true,
     desc = "Send a prompt to the AI with optional visual selection context",
-
     bang = true,
   })
 
