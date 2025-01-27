@@ -29,6 +29,15 @@ local function untrackedFiles()
   return files
 end
 
+local function getLatestStashHash()
+  local cmd = { "git", "rev-parse", "-q", "--verify", "refs/stash" }
+  local result = vim.system(cmd, { text = true }):wait()
+  if result.code == 0 then
+    return vim.trim(result.stdout)
+  end
+  return nil
+end
+
 ---@param message string
 ---@param path table|nil
 function M.stash(message)
@@ -52,6 +61,14 @@ function M.stash(message)
       vim.notify("No tracked changes to stash", vim.log.levels.ERROR)
       return
     end
+
+    -- Compare with previous stash
+    local latest_stash = getLatestStashHash()
+    if latest_stash and latest_stash == hash then
+      vim.notify("No new changes to stash", vim.log.levels.INFO)
+      return
+    end
+
     local store_cmd = { "git", "stash", "store", "-m", message, hash }
     vim.system(store_cmd, { text = true }, function(store_out)
       if store_out.code ~= 0 then
