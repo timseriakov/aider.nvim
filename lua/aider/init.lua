@@ -53,7 +53,8 @@ M.defaults = {
   -- function to run when aider updates file/s, useful for triggering git diffs
   after_update_hook = function()
     local config = require("aider").config
-    if config.use_git_stash then
+    local stashed_changes = require("aider.commands").stashed_workdir
+    if config.use_git_stash and stashed_changes then
       if not require("aider.snacks_picker").aider_changes() then
         return
       end

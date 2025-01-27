@@ -90,7 +90,7 @@ _G.AiderTestCmd = function()
       end)
     end
   end
-  if config.use_git_stash then
+  if config.use_git_stash and require("aider.commands").stashed_workdir then
     local message = "Aider Generated"
     require("aider.git").stash(message)
   end

@@ -29,13 +29,15 @@ local function untrackedFiles()
   return files
 end
 
-local function getLatestStashHash()
+local function getLatestStashHash(callback)
   local cmd = { "git", "rev-parse", "-q", "--verify", "refs/stash" }
-  local result = vim.system(cmd, { text = true }):wait()
-  if result.code == 0 then
-    return vim.trim(result.stdout)
-  end
-  return nil
+  vim.system(cmd, { text = true }, function(result)
+    if result.code == 0 then
+      callback(vim.trim(result.stdout))
+    else
+      callback(nil)
+    end
+  end)
 end
 
 ---@param message string
@@ -63,18 +65,19 @@ function M.stash(message)
     end
 
     -- Compare with previous stash
-    local latest_stash = getLatestStashHash()
-    if latest_stash and latest_stash == hash then
-      vim.notify("No new changes to stash", vim.log.levels.INFO)
-      return
-    end
-
-    local store_cmd = { "git", "stash", "store", "-m", message, hash }
-    vim.system(store_cmd, { text = true }, function(store_out)
-      if store_out.code ~= 0 then
-        vim.notify("Failed to stash changes " .. hash .. ":\n" .. store_out.stderr, vim.log.levels.ERROR)
+    getLatestStashHash(function(latest_hash)
+      if latest_stash and latest_stash == hash then
+        vim.notify("No new changes to stash", vim.log.levels.INFO)
         return
       end
+
+      local store_cmd = { "git", "stash", "store", "-m", message, hash }
+      vim.system(store_cmd, { text = true }, function(store_out)
+        if store_out.code ~= 0 then
+          vim.notify("Failed to stash changes " .. hash .. ":\n" .. store_out.stderr, vim.log.levels.ERROR)
+          return
+        end
+      end)
     end)
   end)
 end
