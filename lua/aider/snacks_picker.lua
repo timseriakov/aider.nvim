@@ -28,7 +28,11 @@ function M.git_stash(opts, ctx)
 end
 
 function M.aider_changes()
-  Snacks.picker("git_stash", {
+  local ok, picker = pcall(require, "snacks.picker")
+  if not ok then
+    return nil
+  end
+  return picker("git_stash", {
     title = "Git Stash",
     finder = M.git_stash,
     format = function(item, picker)
