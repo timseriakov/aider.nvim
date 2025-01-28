@@ -24,7 +24,7 @@ end
 
 ---@param opts snacks.picker.Config
 ---@type snacks.picker.finder
-function M.git_stash(opts, ctx)
+function git_stash_finder(opts, ctx)
   local stash_msg_prefix = require("aider.aider").StashMsgPrefix
   local args = {
     "stash", "list",
@@ -54,9 +54,9 @@ function M.aider_changes()
   end
   return picker("aider_history", {
     title = "Aider History",
-    finder = M.git_stash,
+    finder = git_stash_finder,
     format = function(item, p)
-      return { { string.format("#%d ", item.idx), "Function" }, { item.prompt, "Comment" } }
+      return { { string.format("#%d ", item.idx), "Function" }, { item.prompt } }
     end,
     preview = function(ctx)
       local stash = ctx.item.stash
