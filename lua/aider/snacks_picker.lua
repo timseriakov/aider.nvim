@@ -64,7 +64,14 @@ function M.aider_changes()
       ctx.preview:show(ctx.picker)
       return false
     end,
-
+    win = {
+      input = {
+        keys = {
+          ["<CR>"] = "apply",
+          ["<leader><space>d"] = "reverse",
+        },
+      }
+    },
     actions = {
       apply = {
         function(picker)
@@ -72,6 +79,16 @@ function M.aider_changes()
           if item and item.stash then
             picker:close()
             vim.cmd("Git stash apply " .. item.stash)
+          end
+        end,
+        mode = { "n", "i" }
+      },
+      reverse = {
+        function(picker)
+          local item = picker:current()
+          if item and item.stash then
+            picker:close()
+            vim.cmd("Git stash apply " .. item.stash - 1)
           end
         end,
         mode = { "n", "i" }
