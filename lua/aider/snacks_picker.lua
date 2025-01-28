@@ -9,6 +9,19 @@ local function selected_files(selected)
   return files
 end
 
+
+---@param cmd string|table
+---@param opts? table
+---@param on_exit? fun(out: vim.SystemCompleted) Called when subprocess exits. When provided, the command runs
+local function system(cmd, opts, on_exit)
+  if type(cmd) == "string" then
+    cmd = vim.split(cmd, " ")
+  end
+
+  vim.notify(table.concat(cmd, " "))
+  vim.system(cmd, opts, on_exit)
+end
+
 ---@param opts snacks.picker.Config
 ---@type snacks.picker.finder
 function M.git_stash(opts, ctx)
@@ -58,8 +71,9 @@ function M.aider_changes()
       if not native then
         table.insert(cmd, 2, "--no-pager")
       end
-      local exec = Snacks.picker.preview.cmd
-      exec(cmd, ctx, { ft = not native and "git" or nil })
+      Snacks.picker.preview.cmd(cmd, ctx, {
+        ft = not native and "git" or nil
+      })
       ctx.preview:show(ctx.picker)
       return false
     end,
@@ -76,28 +90,29 @@ function M.aider_changes()
         local item = p:current()
         if item and item.stash then
           p:close()
-          vim.cmd("Git stash apply " .. item.stash)
+          system("git stash apply " .. item.stash)
         end
       end,
       reverse = function(p)
         local item = p:current()
         if item and item.stash then
           p:close()
-          vim.cmd("Git stash apply " .. item.stash - 1)
+          local target_stash = item.stash - 1
+          system("git stash apply " .. target_stash)
         end
       end,
       pop = function(p)
         local item = p:current()
         if item and item.stash then
           p:close()
-          vim.cmd("Git stash pop " .. item.stash)
+          system("git stash pop " .. item.stash)
         end
       end,
       drop = function(p)
         local item = p:current()
         if item and item.stash then
           p:close()
-          vim.cmd("Git stash drop " .. item.stash)
+          system("git stash drop " .. item.stash)
         end
       end,
     }
