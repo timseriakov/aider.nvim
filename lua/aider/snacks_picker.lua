@@ -15,7 +15,6 @@ function M.git_stash(opts, ctx)
   local stash_msg_prefix = require("aider.aider").StashMsgPrefix
   local args = {
     "stash", "list",
-    -- "-n", stash_count - 1,
     "--grep-reflog", stash_msg_prefix,
   }
   return require("snacks.picker.source.proc").proc({
@@ -43,7 +42,7 @@ function M.aider_changes()
   return picker("aider_history", {
     title = "Aider History",
     finder = M.git_stash,
-    format = function(item, picker)
+    format = function(item, p)
       return { { string.format("#%d ", item.idx), "Function" }, { item.prompt, "Comment" } }
     end,
     preview = function(ctx)
@@ -68,57 +67,45 @@ function M.aider_changes()
       input = {
         keys = {
           ["<CR>"] = "apply",
-          ["<leader><space>d"] = "reverse",
+          ["<C-r>"] = "reverse",
         },
       }
     },
     actions = {
-      apply = {
-        function(picker)
-          local item = picker:current()
-          if item and item.stash then
-            picker:close()
-            vim.cmd("Git stash apply " .. item.stash)
-          end
-        end,
-        mode = { "n", "i" }
-      },
-      reverse = {
-        function(picker)
-          local item = picker:current()
-          if item and item.stash then
-            picker:close()
-            vim.cmd("Git stash apply " .. item.stash - 1)
-          end
-        end,
-        mode = { "n", "i" }
-      },
-      pop = {
-        function(picker)
-          local item = picker:current()
-          if item and item.stash then
-            picker:close()
-            vim.cmd("Git stash pop " .. item.stash)
-          end
-        end,
-        mode = { "n", "i" }
-      },
-      drop = {
-        function(picker)
-          local item = picker:current()
-          if item and item.stash then
-            picker:close()
-            vim.cmd("Git stash drop " .. item.stash)
-          end
-        end,
-        mode = { "n", "i" }
-      }
+      apply = function(p)
+        local item = p:current()
+        if item and item.stash then
+          p:close()
+          vim.cmd("Git stash apply " .. item.stash)
+        end
+      end,
+      reverse = function(p)
+        local item = p:current()
+        if item and item.stash then
+          p:close()
+          vim.cmd("Git stash apply " .. item.stash - 1)
+        end
+      end,
+      pop = function(p)
+        local item = p:current()
+        if item and item.stash then
+          p:close()
+          vim.cmd("Git stash pop " .. item.stash)
+        end
+      end,
+      drop = function(p)
+        local item = p:current()
+        if item and item.stash then
+          p:close()
+          vim.cmd("Git stash drop " .. item.stash)
+        end
+      end,
     }
   })
 end
 
----@param opts AiderConfig
-function M.setup(opts)
+---@param sopts AiderConfig
+function M.setup(sopts)
   local ok, snacks_picker = pcall(require, "snacks.picker")
   if not ok then
     return
