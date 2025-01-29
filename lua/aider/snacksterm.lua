@@ -106,7 +106,7 @@ function T.terminal()
     notify.error("Failed to get terminal job id")
     return nil, false
   end
-  local cwd = utils.repo_root()
+  local cwd = Snacks.git.get_root(vim.uv.cwd())
   if cwd then
     T.__terms[cwd] = term
   end
@@ -122,7 +122,8 @@ function T.add(files)
     -- Convert relative paths to absolute paths
     local abs_files = {}
     for _, file in ipairs(files) do
-      table.insert(abs_files, utils.to_absolute(file))
+      local abs_file = vim.fn.fnamemodify(file, ":p")
+      table.insert(abs_files, abs_file)
     end
     local cmd = "/add " .. table.concat(abs_files, " ")
     T.send_command(cmd)
