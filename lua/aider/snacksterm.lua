@@ -69,17 +69,23 @@ function T.is_open()
   return false
 end
 
+---@return string
+local function get_root()
+  return Snacks.git.get_root(vim.uv.cwd()) or vim.uv.cwd() or ""
+end
+
 --- Get or generate a terminal object for Aider
 ---@param opts? {create: boolean, cwd: string?, position: string?}
 ---@return snacks.win?, boolean?
 function T.get(opts)
   opts = opts or {}
   local term, created = Snacks.terminal.get(aider.command(), {
-    cwd = opts.cwd or Snacks.git.get_root(vim.uv.cwd()),
+    cwd = opts.cwd or get_root(),
     env = aider.env(),
     create = opts.create or false,
     interactive = true,
     win = {
+      --@field position? "float"|"bottom"|"top"|"left"|"right"
       position = opts.position or "right",
     }
   })
@@ -88,8 +94,10 @@ end
 
 --- Get or generate a terminal object for Aider
 ---@return snacks.win?, boolean?
-function T.terminal()
-  local term, created = T.get({ create = true })
+function T.terminal(opts)
+  opts = opts or {}
+  opts.create = true
+  local term, created = T.get(opts)
   if not term then
     notify.error("Failed to create terminal")
     return nil, false
@@ -101,12 +109,13 @@ function T.terminal()
   end
   T.win_id = term.win
   T.job_id = vim.b[T.buf_id].terminal_job_id
-  vim.b[T.buf_id].term_title = "Aider.nvim"
+  local cwd = get_root()
+  vim.b[T.buf_id].term_title = "Aider.nvim: " .. vim.fn.fnamemodify(cwd, ":~")
+  term:set_title(vim.b[T.buf_id].term_title, "center")
   if not T.job_id then
     notify.error("Failed to get terminal job id")
     return nil, false
   end
-  local cwd = Snacks.git.get_root(vim.uv.cwd())
   if cwd then
     T.__terms[cwd] = term
   end
@@ -153,15 +162,26 @@ function T.spawn()
   T.terminal()
 end
 
+local directions_mapping = {
+  tab = "float",
+  vertical = "right",
+  horizontal = "bottom",
+}
+
 ---@param size? number|nil
 ---@param direction? string|nil
 function T.toggle_window(size, direction)
-  local term = T.get()
+  if directions_mapping[direction] then
+    direction = directions_mapping[direction]
+  end
+  vim.notify(direction)
+  local opts = { position = direction }
+  local term = T.get(opts)
 
   if term then
     term:toggle()
   else
-    local term, created = T.terminal()
+    local term, created = T.terminal(opts)
     if not created then
       if not term then
         vim.notify("Failed to create terminal", vim.log.levels.ERROR)
