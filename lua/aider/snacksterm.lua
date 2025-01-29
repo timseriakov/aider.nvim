@@ -79,7 +79,7 @@ end
 ---@return snacks.win?, boolean?
 function T.get(opts)
   opts = opts or {}
-  local position = opts.position or "right"
+  local position = opts.position or "float"
   local get = Snacks.terminal.get
 
   if opts.create then
