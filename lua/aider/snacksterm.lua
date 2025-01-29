@@ -47,7 +47,6 @@ function T.get(create)
     interactive = true,
     create = create,
     win = {
-      style = "split",
       position = "right",
     }
   })
