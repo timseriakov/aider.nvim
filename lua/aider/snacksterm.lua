@@ -39,14 +39,26 @@ function T.close_all()
 end
 
 --- Get or generate a terminal object for Aider
----@return snacks.win, boolean
-function T.terminal()
-  local cwd = Snacks.git.get_root()
+---@return snacks.win?, boolean?
+function T.get(create)
   local term, created = Snacks.terminal.get(aider.command(), {
     cwd = cwd,
     env = aider.env(),
     interactive = true,
+    create = create,
+    win = {
+      style = "split",
+      position = "right",
+    }
   })
+  return term, created
+end
+
+--- Get or generate a terminal object for Aider
+---@return snacks.win?, boolean?
+function T.terminal()
+  local cwd = Snacks.git.get_root()
+  local term, created = T.get(true)
   if not term then
     vim.notify("Failed to create terminal")
   end
@@ -55,7 +67,9 @@ function T.terminal()
     vim.notify("Failed to get terminal buf")
     return
   end
+  T.win_id = term.win
   T.job_id = vim.b[T.buf_id].terminal_job_id
+  vim.b[T.buf_id].term_title = "Aider.nvim"
   if not T.job_id then
     vim.notify("Failed to get terminal job id")
     return
@@ -106,16 +120,30 @@ end
 ---@param size? number|nil
 ---@param direction? string|nil
 function T.toggle_window(size, direction)
-  local bufnr = vim.fn.bufnr("%")
-  if T.buf_id == bufnr then
-    vim.api.nvim_win_close(0, false)
-    return
+  local term = T.get(false)
+
+  if term then
+    term:toggle()
   else
     local term, created = T.terminal()
     if not created then
       term:show()
     end
   end
+
+  -- if term then
+  --   term:focus()
+  -- end
+  --
+  -- local bufnr = vim.fn.bufnr("%")
+  -- if T.buf_id == bufnr then
+  --   vim.api.nvim_win_close(0, false)
+  -- else
+  --   local term, created = T.terminal()
+  --   if not created then
+  --     term:show()
+  --   end
+  -- end
 end
 
 --- Send a command to the active Aider terminal session
