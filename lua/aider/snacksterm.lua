@@ -79,14 +79,21 @@ end
 ---@return snacks.win?, boolean?
 function T.get(opts)
   opts = opts or {}
-  local term, created = Snacks.terminal.get(aider.command(), {
+  local position = opts.position or "right"
+  local get = Snacks.terminal.get
+
+  if opts.create then
+    T.position = position
+  end
+
+  local term, created = get(aider.command(), {
     cwd = opts.cwd or get_root(),
     env = aider.env(),
     create = opts.create or false,
     interactive = true,
     win = {
       --@field position? "float"|"bottom"|"top"|"left"|"right"
-      position = opts.position or "right",
+      position = position,
     }
   })
   return term, created
@@ -174,11 +181,18 @@ function T.toggle_window(size, direction)
   if directions_mapping[direction] then
     direction = directions_mapping[direction]
   end
-  vim.notify(direction)
   local opts = { position = direction }
   local term = T.get(opts)
 
+  -- local style = "split"
+  -- if direction == "float" then
+  --   style = "float"
+  -- end
+
   if term then
+    -- vim.notify("style " .. style .. " position " .. direction)
+    -- term.opts.position = direction
+    -- term.opts.style = style
     term:toggle()
   else
     local term, created = T.terminal(opts)
@@ -228,21 +242,4 @@ function T.ask(prompt, selection)
   T.send_command(command)
 end
 
--- local root = nil
---
--- vim.api.nvim_create_autocmd("BufEnter", {
---   pattern = "*",
---   callback = function()
---     local latest_root = Snacks.git.get_root()
---     if root and root ~= latest_root then
---       vim.notify("root changed")
---       local term = T.get(false, root)
---       if term then
---         term:hide()
---       end
---       root = latest_root
---     end
---   end,
--- })
---
 return T
