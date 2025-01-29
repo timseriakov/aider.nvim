@@ -203,7 +203,10 @@ function T.send_command(command)
   end
   command = command .. "\n"
 
-  T.terminal()
+  local term = T.terminal()
+  if not term then
+    vim.notify("Failed to create terminal", vim.log.levels.ERROR)
+  end
   vim.fn.chansend(T.job_id, command)
 end
 
