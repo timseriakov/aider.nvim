@@ -5,7 +5,7 @@ local notify = require("aider.notify")
 local aider = require("aider.aider")
 
 ---@class AiderSnacks
----@field __terms table<string, Terminal> Map of CWD to Terminal instances
+---@field __terms table<string, snacks.win> Map of CWD to Terminal instances
 local T = {
   __terms = {},
 }
@@ -40,9 +40,9 @@ end
 
 --- Get or generate a terminal object for Aider
 ---@return snacks.win?, boolean?
-function T.get(create)
+function T.get(create, cwd)
   local term, created = Snacks.terminal.get(aider.command(), {
-    cwd = cwd,
+    cwd = cwd or Snacks.git.get_root(vim.uv.cwd()),
     env = aider.env(),
     interactive = true,
     create = create,
@@ -56,7 +56,6 @@ end
 --- Get or generate a terminal object for Aider
 ---@return snacks.win?, boolean?
 function T.terminal()
-  local cwd = Snacks.git.get_root()
   local term, created = T.get(true)
   if not term then
     vim.notify("Failed to create terminal")
@@ -73,7 +72,10 @@ function T.terminal()
     vim.notify("Failed to get terminal job id")
     return
   end
-  T.__terms[cwd] = term
+  local cwd = Snacks.git.get_root(vim.uv.cwd())
+  if cwd then
+    T.__terms[cwd] = term
+  end
 
   return term, created
 end
@@ -178,4 +180,21 @@ function T.ask(prompt, selection)
   T.send_command(command)
 end
 
+-- local root = nil
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+--   pattern = "*",
+--   callback = function()
+--     local latest_root = Snacks.git.get_root()
+--     if root and root ~= latest_root then
+--       vim.notify("root changed")
+--       local term = T.get(false, root)
+--       if term then
+--         term:hide()
+--       end
+--       root = latest_root
+--     end
+--   end,
+-- })
+--
 return T
