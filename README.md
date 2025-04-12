@@ -1,3 +1,8 @@
+# Maintence
+
+This project will no longer receive new features. I've migrated the core functionality into a new plugin [ai-terminals.nvim](https://github.com/aweis89/ai-terminals.nvim) which aims to work with any terminal based AI agent like Claude code, Goose as well as Aider.
+The new plugin has much better diffing implimenation which also works for any terminal based AI agent.
+
 # 🤝 aider.nvim
 
 A Neovim plugin for seamless integration with [Aider](https://github.com/paul-gauthier/aider), an AI pair programming tool.
