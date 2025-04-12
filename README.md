@@ -3,6 +3,8 @@
 This project will no longer receive new features. I've migrated the core functionality into a new plugin [ai-terminals.nvim](https://github.com/aweis89/ai-terminals.nvim) which aims to work with any terminal based AI agent like [Claude code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview), [Goose](https://block.github.io/goose/) as well as Aider.
 The new plugin has much better diffing implimenation which also works for any terminal based AI agent.
 
+Some features are lacking, but it's also more light weight. For example, the new plugin doesn't watch all writes for Aider comments, instead it assumes you're using the plugins function to add the comment so it can ensure Aider is running before adding it to the file. Additionally the new plugin provides a function to add files in Aider, but integration with file pickers is left to the end user (although a working example for snacks integration is provided).
+
 # 🤝 aider.nvim
 
 A Neovim plugin for seamless integration with [Aider](https://github.com/paul-gauthier/aider), an AI pair programming tool.
