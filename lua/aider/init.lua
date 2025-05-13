@@ -187,13 +187,18 @@ function M.setup(opts)
 		telescope.load_extension("model_picker")
 	end
 	require("aider.commands").setup(M.config)
+	-- Ensure normal mode in Diffview panels
+	vim.api.nvim_create_autocmd("BufEnter", {
+		callback = function(args)
+			local buf = args.buf
+			local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
+			if ft:match("^Diffview") then
+				vim.schedule(function()
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
+				end)
+			end
+		end,
+	})
 end
-
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "DiffviewFiles,DiffviewFileHistory,DiffviewView",
-	callback = function()
-		vim.cmd("stopinsert")
-	end,
-})
 
 return M
