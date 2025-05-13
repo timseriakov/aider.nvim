@@ -1,4 +1,8 @@
-# Maintence
+# Fork for personal purposes
+
+---
+
+## Maintence
 
 This project will no longer receive new features. I've migrated the core functionality into a new plugin [ai-terminals.nvim](https://github.com/aweis89/ai-terminals.nvim) which aims to work with any terminal based AI agent like [Claude code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview), [Goose](https://block.github.io/goose/) as well as Aider.
 The new plugin has much better diffing implimenation which also works for any terminal based AI agent.
